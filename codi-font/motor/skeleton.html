@@ -1,0 +1,107 @@
+<main class="wrap" id="main">
+  <header>
+    <div>
+      <h1 id="pTitle">__TITLE__</h1>
+      <p class="lede" id="pLede">__LEDE__</p>
+    </div>
+    <div class="btnrow"><button type="button" class="primary" id="pdfBtn">Exportar fitxa PDF</button><span class="toast" id="pdfMsg" role="status"></span></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Receptes" id="tabs"></nav>
+
+  <div class="grid" id="panel">
+    <div class="col">
+      <section class="panel" aria-labelledby="h-lot">
+        <h2 id="h-lot">La pastada</h2>
+        <label class="f"><span id="mLabel">Quantitat</span>
+          <div class="stepper">
+            <button type="button" id="mMinus" aria-label="Menys">−</button>
+            <input type="number" id="mVal" inputmode="decimal">
+            <span class="u" id="mUnit"></span>
+            <button type="button" id="mPlus" aria-label="Més">+</button>
+          </div>
+        </label>
+        <p class="hint" id="mHint"></p>
+        <div class="params" id="params"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-prof">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <h2 id="h-prof">Perfil</h2><span class="custom-tag" id="customTag" hidden>Personalitzat</span>
+        </div>
+        <div class="profiles" id="profiles"></div>
+        <div class="recbox" id="recBox" hidden></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-calc">
+        <h2 id="h-calc">Càlculs</h2>
+        <dl class="out" id="calc"></dl>
+        <p class="note" id="calcNote"></p>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel" aria-labelledby="h-mix">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+          <h2 id="h-mix">Ingredients</h2>
+          <span class="note num" id="loadNote"></span>
+        </div>
+        <div class="mix" id="mix"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-flav">
+          <h2 id="h-flav">Perfil de sabor</h2>
+          <div class="flav" id="flav"></div>
+          <p class="note" id="flavNote">Estimació relativa a partir de la dosi de cada ingredient respecte a la seva dosi típica.</p>
+        </section>
+        <section class="panel" aria-labelledby="h-warn">
+          <h2 id="h-warn">Compatibilitats i avisos</h2>
+          <ul class="warns" id="warns"></ul>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-cat">
+        <h2 id="h-cat">Afegir ingredients</h2>
+        <div class="cat" id="catalog"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-shop">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h2 id="h-shop">Llista de la compra</h2>
+            <button type="button" id="copyShop">Copiar</button>
+          </div>
+          <div class="shop" id="shop"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-tl">
+          <h2 id="h-tl">Cronologia</h2>
+          <label class="f"><span id="startLbl">Comences</span><input type="datetime-local" id="startDate"></label>
+          <div class="params" id="paramsTl"></div>
+          <ol class="tl" id="timeline"></ol>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-how" id="howPanel" hidden>
+        <h2 id="h-how">Com fer-ho</h2>
+        <ol class="steps" id="how"></ol>
+      </section>
+
+      <section class="panel" aria-labelledby="h-save">
+        <h2 id="h-save">Les meves receptes</h2>
+        <div class="row2">
+          <label class="f">Nom<input type="text" id="saveName" placeholder="p. ex. Prova diumenge"></label>
+          <label class="f">Notes de tast<textarea id="saveNotes" placeholder="Com ha quedat? Què canviaries?"></textarea></label>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="primary" id="saveBtn">Guardar recepta</button>
+          <button type="button" id="copyRecipe">Copiar recepta en text</button>
+          <span class="toast" id="toast" role="status"></span>
+        </div>
+        <p class="note">Es guarden només en aquest navegador.</p>
+        <div class="saved" id="saved"></div>
+        <pre class="txt" id="recipeTxt" hidden></pre>
+      </section>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ca" data-sense-barra>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Receptari de casa</title>
+<!--CAP-->
+<!--FONTS-->
+<style>
+/* Índex de GitHub Pages: llista a l'esquerra, calculadora oberta a la dreta.
+   En mòbil, barra superior amb el desplegable de receptes. */
+html,body{height:100%}
+body{margin:0;overflow:hidden}
+.app{display:grid;grid-template-columns:288px minmax(0,1fr);height:100dvh}
+.side{display:flex;flex-direction:column;gap:var(--s1);min-height:0;border-right:1px solid var(--line);background:var(--surface);
+  padding:var(--s2) var(--s1) var(--s1) max(var(--s1),env(safe-area-inset-left,0px))}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none}
+.brand img{width:40px;height:40px;border-radius:10px;flex:none}
+.brand h1{font-size:1.35rem;line-height:1.1}
+.brand small{display:block;font-family:var(--f-body);font-weight:400;font-size:var(--fs-xs);color:var(--muted);letter-spacing:0}
+.menu{display:none}
+.navwrap{display:flex;flex-direction:column;gap:var(--s1);min-height:0;flex:1}
+#q{width:100%}
+nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:column;gap:var(--s1);margin:0 calc(-1 * var(--s-1));padding:0 var(--s-1)}
+.cat h2{font-family:var(--f-mono);font-size:var(--fs-xs);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 var(--s-1);padding:0 10px}
+.cat ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.it{display:flex;align-items:center;min-height:40px;padding:6px 10px;border-radius:var(--r-md);color:var(--ink);text-decoration:none;font-size:var(--fs-sm);line-height:1.3}
+.it:hover{background:var(--accent-soft)}
+.it[aria-current="page"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.peu{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:var(--s0);font-size:var(--fs-xs);color:var(--muted)}
+.peu a{font-weight:700}
+.vista{min-width:0;min-height:0;position:relative;background:var(--bg)}
+.vista iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+.inici{height:100%;overflow-y:auto;padding:var(--s4) max(var(--s2),env(safe-area-inset-right,0px)) var(--s4) var(--s3)}
+.inici .hd{max-width:62ch;margin-bottom:var(--s3)}
+.inici .hd p{color:var(--muted);margin-top:var(--s0)}
+.inici h2{font-size:var(--fs-md);margin:var(--s3) 0 var(--s1)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--s1);list-style:none;margin:0;padding:0}
+.tile{display:flex;flex-direction:column;gap:var(--s-1);height:100%;padding:var(--s1);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-1);color:var(--ink);text-decoration:none;transition:border-color var(--t-fast),transform var(--t-fast)}
+.tile:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tile em{font-style:normal;font-family:var(--f-mono);font-size:var(--fs-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tile b{font-family:var(--f-display);font-size:var(--fs-lg);line-height:1.2}
+.tile span{color:var(--muted);font-size:var(--fs-sm)}
+.tile small{margin-top:auto;padding-top:var(--s0);font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--accent)}
+.buit{color:var(--muted);font-size:var(--fs-sm);padding:0 10px}
+@media (max-width:760px){
+  body{overflow:auto}
+  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .side{position:relative;z-index:5;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:var(--s0);padding:var(--s0) max(var(--s1),env(safe-area-inset-right,0px)) var(--s0) max(var(--s1),env(safe-area-inset-left,0px));padding-top:max(var(--s0),env(safe-area-inset-top,0px))}
+  .brand img{width:32px;height:32px;border-radius:8px}
+  .brand h1{font-size:1.1rem}
+  .brand small{display:none}
+  .menu{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+  .navwrap{position:absolute;left:0;right:0;top:100%;max-height:calc(100dvh - 60px);background:var(--surface);border-bottom:1px solid var(--line);
+    box-shadow:0 12px 24px rgb(0 0 0 / .12);padding:var(--s1) max(var(--s1),env(safe-area-inset-right,0px)) var(--s1) max(var(--s1),env(safe-area-inset-left,0px))}
+  .navwrap:not(.obert){display:none}
+  .inici{padding:var(--s2) var(--s1) var(--s4)}
+}
+</style>
+<!--ACCENT-->
+</head>
+<body>
+<a class="skip" href="#vista">Salta al contingut</a>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#" id="home"><img src="icones/icona.svg" alt=""><h1>Receptari de casa<small>Calculadores de receptes</small></h1></a>
+    <button type="button" class="menu" id="menu" aria-expanded="false" aria-controls="navwrap">Receptes <span aria-hidden="true">▾</span></button>
+    <div class="navwrap" id="navwrap">
+      <input id="q" type="search" placeholder="Cerca una recepta…" aria-label="Cerca una recepta" autocomplete="off">
+      <nav class="llista" id="llista" aria-label="Receptes"></nav>
+      <div class="peu"><span id="sola" hidden><a id="solaA" href="#">Obre-la a pantalla completa</a></span><span id="offline">Es pot fer servir sense connexió un cop oberta.</span></div>
+    </div>
+  </aside>
+  <main class="vista" id="vista" tabindex="-1"></main>
+</div>
+<script>
+const RECEPTES=/*RECEPTES*/[]/*FI*/;
+(function(){
+  const $=s=>document.querySelector(s);
+  const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const L=[...RECEPTES].sort((a,b)=>a.titol.localeCompare(b.titol,"ca"));
+  const base=f=>f.replace(/\.html$/,"");
+  const troba=h=>L.find(r=>r.id===h||base(r.fitxer)===h);
+  const grups=arr=>{const m=new Map();arr.forEach(r=>{const c=r.categoria||"Altres";if(!m.has(c))m.set(c,[]);m.get(c).push(r)});return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"ca"))};
+  let q="",actual=null;
+  function llista(){
+    const t=q.trim().toLowerCase();
+    const arr=L.filter(r=>!t||(r.titol+" "+r.categoria+" "+r.descripcio).toLowerCase().includes(t));
+    $("#llista").innerHTML=arr.length?grups(arr).map(([c,rs])=>`<div class="cat"><h2>${esc(c)}</h2><ul>${rs.map(r=>`<li><a class="it" href="#${esc(r.id)}"${actual&&actual.id===r.id?' aria-current="page"':""}>${esc(r.titol)}</a></li>`).join("")}</ul></div>`).join(""):'<p class="buit">Cap recepta coincideix amb la cerca.</p>';
+  }
+  function inici(){
+    $("#vista").innerHTML=`<div class="inici"><div class="hd"><h2 class="sr-only">Totes les receptes</h2><p style="font-size:var(--fs-lg);color:var(--ink);margin:0">Tria una recepta i la calculadora s'obre aquí mateix.</p><p>${L.length} calculadores: escalat, perfils, avisos, calendari, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}</small></a></li>`).join("")}</ul></div>`;
+  }
+  function mostra(){
+    const h=decodeURIComponent(location.hash.slice(1));
+    const r=h?troba(h):null;
+    actual=r||null;
+    if(r){
+      let f=$("#vista iframe");
+      if(!f){$("#vista").innerHTML="";f=document.createElement("iframe");f.setAttribute("allow","screen-wake-lock; clipboard-write");$("#vista").appendChild(f)}
+      if(f.getAttribute("src")!==r.fitxer)f.setAttribute("src",r.fitxer);
+      f.title=r.titol;
+      document.title=r.titol+" · Receptari de casa";
+      $("#sola").hidden=false;$("#solaA").href=r.fitxer;
+    }else{
+      inici();document.title="Receptari de casa";$("#sola").hidden=true;
+    }
+    llista();
+    $("#navwrap").classList.remove("obert");$("#menu").setAttribute("aria-expanded","false");
+  }
+  $("#q").addEventListener("input",e=>{q=e.target.value;llista()});
+  $("#menu").addEventListener("click",()=>{const o=!$("#navwrap").classList.contains("obert");$("#navwrap").classList.toggle("obert",o);$("#menu").setAttribute("aria-expanded",String(o));if(o)$("#q").focus()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#navwrap").classList.contains("obert")){$("#navwrap").classList.remove("obert");$("#menu").setAttribute("aria-expanded","false");$("#menu").focus()}});
+  $("#home").addEventListener("click",e=>{e.preventDefault();history.pushState(null,"",location.pathname);mostra()});
+  window.addEventListener("hashchange",()=>{mostra();if(actual)$("#vista").focus({preventScroll:true})});
+  window.addEventListener("popstate",mostra);
+  if("serviceWorker" in navigator)navigator.serviceWorker.ready.then(()=>{$("#offline").textContent="Disponible sense connexió."}).catch(()=>{});
+  mostra();
+})();
+</script>
+</body>
+</html>

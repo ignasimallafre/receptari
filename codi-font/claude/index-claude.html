@@ -1,0 +1,207 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Receptari de casa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: índex de rebost — barra lateral amb etiquetes per categoria, fitxa de la recepta a la dreta; en mòbil, una sola columna */
+
+
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+aside{border-right:1px solid var(--line);background:var(--panel);padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
+main{padding-block:32px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0}
+.brand h1{font-family:var(--f-display);font-weight:400;font-size:1.6rem;margin:0;line-height:1.1;text-wrap:balance}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:.85rem}
+input,textarea,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cat{display:flex;flex-direction:column;gap:2px}
+.cat h2{font-family:var(--f-mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;display:flex;justify-content:space-between}
+.item{all:unset;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:6px}
+.item:hover{background:var(--soft)}
+.item[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
+.item[aria-current="true"] .date{color:inherit;opacity:.8}
+.item:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.date{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.count{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.btn{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:9px 14px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.danger{border-color:var(--danger);background:transparent;color:var(--danger)}
+.btn:disabled{opacity:.5;cursor:default}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.label{display:inline-block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--spice);border:1px solid currentColor;border-radius:3px;padding:2px 7px}
+.sheet{max-width:720px;display:flex;flex-direction:column;gap:20px}
+.sheet h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,4vw,2.8rem);margin:0;line-height:1.05;text-wrap:balance}
+.sheet .desc{font-size:1.05rem;max-width:62ch;margin:0}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:.9rem;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:12px 0;margin:0}
+.meta dt{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.meta dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tile{all:unset;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.tile:hover{border-color:var(--accent)}
+.tile:focus-visible{outline:2px solid var(--accent)}
+.tile b{font-family:var(--f-display);font-weight:400;font-size:1.15rem}
+.tile span{color:var(--muted);font-size:.85rem}
+.section-h{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 0}
+form.edit{display:grid;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;max-width:720px}
+form.edit label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.note{color:var(--muted);font-size:.85rem;margin:0}
+.err{color:var(--danger);font-size:.85rem;margin:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:.9rem}
+.confirm{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1px solid var(--danger);border-radius:6px;padding:10px 12px}
+.empty{color:var(--muted);font-size:.9rem;margin:0}
+@media (max-width:760px){
+  .wrap{grid-template-columns:1fr}
+  aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-right:max(16px,env(safe-area-inset-right,0px))}
+  main{padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .row2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="receptari.css">
+<style>
+:root{ --accent:#2f5d46; --accent-soft:#e0ebe2; --accent-ink:#ffffff; --bar:#6f8f5e; --accent2:#7a5410; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#8cc4a1; --accent-soft:#20332a; --accent-ink:#0f1a13; --bar:#8fb27c; --accent2:#e0b45c; }}
+:root[data-theme="dark"]{ --accent:#8cc4a1; --accent-soft:#20332a; --accent-ink:#0f1a13; --bar:#8fb27c; --accent2:#e0b45c; }
+</style>
+
+<div class="wrap">
+  <aside>
+    <div class="brand">
+      <h1>Receptari de casa</h1>
+      <p id="sub">Les calculadores de receptes, en un sol lloc.</p>
+    </div>
+    <input id="q" type="search" placeholder="Cerca una recepta…" aria-label="Cerca una recepta">
+    <nav id="nav" aria-label="Receptes"><p class="empty">Carregant les receptes…</p></nav>
+    <div class="side-foot">
+      <button class="btn ghost" id="addBtn" hidden>+ Afegeix una recepta</button>
+      <span class="count" id="count"></span>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const S={list:[],sel:null,q:"",mode:"view",canEdit:false,db:null,confirmDel:false,status:"loading"};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const slug=t=>String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)||("r-"+Date.now());
+const fmtDate=d=>{if(!d)return"";const x=new Date(d);return isNaN(x)?"":x.toLocaleDateString("ca-ES",{day:"numeric",month:"short",year:"numeric"})};
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
+
+function filtered(){const q=S.q.trim().toLowerCase();return S.list.filter(r=>!q||(r.titol+" "+(r.categoria||"")+" "+(r.descripcio||"")).toLowerCase().includes(q))}
+function groups(arr){const m=new Map();arr.forEach(r=>{const c=r.categoria||"Altres";if(!m.has(c))m.set(c,[]);m.get(c).push(r)});return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"ca"))}
+
+function renderNav(){
+  const nav=$("#nav");const arr=filtered();
+  if(S.status==="nodb"){nav.innerHTML='<p class="empty">No s\'ha pogut connectar amb la llista de receptes en aquesta vista.</p>';return}
+  if(S.status==="loading"){nav.innerHTML='<p class="empty">Carregant les receptes…</p>';return}
+  if(!S.list.length){nav.innerHTML='<p class="empty">Encara no hi ha cap recepta. '+(S.canEdit?'Afegeix-ne una amb el botó de sota.':'')+'</p>';return}
+  if(!arr.length){nav.innerHTML='<p class="empty">Cap recepta coincideix amb la cerca.</p>';return}
+  nav.innerHTML=groups(arr).map(([c,rs])=>`<div class="cat"><h2><span>${esc(c)}</span><span>${rs.length}</span></h2>${rs.map(r=>`<button class="item" data-id="${esc(r.id)}" aria-current="${r.id===S.sel}"><span>${esc(r.titol)}</span><span class="date">${esc(fmtDate(r.afegit))}</span></button>`).join("")}</div>`).join("");
+  nav.querySelectorAll(".item").forEach(b=>b.onclick=()=>select(b.dataset.id,true));
+}
+function select(id,scroll){S.sel=id;S.mode="view";S.confirmDel=false;try{history.replaceState(null,"","#"+id)}catch(e){}render();if(scroll&&matchMedia("(max-width:760px)").matches)$("#main").scrollIntoView({behavior:"smooth"})}
+
+function renderMain(){
+  const m=$("#main");
+  if(S.mode==="edit"||S.mode==="add")return renderForm(m);
+  const r=S.list.find(x=>x.id===S.sel);
+  if(!r){
+    m.innerHTML=`<div class="sheet"><span class="label">Índex</span><h2>Totes les receptes</h2><p class="desc">Tria una calculadora a la barra lateral. Cada una s'obre en una pestanya nova.</p><div class="grid">${S.list.map(r=>`<button class="tile" data-id="${esc(r.id)}"><span>${esc(r.categoria||"Altres")}</span><b>${esc(r.titol)}</b><span>${esc(r.descripcio||"")}</span></button>`).join("")}</div></div>`;
+    m.querySelectorAll(".tile").forEach(b=>b.onclick=()=>select(b.dataset.id));return;
+  }
+  const others=S.list.filter(x=>x.id!==r.id&&(x.categoria||"Altres")===(r.categoria||"Altres"));
+  m.innerHTML=`<article class="sheet">
+    <span class="label">${esc(r.categoria||"Altres")}</span>
+    <h2>${esc(r.titol)}</h2>
+    ${r.descripcio?`<p class="desc">${esc(r.descripcio)}</p>`:""}
+    <dl class="meta">
+      ${r.mesura?`<dt>Mesura base</dt><dd>${esc(r.mesura)}</dd>`:""}
+      ${r.afegit?`<dt>Afegida</dt><dd>${esc(fmtDate(r.afegit))}</dd>`:""}
+      <dt>Enllaç</dt><dd><span class="date" id="urlTxt">${esc(r.url)}</span></dd>
+    </dl>
+    <div class="actions">
+      <a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener">Obre la calculadora ↗</a>
+      <button class="btn ghost" id="copy">Copia l'enllaç</button>
+      ${S.canEdit?`<button class="btn ghost" id="edit">Edita</button><button class="btn danger" id="del">Treu de l'índex</button>`:""}
+    </div>
+    ${S.confirmDel?`<div class="confirm"><span>Treure «${esc(r.titol)}» de l'índex? La calculadora no s'esborra.</span><button class="btn danger" id="delYes">Treu-la</button><button class="btn ghost" id="delNo">Cancel·la</button></div>`:""}
+    ${others.length?`<p class="section-h">Més de ${esc(r.categoria||"Altres")}</p><div class="grid">${others.map(o=>`<button class="tile" data-id="${esc(o.id)}"><b>${esc(o.titol)}</b><span>${esc(o.descripcio||"")}</span></button>`).join("")}</div>`:""}
+  </article>`;
+  m.querySelectorAll(".tile").forEach(b=>b.onclick=()=>select(b.dataset.id));
+  $("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(r.url);toast("Enllaç copiat")}catch(e){const s=getSelection(),rg=document.createRange();rg.selectNodeContents($("#urlTxt"));s.removeAllRanges();s.addRange(rg);toast("Enllaç seleccionat: copia'l a mà")}};
+  if(S.canEdit){
+    $("#edit").onclick=()=>{S.mode="edit";render()};
+    $("#del").onclick=()=>{S.confirmDel=true;render()};
+    if(S.confirmDel){
+      $("#delNo").onclick=()=>{S.confirmDel=false;render()};
+      $("#delYes").onclick=async()=>{try{await S.db.doc("receptes/"+r.id).delete();S.sel=null;S.confirmDel=false;toast("Tret de l'índex")}catch(e){toast("No s'ha pogut treure: "+(e.message||e.code))}};
+    }
+  }
+}
+
+function renderForm(m){
+  const r=S.mode==="edit"?S.list.find(x=>x.id===S.sel)||{}:{};
+  const cats=[...new Set(S.list.map(x=>x.categoria).filter(Boolean))];
+  m.innerHTML=`<form class="edit" id="f" novalidate>
+    <span class="label">${S.mode==="edit"?"Edita la recepta":"Nova recepta"}</span>
+    <label for="fT">Nom<input id="fT" required value="${esc(r.titol||"")}" placeholder="Calculadora de croquetes"></label>
+    <label for="fU">Enllaç de la calculadora<input id="fU" required value="${esc(r.url||"")}" placeholder="https://claude.ai/code/artifact/…"></label>
+    <div class="row2">
+      <label for="fC">Categoria<input id="fC" list="cats" value="${esc(r.categoria||"")}" placeholder="Pastisseria"><datalist id="cats">${cats.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></label>
+      <label for="fM">Mesura base<input id="fM" value="${esc(r.mesura||"")}" placeholder="Litres, comensals, peces…"></label>
+    </div>
+    <label for="fD">Descripció<textarea id="fD" rows="3" placeholder="Una línia sobre què fa la calculadora">${esc(r.descripcio||"")}</textarea></label>
+    <p class="err" id="fErr" hidden></p>
+    <div class="actions"><button class="btn" type="submit" id="fSave">Desa</button><button class="btn ghost" type="button" id="fCancel">Cancel·la</button></div>
+  </form>`;
+  $("#fCancel").onclick=()=>{S.mode="view";render()};
+  $("#f").onsubmit=async ev=>{
+    ev.preventDefault();
+    const titol=$("#fT").value.trim(),url=$("#fU").value.trim(),err=$("#fErr");
+    if(!titol){err.textContent="Posa-hi un nom.";err.hidden=false;return}
+    if(!/^https:\/\/\S+$/.test(url)){err.textContent="L'enllaç ha de començar per https://.";err.hidden=false;return}
+    const id=S.mode==="edit"?r.id:slug(titol);
+    if(S.mode==="add"&&S.list.some(x=>x.id===id)){err.textContent="Ja hi ha una recepta amb aquest nom.";err.hidden=false;return}
+    const data={titol,url,categoria:$("#fC").value.trim()||"Altres",mesura:$("#fM").value.trim(),descripcio:$("#fD").value.trim(),afegit:r.afegit||new Date().toISOString().slice(0,10)};
+    $("#fSave").disabled=true;
+    try{await S.db.doc("receptes/"+id).set(data);S.sel=id;S.mode="view";toast("Desat");render()}
+    catch(e){$("#fSave").disabled=false;err.textContent=e.code==="invalid_argument"?"No tens permís per modificar l'índex.":"No s'ha pogut desar. Torna-ho a provar.";err.hidden=false}
+  };
+  $("#fT").focus();
+}
+
+function render(){
+  renderNav();renderMain();
+  $("#count").textContent=S.list.length?`${S.list.length} ${S.list.length===1?"recepta":"receptes"}`:"";
+  $("#addBtn").hidden=!(S.canEdit&&S.db);
+}
+$("#q").addEventListener("input",e=>{S.q=e.target.value;renderNav()});
+$("#addBtn").onclick=()=>{S.mode="add";S.confirmDel=false;render()};
+
+render();
+(async()=>{
+  const db=window.claude?await claude.use("db"):null;
+  if(!db){S.status="nodb";render();return}
+  S.db=db;
+  try{const u=await claude.use("user");S.canEdit=u?!!(await u.canEdit()):false}catch(e){}
+  db.collection("receptes").orderBy("titol").onSnapshot(snap=>{
+    S.list=snap.docs.map(d=>({id:d.id,...d.data()}));S.status="ready";
+    const h=decodeURIComponent((location.hash||"").slice(1));
+    if(S.sel===null&&h&&S.list.some(r=>r.id===h))S.sel=h;
+    if(S.sel&&!S.list.some(r=>r.id===S.sel))S.sel=null;
+    if(S.mode!=="view"&&S.mode!=="add"&&!S.list.some(r=>r.id===S.sel))S.mode="view";
+    if(S.mode==="view")render();else{renderNav();$("#count").textContent=`${S.list.length} receptes`}
+  },e=>{S.status="nodb";render()});
+})();
+</script>
+
+<script>document.documentElement.lang="ca"</script>
+</body></html>

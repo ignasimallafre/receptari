@@ -1,70 +1,74 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<html lang="ca" data-sense-barra>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Receptari de casa</title>
+<!-- receptari:cap -->
+<meta name="description" content="Calculadores de receptes de casa: escalat, perfils, avisos, calendari i fitxa PDF.">
+<meta name="theme-color" content="#2f5d46">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/icona.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icones/icona-180.png">
+<script src="receptari.js" defer></script>
+<!-- /receptari:cap -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
-<style>
-/* Layout: índex de rebost — barra lateral amb etiquetes per categoria, fitxa de la recepta a la dreta; en mòbil, una sola columna */
-
-
-
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
-.wrap{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
-aside{border-right:1px solid var(--line);background:var(--panel);padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
-main{padding-block:32px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0}
-.brand h1{font-family:var(--f-display);font-weight:400;font-size:1.6rem;margin:0;line-height:1.1;text-wrap:balance}
-.brand p{margin:4px 0 0;color:var(--muted);font-size:.85rem}
-input,textarea,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
-input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cat{display:flex;flex-direction:column;gap:2px}
-.cat h2{font-family:var(--f-mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;display:flex;justify-content:space-between}
-.item{all:unset;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:6px}
-.item:hover{background:var(--soft)}
-.item[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
-.item[aria-current="true"] .date{color:inherit;opacity:.8}
-.item:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.date{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.count{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
-.btn{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:9px 14px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-.btn.ghost{background:transparent;color:var(--accent)}
-.btn.danger{border-color:var(--danger);background:transparent;color:var(--danger)}
-.btn:disabled{opacity:.5;cursor:default}
-.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
-.label{display:inline-block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--spice);border:1px solid currentColor;border-radius:3px;padding:2px 7px}
-.sheet .label{align-self:flex-start}
-.sheet{max-width:720px;display:flex;flex-direction:column;gap:20px}
-.sheet h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,4vw,2.8rem);margin:0;line-height:1.05;text-wrap:balance}
-.sheet .desc{font-size:1.05rem;max-width:62ch;margin:0}
-.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:.9rem;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:12px 0;margin:0}
-.meta dt{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
-.meta dd{margin:0;min-width:0;overflow-wrap:anywhere}
-.actions{display:flex;flex-wrap:wrap;gap:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.tile{all:unset;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:6px}
-.tile:hover{border-color:var(--accent)}
-.tile:focus-visible{outline:2px solid var(--accent)}
-.tile b{font-family:var(--f-display);font-weight:400;font-size:1.15rem}
-.tile span{color:var(--muted);font-size:.85rem}
-.section-h{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 0}
-form.edit{display:grid;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;max-width:720px}
-form.edit label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.note{color:var(--muted);font-size:.85rem;margin:0}
-.err{color:var(--danger);font-size:.85rem;margin:0}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:.9rem}
-.confirm{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1px solid var(--danger);border-radius:6px;padding:10px 12px}
-.empty{color:var(--muted);font-size:.9rem;margin:0}
-@media (max-width:760px){
-  .wrap{grid-template-columns:1fr}
-  aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-right:max(16px,env(safe-area-inset-right,0px))}
-  main{padding-left:max(16px,env(safe-area-inset-left,0px))}
-  .row2{grid-template-columns:1fr}
-}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
 <link rel="stylesheet" href="receptari.css">
+<style>
+/* Índex de GitHub Pages: llista a l'esquerra, calculadora oberta a la dreta.
+   En mòbil, barra superior amb el desplegable de receptes. */
+html,body{height:100%}
+body{margin:0;overflow:hidden}
+.app{display:grid;grid-template-columns:288px minmax(0,1fr);height:100dvh}
+.side{display:flex;flex-direction:column;gap:var(--s1);min-height:0;border-right:1px solid var(--line);background:var(--surface);
+  padding:var(--s2) var(--s1) var(--s1) max(var(--s1),env(safe-area-inset-left,0px))}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none}
+.brand img{width:40px;height:40px;border-radius:10px;flex:none}
+.brand h1{font-size:1.35rem;line-height:1.1}
+.brand small{display:block;font-family:var(--f-body);font-weight:400;font-size:var(--fs-xs);color:var(--muted);letter-spacing:0}
+.menu{display:none}
+.navwrap{display:flex;flex-direction:column;gap:var(--s1);min-height:0;flex:1}
+#q{width:100%}
+nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:column;gap:var(--s1);margin:0 calc(-1 * var(--s-1));padding:0 var(--s-1)}
+.cat h2{font-family:var(--f-mono);font-size:var(--fs-xs);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 var(--s-1);padding:0 10px}
+.cat ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.it{display:flex;align-items:center;min-height:40px;padding:6px 10px;border-radius:var(--r-md);color:var(--ink);text-decoration:none;font-size:var(--fs-sm);line-height:1.3}
+.it:hover{background:var(--accent-soft)}
+.it[aria-current="page"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.peu{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:var(--s0);font-size:var(--fs-xs);color:var(--muted)}
+.peu a{font-weight:700}
+.vista{min-width:0;min-height:0;position:relative;background:var(--bg)}
+.vista iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+.inici{height:100%;overflow-y:auto;padding:var(--s4) max(var(--s2),env(safe-area-inset-right,0px)) var(--s4) var(--s3)}
+.inici .hd{max-width:62ch;margin-bottom:var(--s3)}
+.inici .hd p{color:var(--muted);margin-top:var(--s0)}
+.inici h2{font-size:var(--fs-md);margin:var(--s3) 0 var(--s1)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--s1);list-style:none;margin:0;padding:0}
+.tile{display:flex;flex-direction:column;gap:var(--s-1);height:100%;padding:var(--s1);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-1);color:var(--ink);text-decoration:none;transition:border-color var(--t-fast),transform var(--t-fast)}
+.tile:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tile em{font-style:normal;font-family:var(--f-mono);font-size:var(--fs-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tile b{font-family:var(--f-display);font-size:var(--fs-lg);line-height:1.2}
+.tile span{color:var(--muted);font-size:var(--fs-sm)}
+.tile small{margin-top:auto;padding-top:var(--s0);font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--accent)}
+.buit{color:var(--muted);font-size:var(--fs-sm);padding:0 10px}
+@media (max-width:760px){
+  body{overflow:auto}
+  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .side{position:relative;z-index:5;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:var(--s0);padding:var(--s0) max(var(--s1),env(safe-area-inset-right,0px)) var(--s0) max(var(--s1),env(safe-area-inset-left,0px));padding-top:max(var(--s0),env(safe-area-inset-top,0px))}
+  .brand img{width:32px;height:32px;border-radius:8px}
+  .brand h1{font-size:1.1rem}
+  .brand small{display:none}
+  .menu{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+  .navwrap{position:absolute;left:0;right:0;top:100%;max-height:calc(100dvh - 60px);background:var(--surface);border-bottom:1px solid var(--line);
+    box-shadow:0 12px 24px rgb(0 0 0 / .12);padding:var(--s1) max(var(--s1),env(safe-area-inset-right,0px)) var(--s1) max(var(--s1),env(safe-area-inset-left,0px))}
+  .navwrap:not(.obert){display:none}
+  .inici{padding:var(--s2) var(--s1) var(--s4)}
+}
+</style>
 <style>
 :root{ --accent:#2f5d46; --accent-soft:#e0ebe2; --accent-ink:#ffffff; --bar:#6f8f5e; --accent2:#7a5410; }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#8cc4a1; --accent-soft:#20332a; --accent-ink:#0f1a13; --bar:#8fb27c; --accent2:#e0b45c; }}
@@ -72,127 +76,63 @@ form.edit label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <aside>
-    <div class="brand">
-      <h1>Receptari de casa</h1>
-      <p id="sub">Les calculadores de receptes, en un sol lloc.</p>
-    </div>
-    <input id="q" type="search" placeholder="Cerca una recepta…" aria-label="Cerca una recepta">
-    <nav id="nav" aria-label="Receptes"><p class="empty">Carregant les receptes…</p></nav>
-    <div class="side-foot">
-      <button class="btn ghost" id="addBtn" hidden>+ Afegeix una recepta</button>
-      <span class="count" id="count"></span>
+<a class="skip" href="#vista">Salta al contingut</a>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#" id="home"><img src="icones/icona.svg" alt=""><h1>Receptari de casa<small>Calculadores de receptes</small></h1></a>
+    <button type="button" class="menu" id="menu" aria-expanded="false" aria-controls="navwrap">Receptes <span aria-hidden="true">▾</span></button>
+    <div class="navwrap" id="navwrap">
+      <input id="q" type="search" placeholder="Cerca una recepta…" aria-label="Cerca una recepta" autocomplete="off">
+      <nav class="llista" id="llista" aria-label="Receptes"></nav>
+      <div class="peu"><span id="sola" hidden><a id="solaA" href="#">Obre-la a pantalla completa</a></span><span id="offline">Es pot fer servir sense connexió un cop oberta.</span></div>
     </div>
   </aside>
-  <main id="main"></main>
+  <main class="vista" id="vista" tabindex="-1"></main>
 </div>
-<div class="toast" id="toast" hidden></div>
-
 <script>
-const S={list:[],sel:null,q:"",mode:"view",canEdit:false,db:null,confirmDel:false,status:"loading"};
-const $=s=>document.querySelector(s);
-const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const slug=t=>String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)||("r-"+Date.now());
-const fmtDate=d=>{if(!d)return"";const x=new Date(d);return isNaN(x)?"":x.toLocaleDateString("ca-ES",{day:"numeric",month:"short",year:"numeric"})};
-function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
-
-function filtered(){const q=S.q.trim().toLowerCase();return S.list.filter(r=>!q||(r.titol+" "+(r.categoria||"")+" "+(r.descripcio||"")).toLowerCase().includes(q))}
-function groups(arr){const m=new Map();arr.forEach(r=>{const c=r.categoria||"Altres";if(!m.has(c))m.set(c,[]);m.get(c).push(r)});return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"ca"))}
-
-function renderNav(){
-  const nav=$("#nav");const arr=filtered();
-  if(S.status==="nodb"){nav.innerHTML='<p class="empty">No s\'ha pogut connectar amb la llista de receptes en aquesta vista.</p>';return}
-  if(S.status==="loading"){nav.innerHTML='<p class="empty">Carregant les receptes…</p>';return}
-  if(!S.list.length){nav.innerHTML='<p class="empty">Encara no hi ha cap recepta. '+(S.canEdit?'Afegeix-ne una amb el botó de sota.':'')+'</p>';return}
-  if(!arr.length){nav.innerHTML='<p class="empty">Cap recepta coincideix amb la cerca.</p>';return}
-  nav.innerHTML=groups(arr).map(([c,rs])=>`<div class="cat"><h2><span>${esc(c)}</span><span>${rs.length}</span></h2>${rs.map(r=>`<button class="item" data-id="${esc(r.id)}" aria-current="${r.id===S.sel}"><span>${esc(r.titol)}</span><span class="date">${esc(fmtDate(r.afegit))}</span></button>`).join("")}</div>`).join("");
-  nav.querySelectorAll(".item").forEach(b=>b.onclick=()=>select(b.dataset.id,true));
-}
-function select(id,scroll){S.sel=id;S.mode="view";S.confirmDel=false;try{history.replaceState(null,"","#"+id)}catch(e){}render();if(scroll&&matchMedia("(max-width:760px)").matches)$("#main").scrollIntoView({behavior:"smooth"})}
-
-function renderMain(){
-  const m=$("#main");
-  if(S.mode==="edit"||S.mode==="add")return renderForm(m);
-  const r=S.list.find(x=>x.id===S.sel);
-  if(!r){
-    m.innerHTML=`<div class="sheet"><span class="label">Índex</span><h2>Totes les receptes</h2><p class="desc">Tria una calculadora a la barra lateral. </p><div class="grid">${S.list.map(r=>`<button class="tile" data-id="${esc(r.id)}"><span>${esc(r.categoria||"Altres")}</span><b>${esc(r.titol)}</b><span>${esc(r.descripcio||"")}</span></button>`).join("")}</div></div>`;
-    m.querySelectorAll(".tile").forEach(b=>b.onclick=()=>select(b.dataset.id));return;
+const RECEPTES=[{"id": "arrossos-secs", "titol": "Arrossos secs", "fitxer": "arrossos-secs.html", "categoria": "Cuina", "mesura": "Comensals", "descripcio": "Arròs de carn, mixt, de peix i marisc, negre i de conill i caragols: arròs, brou, paella, ordre de cocció i salmorreta."}, {"id": "receptari-manitoba", "titol": "Receptari Manitoba", "fitxer": "manitoba.html", "categoria": "Forn i pastisseria", "mesura": "Peces", "descripcio": "Vint masses amb Manitoba (pizza, pa i rebosteria): % forner, prefermentats, calendari i avisos."}, {"id": "obrador-de-pa", "titol": "Obrador de pa", "fitxer": "obrador-de-pa.html", "categoria": "Forn i pastisseria", "mesura": "Grams de farina", "descripcio": "Barra, rodó i motlle abrioixat: % forner, prefermets i temps segons llevat, temperatura i nevera."}, {"id": "coca-brioix", "titol": "Coca de brioix", "fitxer": "coca-brioix.html", "categoria": "Forn i pastisseria", "mesura": "Grams de farina / safata", "descripcio": "Coca de brioix flonja amb tangzhong, cobertures, ajust a la safata i horari amb nevera."}, {"id": "coca-iogurt-magdalenes", "titol": "Coca de iogurt i magdalenes", "fitxer": "coca-iogurt-magdalenes.html", "categoria": "Forn i pastisseria", "mesura": "Iogurts / magdalenes", "descripcio": "Coca de iogurt en grams i gots ajustada al motlle, i magdalenes amb copet."}, {"id": "ensaimades", "titol": "Receptari d'ensaïmades", "fitxer": "ensaimades.html", "categoria": "Forn i pastisseria", "mesura": "Peces", "descripcio": "Ensaïmades amb variants, escalat de la massa, temps de fermentació i fitxa PDF."}, {"id": "vermut-blanc", "titol": "Laboratori de vermut", "fitxer": "vermut-blanc.html", "categoria": "Begudes i licors", "mesura": "Ampolles de vi", "descripcio": "Vermut blanc casolà: perfils, botànics, dolçor amb sucre, caramel o mel, macerats per separat i fitxa PDF."}, {"id": "embotits-curats", "titol": "Assecador d'embotits", "fitxer": "embotits-curats.html", "categoria": "Curats i conserves", "mesura": "Kg de carn", "descripcio": "Cansalada, capocollo i llom: adob per kg amb sal nitro, salaó, pes objectiu i assecat."}];
+(function(){
+  const $=s=>document.querySelector(s);
+  const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const L=[...RECEPTES].sort((a,b)=>a.titol.localeCompare(b.titol,"ca"));
+  const base=f=>f.replace(/\.html$/,"");
+  const troba=h=>L.find(r=>r.id===h||base(r.fitxer)===h);
+  const grups=arr=>{const m=new Map();arr.forEach(r=>{const c=r.categoria||"Altres";if(!m.has(c))m.set(c,[]);m.get(c).push(r)});return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"ca"))};
+  let q="",actual=null;
+  function llista(){
+    const t=q.trim().toLowerCase();
+    const arr=L.filter(r=>!t||(r.titol+" "+r.categoria+" "+r.descripcio).toLowerCase().includes(t));
+    $("#llista").innerHTML=arr.length?grups(arr).map(([c,rs])=>`<div class="cat"><h2>${esc(c)}</h2><ul>${rs.map(r=>`<li><a class="it" href="#${esc(r.id)}"${actual&&actual.id===r.id?' aria-current="page"':""}>${esc(r.titol)}</a></li>`).join("")}</ul></div>`).join(""):'<p class="buit">Cap recepta coincideix amb la cerca.</p>';
   }
-  const others=S.list.filter(x=>x.id!==r.id&&(x.categoria||"Altres")===(r.categoria||"Altres"));
-  m.innerHTML=`<article class="sheet">
-    <span class="label">${esc(r.categoria||"Altres")}</span>
-    <h2>${esc(r.titol)}</h2>
-    ${r.descripcio?`<p class="desc">${esc(r.descripcio)}</p>`:""}
-    <dl class="meta">
-      ${r.mesura?`<dt>Mesura base</dt><dd>${esc(r.mesura)}</dd>`:""}
-      ${r.afegit?`<dt>Afegida</dt><dd>${esc(fmtDate(r.afegit))}</dd>`:""}
-      <dt>Enllaç</dt><dd><span class="date" id="urlTxt">${esc(r.url)}</span></dd>
-    </dl>
-    <div class="actions">
-      <a class="btn" href="${esc(r.url)}" >Obre la calculadora</a>
-      <button class="btn ghost" id="copy">Copia l'enllaç</button>
-      ${S.canEdit?`<button class="btn ghost" id="edit">Edita</button><button class="btn danger" id="del">Treu de l'índex</button>`:""}
-    </div>
-    ${S.confirmDel?`<div class="confirm"><span>Treure «${esc(r.titol)}» de l'índex? La calculadora no s'esborra.</span><button class="btn danger" id="delYes">Treu-la</button><button class="btn ghost" id="delNo">Cancel·la</button></div>`:""}
-    ${others.length?`<p class="section-h">Més de ${esc(r.categoria||"Altres")}</p><div class="grid">${others.map(o=>`<button class="tile" data-id="${esc(o.id)}"><b>${esc(o.titol)}</b><span>${esc(o.descripcio||"")}</span></button>`).join("")}</div>`:""}
-  </article>`;
-  m.querySelectorAll(".tile").forEach(b=>b.onclick=()=>select(b.dataset.id));
-  $("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(r.url);toast("Enllaç copiat")}catch(e){const s=getSelection(),rg=document.createRange();rg.selectNodeContents($("#urlTxt"));s.removeAllRanges();s.addRange(rg);toast("Enllaç seleccionat: copia'l a mà")}};
-  if(S.canEdit){
-    $("#edit").onclick=()=>{S.mode="edit";render()};
-    $("#del").onclick=()=>{S.confirmDel=true;render()};
-    if(S.confirmDel){
-      $("#delNo").onclick=()=>{S.confirmDel=false;render()};
-      $("#delYes").onclick=async()=>{try{await S.db.doc("receptes/"+r.id).delete();S.sel=null;S.confirmDel=false;toast("Tret de l'índex")}catch(e){toast("No s'ha pogut treure: "+(e.message||e.code))}};
+  function inici(){
+    $("#vista").innerHTML=`<div class="inici"><div class="hd"><h2 class="sr-only">Totes les receptes</h2><p style="font-size:var(--fs-lg);color:var(--ink);margin:0">Tria una recepta i la calculadora s'obre aquí mateix.</p><p>${L.length} calculadores: escalat, perfils, avisos, calendari, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}</small></a></li>`).join("")}</ul></div>`;
+  }
+  function mostra(){
+    const h=decodeURIComponent(location.hash.slice(1));
+    const r=h?troba(h):null;
+    actual=r||null;
+    if(r){
+      let f=$("#vista iframe");
+      if(!f){$("#vista").innerHTML="";f=document.createElement("iframe");f.setAttribute("allow","screen-wake-lock; clipboard-write");$("#vista").appendChild(f)}
+      if(f.getAttribute("src")!==r.fitxer)f.setAttribute("src",r.fitxer);
+      f.title=r.titol;
+      document.title=r.titol+" · Receptari de casa";
+      $("#sola").hidden=false;$("#solaA").href=r.fitxer;
+    }else{
+      inici();document.title="Receptari de casa";$("#sola").hidden=true;
     }
+    llista();
+    $("#navwrap").classList.remove("obert");$("#menu").setAttribute("aria-expanded","false");
   }
-}
-
-function renderForm(m){
-  const r=S.mode==="edit"?S.list.find(x=>x.id===S.sel)||{}:{};
-  const cats=[...new Set(S.list.map(x=>x.categoria).filter(Boolean))];
-  m.innerHTML=`<form class="edit" id="f" novalidate>
-    <span class="label">${S.mode==="edit"?"Edita la recepta":"Nova recepta"}</span>
-    <label for="fT">Nom<input id="fT" required value="${esc(r.titol||"")}" placeholder="Calculadora de croquetes"></label>
-    <label for="fU">Enllaç de la calculadora<input id="fU" required value="${esc(r.url||"")}" placeholder="https://claude.ai/code/artifact/…"></label>
-    <div class="row2">
-      <label for="fC">Categoria<input id="fC" list="cats" value="${esc(r.categoria||"")}" placeholder="Pastisseria"><datalist id="cats">${cats.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></label>
-      <label for="fM">Mesura base<input id="fM" value="${esc(r.mesura||"")}" placeholder="Litres, comensals, peces…"></label>
-    </div>
-    <label for="fD">Descripció<textarea id="fD" rows="3" placeholder="Una línia sobre què fa la calculadora">${esc(r.descripcio||"")}</textarea></label>
-    <p class="err" id="fErr" hidden></p>
-    <div class="actions"><button class="btn" type="submit" id="fSave">Desa</button><button class="btn ghost" type="button" id="fCancel">Cancel·la</button></div>
-  </form>`;
-  $("#fCancel").onclick=()=>{S.mode="view";render()};
-  $("#f").onsubmit=async ev=>{
-    ev.preventDefault();
-    const titol=$("#fT").value.trim(),url=$("#fU").value.trim(),err=$("#fErr");
-    if(!titol){err.textContent="Posa-hi un nom.";err.hidden=false;return}
-    if(!/^https:\/\/\S+$/.test(url)){err.textContent="L'enllaç ha de començar per https://.";err.hidden=false;return}
-    const id=S.mode==="edit"?r.id:slug(titol);
-    if(S.mode==="add"&&S.list.some(x=>x.id===id)){err.textContent="Ja hi ha una recepta amb aquest nom.";err.hidden=false;return}
-    const data={titol,url,categoria:$("#fC").value.trim()||"Altres",mesura:$("#fM").value.trim(),descripcio:$("#fD").value.trim(),afegit:r.afegit||new Date().toISOString().slice(0,10)};
-    $("#fSave").disabled=true;
-    try{await S.db.doc("receptes/"+id).set(data);S.sel=id;S.mode="view";toast("Desat");render()}
-    catch(e){$("#fSave").disabled=false;err.textContent=e.code==="invalid_argument"?"No tens permís per modificar l'índex.":"No s'ha pogut desar. Torna-ho a provar.";err.hidden=false}
-  };
-  $("#fT").focus();
-}
-
-function render(){
-  renderNav();renderMain();
-  $("#count").textContent=S.list.length?`${S.list.length} ${S.list.length===1?"recepta":"receptes"}`:"";
-  $("#addBtn").hidden=!(S.canEdit&&S.db);
-}
-$("#q").addEventListener("input",e=>{S.q=e.target.value;renderNav()});
-$("#addBtn").onclick=()=>{S.mode="add";S.confirmDel=false;render()};
-
-render();
-S.list=[{"id": "arrossos-secs", "titol": "Arrossos secs", "url": "arrossos-secs.html", "categoria": "Cuina", "mesura": "Comensals", "descripcio": "Arròs de carn, mixt, de peix i marisc, negre i de conill i caragols: arròs, brou, paella, ordre de cocció i salmorreta.", "afegit": "2026-10-25"},{"id": "receptari-manitoba", "titol": "Receptari Manitoba", "url": "manitoba.html", "categoria": "Forn i pastisseria", "mesura": "Peces", "descripcio": "Vint masses amb Manitoba (pizza, pa i rebosteria): % forner, prefermentats, calendari i avisos.", "afegit": "2026-10-25"},{"id": "obrador-de-pa", "titol": "Obrador de pa", "url": "obrador-de-pa.html", "categoria": "Forn i pastisseria", "mesura": "Grams de farina", "descripcio": "Barra, rodó i motlle abrioixat: % forner, prefermets i temps segons llevat, temperatura i nevera.", "afegit": "2026-10-20"}, {"id": "coca-brioix", "titol": "Coca de brioix", "url": "coca-brioix.html", "categoria": "Forn i pastisseria", "mesura": "Grams de farina / safata", "descripcio": "Coca de brioix flonja amb tangzhong, cobertures, ajust a la safata i horari amb nevera.", "afegit": "2026-10-20"}, {"id": "coca-iogurt-magdalenes", "titol": "Coca de iogurt i magdalenes", "url": "coca-iogurt-magdalenes.html", "categoria": "Forn i pastisseria", "mesura": "Iogurts / magdalenes", "descripcio": "Coca de iogurt en grams i gots ajustada al motlle, i magdalenes amb copet.", "afegit": "2026-10-20"}, {"id": "ensaimades", "titol": "Receptari d'ensaïmades", "url": "ensaimades.html", "categoria": "Forn i pastisseria", "mesura": "Peces", "descripcio": "Ensaïmades amb variants, escalat de la massa, temps de fermentació i fitxa PDF.", "afegit": "2026-10-20"}, {"id": "vermut-blanc", "titol": "Laboratori de vermut", "url": "vermut-blanc.html", "categoria": "Begudes i licors", "mesura": "Ampolles de vi", "descripcio": "Vermut blanc casolà: perfils, botànics, dolçor amb sucre, caramel o mel, macerats per separat i fitxa PDF.", "afegit": "2026-10-20"}, {"id": "embotits-curats", "titol": "Assecador d'embotits", "url": "embotits-curats.html", "categoria": "Curats i conserves", "mesura": "Kg de carn", "descripcio": "Cansalada, capocollo i llom: adob per kg amb sal nitro, salaó, pes objectiu i assecat.", "afegit": "2026-10-20"}].map(r=>({...r,url:new URL(r.url,location.href).href})).sort((a,b)=>a.titol.localeCompare(b.titol,"ca"));S.status="ready";
-{const h=decodeURIComponent((location.hash||"").slice(1));if(h&&S.list.some(r=>r.id===h))S.sel=h;}
-render();
+  $("#q").addEventListener("input",e=>{q=e.target.value;llista()});
+  $("#menu").addEventListener("click",()=>{const o=!$("#navwrap").classList.contains("obert");$("#navwrap").classList.toggle("obert",o);$("#menu").setAttribute("aria-expanded",String(o));if(o)$("#q").focus()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#navwrap").classList.contains("obert")){$("#navwrap").classList.remove("obert");$("#menu").setAttribute("aria-expanded","false");$("#menu").focus()}});
+  $("#home").addEventListener("click",e=>{e.preventDefault();history.pushState(null,"",location.pathname);mostra()});
+  window.addEventListener("hashchange",()=>{mostra();if(actual)$("#vista").focus({preventScroll:true})});
+  window.addEventListener("popstate",mostra);
+  if("serviceWorker" in navigator)navigator.serviceWorker.ready.then(()=>{$("#offline").textContent="Disponible sense connexió."}).catch(()=>{});
+  mostra();
+})();
 </script>
-
-<script>document.documentElement.lang="ca"</script>
-</body></html>
+</body>
+</html>

@@ -180,4 +180,45 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px soli
   input[type=range]{min-height:36px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
-@media print{body{background:#fff;color:#000}.panel{box-shadow:none}}
+/* ---------- Barra d'eines (receptari.js) ---------- */
+body:has(.rc-barra){padding-bottom:calc(var(--s5) + env(safe-area-inset-bottom,0px))}
+.rc-barra{position:fixed;z-index:50;right:max(var(--s1),env(safe-area-inset-right,0px));bottom:calc(var(--s1) + env(safe-area-inset-bottom,0px));
+  display:flex;gap:var(--s-1);padding:var(--s-1);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill);box-shadow:0 4px 16px rgb(0 0 0 / .14)}
+.rc-b{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 var(--s1);border-radius:var(--r-pill);border:1px solid transparent;
+  background:transparent;color:var(--ink);font:inherit;font-size:var(--fs-sm);font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap}
+.rc-b:hover{background:var(--accent-soft);border-color:transparent}
+.rc-b[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+@media (pointer:coarse){.rc-b{min-height:44px}}
+
+/* ---------- Mode cuina: lletra gran, només el que cal per cuinar ---------- */
+html.cuina{font-size:125%}
+html.cuina body{font-size:1.0625rem}
+html.cuina section[aria-labelledby="h-flav"],
+html.cuina section[aria-labelledby="h-cat"],
+html.cuina section[aria-labelledby="h-save"]{display:none}
+html.cuina .tl .t,html.cuina .shop li,html.cuina .steps li,html.cuina .w{font-size:var(--fs-md)}
+html.cuina input[type=range]{min-height:44px}
+
+/* ---------- Impressió: una fitxa neta en paper ---------- */
+@media print{
+  :root:not([data-a]):not([data-b]){--bg:#fff;--surface:#fff;--sunk:#fff;--ink:#000;--muted:#333;--line:#999;--field:#999;
+    --accent:#222;--accent-soft:#eee;--accent-ink:#fff;--accent2:#222;--bar:#777;
+    --bad:#000;--bad-soft:#fff;--warn:#000;--warn-soft:#fff;--info:#000;--info-soft:#fff;--shadow-1:none;color-scheme:light}
+  @page{margin:14mm 12mm}
+  html,html.cuina{font-size:11pt}
+  body{background:#fff;color:#000;padding:0!important;margin:0}
+  .rc-barra,.skip,.tabs,[role="tablist"],button,input[type=search],input[type=range],.lvl,.seg,.btnrow,.custom-tag,.toast,pre.txt,
+  section[aria-labelledby="h-flav"],section[aria-labelledby="h-cat"],section[aria-labelledby="h-save"],section[aria-labelledby="h-prof"]{display:none!important}
+  .stepper{gap:4px}
+  input,select,textarea{border:none!important;background:none!important;padding:0!important;min-height:0!important;appearance:none;-webkit-appearance:none;color:#000}
+  .wrap,.grid,.split,.col{display:block!important;max-width:none!important}
+  .panel{box-shadow:none;border:1px solid #999;border-radius:4px;padding:8px 10px;margin:0 0 8px;break-inside:avoid;page-break-inside:avoid;background:#fff}
+  .panel:has(.mix),.panel:has(.tl),.panel:has(.steps){break-inside:auto;page-break-inside:auto}
+  .mrow{break-inside:avoid;padding:4px 0}
+  .w{border:1px solid #999;padding:4px 8px}
+  .w .tag{border:1px solid #000;background:#fff!important;color:#000!important}
+  .fill{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  a{color:#000;text-decoration:none}
+  h1{font-size:18pt}h2{font-size:13pt}
+}
+
