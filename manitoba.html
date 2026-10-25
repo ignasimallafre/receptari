@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<html lang="ca" data-recepta="receptari-manitoba"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Receptari Manitoba</title>
 <!-- receptari:cap -->
 <meta name="description" content="20 masses amb Caputo Manitoba (pizza, pa, rebosteria fermentada): % forner, prefermentats, temperatura de fermentació, nevera i calendari.">
@@ -7,6 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/icona.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icones/icona-180.png">
+<script>try{var t=localStorage.getItem("receptari-tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script src="receptari.js" defer></script>
 <!-- /receptari:cap -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1206,6 +1207,23 @@ $("saved").addEventListener("click",e=>{
   G.start=dtStr(startDate());$("startDT").value=G.start;
   renderRail();renderRecipe();renderSaved();
   window.addEventListener("hashchange",()=>{let k="";try{k=decodeURIComponent(location.hash.slice(1));}catch(_){}if(RX[k]&&k!==G.rid)selectRecipe(k,false);});
+
+// ---------- interfície comuna (receptari.js) ----------
+window.RECEPTARI={
+  titol(){const r=cur();return `${r.ca} · ${r.P[s().profile].n}${s().custom?" (personalitzat)":""}`;},
+  mesura(){const r=cur();return `${s().n} ${s().n===1?r.u[0]:r.u[1]} de ${s().g} g`;},
+  ingredients(){const c=lastC||calc(),g=c.g,out=[];
+    for(const f of FAMORD){const it=Object.keys(s().doses).filter(id=>C[id].fam===f).map(id=>({nom:shortName(id),q:fg(g[id])+(C[id].cnt?` (${cntTxt(id,g[id]).replace("≈ ","")})`:"")}));if(it.length)out.push({grup:FAM[f],items:it});}
+    return out;},
+  passos(){const c=lastC||calc();return timeline(c).map(x=>({quan:fmtDT(x.d),t:x.t,det:x.h?fmtH(x.h)+(x.cold?" · nevera":x.f?" · fermentació":""):"",min:x.h>0?Math.round(x.h*60):null}));},
+  compra(){const c=lastC||calc(),g=c.g,out=[];
+    for(const id of Object.keys(s().doses)){const C1=C[id];if(C1.fam==="ou"||!(g[id]>0))continue;out.push({botiga:WHERE[C1.where],nom:shortName(id),n:g[id],u:"g",uw:["g","g"],q:fg(g[id])});}
+    const e=eggCount(g);if(e)out.push({botiga:WHERE.sup,nom:"Ous (L)",n:e,u:"ou",uw:["ou","ous"],q:`${e} ${e===1?"ou":"ous"}`});
+    return out;},
+  estat(){return {rid:G.rid,s:JSON.parse(JSON.stringify(s())),tamb:G.tamb,mix:G.mix,start:G.start,tlMode:G.tlMode};},
+  carrega(x){if(!x||!RX[x.rid]||!x.s)return false;S[x.rid]=JSON.parse(JSON.stringify(x.s));G.tamb=x.tamb||21;G.mix=x.mix||"plan";G.start=x.start||dtStr(startDate());G.tlMode=x.tlMode||"start";syncTl();$("startDT").value=G.start;selectRecipe(x.rid,false);return true;},
+  resum(){const c=lastC||calc();return [["Peces",`${s().n} × ${s().g} g`],["Farina",fg(c.flour)],["Hidratació",fp(c.hyd)]];}
+};
 })();
 </script>
 

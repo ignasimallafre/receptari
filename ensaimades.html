@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<html lang="ca" data-recepta="ensaimades"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Receptari d'ensaïmades</title>
 <!-- receptari:cap -->
 <meta name="description" content="Ensaïmades amb variants, escalat de la massa, temps de fermentació i fitxa PDF.">
@@ -7,6 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/icona.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icones/icona-180.png">
+<script>try{var t=localStorage.getItem("receptari-tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script src="receptari.js" defer></script>
 <!-- /receptari:cap -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -801,6 +802,21 @@ const s0=new Date();s0.setHours(20,0,0,0);const pad=n=>String(n).padStart(2,"0")
 st.start=`${s0.getFullYear()}-${pad(s0.getMonth()+1)}-${pad(s0.getDate())}T20:00`;
 loadProfile("trad");renderSaved();
 try{if(localStorage.getItem("ensaimada-tab")==="pas")showTab("pas");}catch(_){}
+
+// ---------- interfície comuna (receptari.js) ----------
+window.RECEPTARI={
+  titol(){return `Ensaïmades · ${PROFILES[st.profile].name}${st.custom?" (personalitzat)":""}`;},
+  mesura(){return `${st.n} × ${F().name.toLowerCase()} de ${st.mass} g`;},
+  ingredients(){const out=[];for(const f of FAMORD){const it=I.filter(x=>x.fam===f&&has(x.id)).map(x=>({nom:x.ca,q:fq(x.id).replace(/<[^>]+>/g,"")}));if(it.length)out.push({grup:FAM[f],items:it});}return out;},
+  passos(){const S=lastS||stats(),ev=events(S),s=startDate();
+    return ev.map(([m,t,b],i)=>{const nx=ev[i+1];let min=nx?nx[0]-m:null;if(!(min>0))min=null;return {quan:fdt(addMin(s,m)),t,det:b,min};});},
+  compra(){const out=[];for(const id in st.doses){const x=BY[id],v=qty(id);if(!(v>0))continue;
+      out.push({botiga:WHERE[x.where],nom:x.ca,n:x.unit==="ou"?Math.ceil(v):v,u:x.unit,uw:UNITS[x.unit]||[x.unit,x.unit],q:shopQty(id).replace(/<[^>]+>/g,"")});}
+    return out;},
+  estat(){return JSON.parse(JSON.stringify(st));},
+  carrega(o){if(!o||!o.doses)return false;Object.assign(st,JSON.parse(JSON.stringify(o)));syncInputs();render();return true;},
+  resum(){const S=lastS||stats();return [["Peces",`${st.n} × ${st.mass} g`],["Farina",Math.round(S.fl)+" g"],["Fermentació",`${st.hours} h a ${st.temp} °C`]];}
+};
 })();
 </script>
 

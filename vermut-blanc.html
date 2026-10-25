@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<html lang="ca" data-recepta="vermut-blanc"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Laboratori de vermut</title>
 <!-- receptari:cap -->
 <meta name="description" content="Vermut blanc casolà: perfils, botànics, dolçor amb sucre, caramel o mel, macerats per separat i fitxa PDF.">
@@ -7,6 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/icona.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icones/icona-180.png">
+<script>try{var t=localStorage.getItem("receptari-tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script src="receptari.js" defer></script>
 <!-- /receptari:cap -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -954,6 +955,26 @@ $("impFile").addEventListener("change",async e=>{const f=e.target.files[0];if(!f
 // init
 const today=new Date();$("startDate").value=today.toISOString().slice(0,10);st.start=$("startDate").value;
 loadProfile("classic");renderSaved();
+
+// ---------- interfície comuna (receptari.js) ----------
+window.RECEPTARI={
+  titol(){return `Laboratori de vermut · ${PROFILES[st.profile].name}${st.custom?" (personalitzat)":""}`;},
+  mesura(){return `${st.bottles} ampolles de ${nf(st.bsize/1000,2)} L`;},
+  ingredients(){const L=lastL||liquids();
+    const out=[{grup:"Líquids",items:[{nom:`Vi blanc (${st.wineAbv} %)`,q:`${st.bottles} × ${nf(st.bsize/1000,2)} L`},{nom:st.spirit==96?"Alcohol de 96°":"Vodka de 40°",q:L.ok?Math.round(L.x)+" ml":"—"},...sweetParts(L).map(([k,v])=>({nom:k,q:v}))]}];
+    for(const f of FAMORD){const it=I.filter(x=>x.fam===f&&x.id in st.doses).map(x=>({nom:x.ca,q:fmtDose(x,st.doses[x.id]*scale(),true)}));if(it.length)out.push({grup:FAM[f],items:it});}
+    return out;},
+  compra(){const L=lastL||liquids(),out=[{botiga:WHERE.S,nom:`Vi blanc de ${st.wineAbv} % (${nf(st.bsize/1000,2)} L)`,n:st.bottles,u:"ampolla",uw:["ampolla","ampolles"],q:`${st.bottles} ampolles`}];
+    if(L.ok)out.push({botiga:WHERE.S,nom:st.spirit==96?"Alcohol de 96°":"Vodka de 40°",n:Math.round(L.x),u:"ml",uw:["ml","ml"],q:Math.round(L.x)+" ml"});
+    const SW=L.SW;if(SW.sug>=.5)out.push({botiga:WHERE.S,nom:"Sucre blanc",n:SW.sug,u:"g",uw:["g","g"],q:Math.round(SW.sug)+" g"});
+    if(SW.car>=.5)out.push({botiga:WHERE.S,nom:"Sucre blanc",n:SW.car,u:"g",uw:["g","g"],q:Math.round(SW.car)+" g"});
+    if(SW.mel>=.5)out.push({botiga:WHERE.S,nom:`Mel ${HONEY[st.profile]}`,n:SW.mel,u:"g",uw:["g","g"],q:Math.round(SW.mel)+" g"});
+    for(const id in st.doses){const x=BY[id],v=st.doses[id]*scale();out.push({botiga:WHERE[x.where],nom:x.ca,n:v,u:x.unit,uw:UNITS[x.unit]||[x.unit,x.unit],q:fmtDose(x,v,true)});}
+    return out;},
+  estat(){return JSON.parse(JSON.stringify(st));},
+  carrega(o){if(!o||!o.doses)return false;Object.assign(st,{sw:{car:0,mel:0}},JSON.parse(JSON.stringify(o)));syncInputs();if(st.start)$("startDate").value=st.start;render();return true;},
+  resum(){const L=lastL||liquids();return [["Ampolles",`${st.bottles} × ${nf(st.bsize/1000,2)} L`],["Graduació",L.ok?nf(L.abv,1)+" %":"—"],["Sucre",Math.round(L.gL)+" g/L"]];}
+};
 })();
 </script>
 

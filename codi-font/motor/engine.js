@@ -359,4 +359,27 @@ let t0=null;try{t0=localStorage.getItem(P.key+"-tab");}catch(_){}
 if(t0&&P.recipes[t0])S.tab=t0;
 const hs=(location.hash||"").slice(1);if(P.recipes[hs])S.tab=hs;
 render();renderSaved();
+
+// ---------- interfície comuna (receptari.js: mode cuina, compra, compartir, resum) ----------
+window.RECEPTARI={
+  titol(){const r=R(),s=st();return [P.title,r.name===P.title?null:r.name,r.profiles[s.profile].name+(s.custom?" (personalitzat)":"")].filter(Boolean).join(" · ");},
+  mesura(){const r=R(),s=st();return `${nf(s.n,2)} ${r.measure.unit||r.measure.label.toLowerCase()}`;},
+  ingredients(){const r=R(),s=st(),out=[];
+    for(const f of r.famOrd){const it=I.filter(x=>x.fam===f&&x.id in s.doses).map(x=>({nom:x.ca,q:strip(totStr(x,s.doses[x.id]))}));if(it.length)out.push({grup:r.fam[f],items:it});}
+    return out;},
+  passos(){const C=lastC||computeAll(),T=events(C),ev=T.ev,h=mode()!=="d";
+    const out=ev.map(([o,t],i)=>{let min=null;if(h&&i<ev.length-1){min=Math.round((ev[i+1][0]-o)*60);if(!(min>0))min=null;}return {quan:`${evDate(o)} · ${offLbl(o)}`,t:strip(t),min};});
+    for(const [a,b] of (T.tail||[]))out.push({quan:strip(a),t:strip(b),min:null});
+    return out;},
+  compra(){const C=lastC||computeAll(),r=R(),s=st(),out=[];
+    for(const id in s.doses){const x=BY[id];if(r.shopSkip&&r.shopSkip.includes(id))continue;const a=amount(x,s.doses[id]);if(!(a>0))continue;
+      out.push({botiga:P.where[x.where]||x.where,nom:x.ca,n:a,u:x.unit,uw:UNITS[x.unit]||[x.unit,x.unit],q:strip(r.fmtTot?r.fmtTot(x,a,s):fmtAmt(x,a))});}
+    if(r.shopExtra)for(const gr of r.shopExtra(s,C))for(const [n,a] of gr.items)out.push({botiga:gr.h,nom:strip(n),n:null,q:strip(a||"")});
+    return out;},
+  estat(){return {tab:S.tab,st:st()};},
+  carrega(o){if(!o||!P.recipes[o.tab]||!o.st)return false;S.tab=o.tab;S.tabs[o.tab]=Object.assign(freshState(o.tab),o.st);render();return true;},
+  resum(){const r=R(),s=st(),C=lastC||computeAll();const out=[[r.measure.label,`${nf(s.n,2)} ${r.measure.unit||""}`.trim()]];
+    for(const x of C.rows)if(x[0]!=="§"&&x[2]&&out.length<3)out.push([strip(x[0]),strip(x[1])]);
+    return out;}
+};
 })();

@@ -30,6 +30,8 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
 FONTS_URL = re.search(r'href="(https://fonts\.googleapis\.com/css2[^"]+)"', FONTS).group(1).replace("&amp;", "&")
 JSPDF = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
 
+TEMA = '<script>try{var t=localStorage.getItem("receptari-tema");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>\n'
+
 def cap(desc):
     """Capçalera comuna de GitHub Pages (entre marques, per poder-la regenerar)."""
     d = desc.replace('"', "&quot;")
@@ -39,8 +41,12 @@ def cap(desc):
             '<link rel="manifest" href="manifest.webmanifest">\n'
             '<link rel="icon" href="icones/icona.svg" type="image/svg+xml">\n'
             '<link rel="apple-touch-icon" href="icones/icona-180.png">\n'
+            + TEMA +
             '<script src="receptari.js" defer></script>\n'
             "<!-- /receptari:cap -->\n")
+
+def marca_html(html, rid):
+    return re.sub(r'<html lang="ca"[^>]*>', f'<html lang="ca" data-recepta="{rid}">', html, count=1)
 
 def posa_cap(html, desc):
     html = re.sub(r"<!-- receptari:cap -->.*?<!-- /receptari:cap -->\n", "", html, flags=re.S)
@@ -68,6 +74,8 @@ def artefacte(html):
     if "claude:viewport-fit-sides" not in html:
         i = html.index("</title>") + len("</title>")
         html = html[:i] + '\n<meta name="claude:viewport-fit-sides" content="cover">' + html[i:]
+    i = html.index("</title>") + len("</title>")
+    html = html[:i] + "\n" + TEMA.strip() + html[i:]
     return html
 
 def main():
@@ -84,6 +92,7 @@ def main():
             html = posa_cap(rd(p), r["descripcio"])
             if '<script src="receptari.js"' in html:
                 html = re.sub(r'\n?<script>document\.documentElement\.lang="ca"</script>', "", html)
+        html = marca_html(html, r["id"])
         wr(p, html)
         wr(os.path.join(out, r["fitxer"]), artefacte(html))
         print("pàgina", r["fitxer"])

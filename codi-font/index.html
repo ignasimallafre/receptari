@@ -30,6 +30,7 @@ nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:colum
 .peu{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:var(--s0);font-size:var(--fs-xs);color:var(--muted)}
 .peu a{font-weight:700}
 .vista{min-width:0;min-height:0;position:relative;background:var(--bg)}
+.vista:focus{outline:none}
 .vista iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
 .inici{height:100%;overflow-y:auto;padding:var(--s4) max(var(--s2),env(safe-area-inset-right,0px)) var(--s4) var(--s3)}
 .inici .hd{max-width:60ch;margin-bottom:var(--s3)}
@@ -48,6 +49,29 @@ nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:colum
 .tile small i{font-style:normal;font-family:var(--f-body);font-weight:700;font-size:var(--fs-sm);color:var(--accent)}
 .tile:hover small i{text-decoration:underline;text-underline-offset:3px}
 .buit{color:var(--muted);font-size:var(--fs-sm);padding:0 10px}
+.it .rc-ico{width:22px;height:22px;flex:none;color:var(--accent);margin-right:10px;stroke-width:2.8}
+.it[aria-current="page"] .rc-ico{color:inherit}
+.it-compra{font-weight:700;border:1px dashed var(--field);justify-content:flex-start;gap:10px}
+.it-compra .rc-ui{color:var(--accent)}
+.it-compra .n{margin-left:auto;min-width:24px;padding:0 7px;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-family:var(--f-mono);font-size:var(--fs-xs);text-align:center}
+.it-compra .n:empty{display:none}
+.it-compra[aria-current="page"] .rc-ui{color:inherit}
+.it-compra[aria-current="page"] .n{background:var(--accent-ink);color:var(--accent)}
+.peu .rc-tema{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;font-size:var(--fs-xs);font-weight:700}
+.tile .rc-ico-caixa{width:56px;height:56px;margin:0 0 var(--s0)}
+.tile .rc-ico{width:38px;height:38px}
+.compra .barra{display:flex;flex-wrap:wrap;gap:var(--s0);margin:var(--s2) 0}
+.compra .recs{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--s0)}
+.compra .recs li{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 12px;border-radius:var(--r-pill);background:var(--surface);border:1px solid var(--line);font-size:var(--fs-sm)}
+.compra .recs a{color:var(--ink);font-weight:700;text-decoration:none}
+.compra .recs small{color:var(--muted)}
+.compra .recs button{min-height:32px;min-width:32px;padding:0;border-radius:var(--r-pill);display:grid;place-items:center}
+.compra .grups{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--s2);align-items:start;max-width:1100px}
+.compra .grups h3{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--f-display);font-size:var(--fs-lg);font-weight:700;text-transform:none;letter-spacing:0;color:var(--ink);margin:0 0 var(--s0)}
+.compra .grups h3 span{font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--muted);font-weight:600}
+.compra .rc-llista label{grid-template-columns:28px minmax(4.5em,auto) 1fr;min-height:52px}
+.compra .rc-n small{display:block;color:var(--muted);font-size:var(--fs-xs);text-decoration:none}
+.compra .buit-c{max-width:52ch;padding:var(--s2);border:1px dashed var(--field);border-radius:var(--r-lg);color:var(--muted)}
 @media (max-width:760px){
   body{overflow:auto}
   .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
@@ -74,42 +98,98 @@ nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:colum
     <div class="navwrap" id="navwrap">
       <input id="q" type="search" placeholder="Cerca una recepta…" aria-label="Cerca una recepta" autocomplete="off">
       <nav class="llista" id="llista" aria-label="Receptes"></nav>
-      <div class="peu"><span id="sola" hidden><a id="solaA" href="#">Obre-la a pantalla completa</a></span><span id="offline">Es pot fer servir sense connexió un cop oberta.</span></div>
+      <div class="peu"><span id="sola" hidden><a id="solaA" href="#">Obre-la a pantalla completa</a></span><span id="offline">Es pot fer servir sense connexió un cop oberta.</span><button type="button" class="rc-tema" id="tema">Tema</button></div>
     </div>
   </aside>
   <main class="vista" id="vista" tabindex="-1"></main>
 </div>
 <script>
 const RECEPTES=/*RECEPTES*/[]/*FI*/;
-(function(){
+document.addEventListener("DOMContentLoaded",function(){
   const $=s=>document.querySelector(s);
+  const RC=window.Receptari||{icona:()=>"",ui:()=>"",canviaTema(){},aplicaTema(){},avis(m){alert(m)}};
   const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const nf=(n,d)=>Number(n).toLocaleString("ca-ES",{maximumFractionDigits:d});
   const L=[...RECEPTES].sort((a,b)=>a.titol.localeCompare(b.titol,"ca"));
   const base=f=>f.replace(/\.html$/,"");
   const troba=h=>L.find(r=>r.id===h||base(r.fitxer)===h);
   const grups=arr=>{const m=new Map();arr.forEach(r=>{const c=r.categoria||"Altres";if(!m.has(c))m.set(c,[]);m.get(c).push(r)});return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"ca"))};
-  let q="",actual=null;
+  let q="",actual=null,vista="inici",estat=new URLSearchParams(location.search).get("estat");
+
+  /* ---- llista de la compra combinada ---- */
+  const CKEY="receptari-compra";
+  const cget=()=>{try{const v=JSON.parse(localStorage.getItem(CKEY));return v&&Array.isArray(v.receptes)?v:{receptes:[],marcats:{}}}catch(e){return {receptes:[],marcats:{}}}};
+  const cset=v=>{try{localStorage.setItem(CKEY,JSON.stringify(v))}catch(e){}};
+  const BOT=[[/súper|supermercat/i,"Súper"],[/peixat/i,"Peixateria"],[/carniss|cansalad/i,"Carnisseria"],[/herbolari/i,"Herbolari"],[/fleca|obrador/i,"Fleca o botiga d'obrador"],[/mercat|verdur|fruit|xarcut/i,"Mercat"],[/casa/i,"De casa"]];
+  const ORD=["Súper","Mercat","Carnisseria","Peixateria","Fleca o botiga d'obrador","Herbolari"];
+  const normBot=b=>{for(const [r,n] of BOT)if(r.test(b||""))return n;return b||"Altres"};
+  const ordBot=b=>b==="De casa"?99:ORD.includes(b)?ORD.indexOf(b):50;
+  const clau=n=>String(n).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s*\(.*?\)\s*/g," ").replace(/\s+/g," ").trim();
+  const unitat=u=>u==="g"?["g",1]:u==="kg"?["g",1000]:u==="ml"?["ml",1]:(u==="L"||u==="l")?["ml",1000]:[u||"",1];
+  function agrega(C){
+    const acc=new Map();
+    for(const r of C.receptes)for(const it of r.items||[]){
+      const bot=normBot(it.botiga);let k,e;
+      if(it.n!=null&&isFinite(it.n)){const [u,f]=unitat(it.u);k=bot+"|"+clau(it.nom)+"|"+u;e=acc.get(k)||{bot,nom:it.nom,u,uw:it.uw,n:0,rec:new Set()};e.n+=it.n*f;}
+      else{k=bot+"|"+clau(it.nom)+"|t|"+(it.q||"");e=acc.get(k)||{bot,nom:it.nom,txt:it.q||"",rec:new Set()};}
+      e.rec.add(r.titol.split(" · ")[0]);acc.set(k,e);
+    }
+    const g=new Map();for(const [k,e] of acc){e.k=k;if(!g.has(e.bot))g.set(e.bot,[]);g.get(e.bot).push(e);}
+    return [...g.entries()].sort((a,b)=>ordBot(a[0])-ordBot(b[0])||a[0].localeCompare(b[0],"ca")).map(([b,it])=>[b,it.sort((x,y)=>x.nom.localeCompare(y.nom,"ca"))]);
+  }
+  function quant(e){
+    if(e.txt!=null)return e.txt;const n=e.n;
+    if(e.u==="g")return n>=1000?nf(n/1000,2)+" kg":n<10?nf(n,1)+" g":nf(Math.round(n),0)+" g";
+    if(e.u==="ml")return n>=1000?nf(n/1000,2)+" L":nf(Math.round(n),0)+" ml";
+    const mig=["beina","fulla"].includes(e.u);const v=mig?Math.max(.5,Math.ceil(n*2-1e-9)/2):Math.max(1,Math.ceil(n-1e-9));
+    const w=e.uw||[e.u,e.u];return nf(v,1)+" "+(v<=1?w[0]:w[1]);
+  }
+  function textCompra(C){return agrega(C).map(([b,it])=>b+"\n"+it.map(e=>"- "+e.nom+(quant(e)?": "+quant(e):"")).join("\n")).join("\n\n");}
+  function compte(){const n=cget().receptes.length;const s=$("#ncompra");if(s)s.textContent=n?String(n):"";}
+  let segur=false;
+  function compra(){
+    const C=cget(),G=agrega(C),tot=G.reduce((a,[,it])=>a+it.length,0),fets=G.reduce((a,[,it])=>a+it.filter(e=>C.marcats[e.k]).length,0);
+    $("#vista").innerHTML=`<div class="inici compra"><div class="hd"><span class="ull">Receptari de casa</span><h2>Llista de la compra</h2><p>${C.receptes.length?`Tot el que cal per a ${C.receptes.length} ${C.receptes.length===1?"recepta":"receptes"}, sumat i agrupat per botiga. Marca el que ja tens al carro.`:"Obre una recepta i toca «A la compra»: les quantitats de totes les receptes se sumen aquí, agrupades per botiga."}</p></div>`+
+      (C.receptes.length?`<ul class="recs" aria-label="Receptes de la llista">${C.receptes.map((r,i)=>`<li><a href="#${esc(r.id)}">${esc(r.titol)}</a><small>${esc(r.mesura)}</small><button type="button" data-treu="${i}" aria-label="Treu ${esc(r.titol)} de la llista">${RC.ui("tanca")}</button></li>`).join("")}</ul>
+      <div class="barra"><button type="button" class="primary" id="cCopia">Copia la llista</button>${navigator.share?'<button type="button" id="cShare">Comparteix-la</button>':""}<button type="button" id="cDesm"${fets?"":" disabled"}>Desmarca-ho tot</button><button type="button" id="cBuida">${segur?"Segur? Torna a tocar":"Buida la llista"}</button><span class="note" style="align-self:center">${fets}/${tot} al carro</span></div>
+      <div class="grups">${G.map(([b,it])=>`<section aria-labelledby="b-${esc(clau(b).replace(/\W+/g,"-"))}"><h3 id="b-${esc(clau(b).replace(/\W+/g,"-"))}">${esc(b)}<span>${it.filter(e=>C.marcats[e.k]).length}/${it.length}</span></h3><ul class="rc-llista">${it.map(e=>`<li><label><input type="checkbox" data-k="${esc(e.k)}"${C.marcats[e.k]?" checked":""}><span class="rc-q">${esc(quant(e))}</span><span class="rc-n">${esc(e.nom)}${e.rec.size>1||C.receptes.length>1?`<small>${esc([...e.rec].join(", "))}</small>`:""}</span></label></li>`).join("")}</ul></section>`).join("")}</div>`
+      :`<p class="buit-c">La llista és buida.</p>`)+`</div>`;
+    const v=$("#vista");
+    v.querySelectorAll("[data-treu]").forEach(b=>b.onclick=()=>{const C=cget();C.receptes.splice(+b.dataset.treu,1);cset(C);compte();compra();});
+    v.querySelectorAll("[data-k]").forEach(c=>c.onchange=()=>{const C=cget();if(c.checked)C.marcats[c.dataset.k]=1;else delete C.marcats[c.dataset.k];cset(C);const y=window.scrollY;compra();const el=$(`[data-k="${CSS.escape(c.dataset.k)}"]`);if(el)el.focus();});
+    const cp=$("#cCopia");if(cp)cp.onclick=()=>{const t=textCompra(cget());navigator.clipboard.writeText(t).then(()=>RC.avis("Llista copiada"),()=>RC.avis("No s'ha pogut copiar"));};
+    const sh=$("#cShare");if(sh)sh.onclick=()=>navigator.share({title:"Llista de la compra",text:textCompra(cget())}).catch(()=>{});
+    const dm=$("#cDesm");if(dm)dm.onclick=()=>{const C=cget();C.marcats={};cset(C);compra();};
+    const bu=$("#cBuida");if(bu)bu.onclick=()=>{if(!segur){segur=true;compra();$("#cBuida").focus();setTimeout(()=>{segur=false;},4000);return;}segur=false;cset({receptes:[],marcats:{}});compte();compra();RC.avis("Llista buidada");};
+  }
+
+  /* ---- navegació ---- */
   function llista(){
     const t=q.trim().toLowerCase();
     const arr=L.filter(r=>!t||(r.titol+" "+r.categoria+" "+r.descripcio).toLowerCase().includes(t));
-    $("#llista").innerHTML=arr.length?grups(arr).map(([c,rs])=>`<div class="cat"><h2>${esc(c)}</h2><ul>${rs.map(r=>`<li><a class="it" href="#${esc(r.id)}"${actual&&actual.id===r.id?' aria-current="page"':""}>${esc(r.titol)}</a></li>`).join("")}</ul></div>`).join(""):'<p class="buit">Cap recepta coincideix amb la cerca.</p>';
+    $("#llista").innerHTML=`<a class="it it-compra" href="#compra"${vista==="compra"?' aria-current="page"':""}>${RC.ui("compra")}Llista de la compra<span class="n" id="ncompra"></span></a>`+
+      (arr.length?grups(arr).map(([c,rs])=>`<div class="cat"><h2>${esc(c)}</h2><ul>${rs.map(r=>`<li><a class="it" href="#${esc(r.id)}"${actual&&actual.id===r.id?' aria-current="page"':""}>${RC.icona(r.id)}${esc(r.titol)}</a></li>`).join("")}</ul></div>`).join(""):'<p class="buit">Cap recepta coincideix amb la cerca.</p>');
+    compte();
   }
   function inici(){
-    $("#vista").innerHTML=`<div class="inici"><div class="hd"><span class="ull">Receptari de casa</span><h2>Què cuinem avui?</h2><p>Tria una recepta i la calculadora s'obre aquí mateix: escalat, perfils, avisos, calendari, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}<i>Obre-la →</i></small></a></li>`).join("")}</ul></div>`;
+    $("#vista").innerHTML=`<div class="inici"><div class="hd"><span class="ull">Receptari de casa</span><h2>Què cuinem avui?</h2><p>Tria una recepta i la calculadora s'obre aquí mateix: escalat, perfils, avisos, mode cuina amb temporitzadors, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><span class="rc-ico-caixa">${RC.icona(r.id)}</span><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}<i>Obre-la →</i></small></a></li>`).join("")}</ul></div>`;
   }
   function mostra(){
     const h=decodeURIComponent(location.hash.slice(1));
-    const r=h?troba(h):null;
-    actual=r||null;
+    const r=h&&h!=="compra"?troba(h):null;
+    actual=r||null;vista=h==="compra"?"compra":r?"recepta":"inici";
     if(r){
       let f=$("#vista iframe");
-      if(!f){$("#vista").innerHTML="";f=document.createElement("iframe");f.setAttribute("allow","screen-wake-lock; clipboard-write");$("#vista").appendChild(f)}
-      if(f.getAttribute("src")!==r.fitxer)f.setAttribute("src",r.fitxer);
+      if(!f){$("#vista").innerHTML="";f=document.createElement("iframe");f.setAttribute("allow","screen-wake-lock; clipboard-write; web-share");$("#vista").appendChild(f)}
+      let src=r.fitxer;
+      if(estat){src+="?estat="+encodeURIComponent(estat);estat=null;try{history.replaceState(null,"",location.pathname+location.hash)}catch(e){}}
+      if(f.getAttribute("src")!==src)f.setAttribute("src",src);
       f.title=r.titol;
       document.title=r.titol+" · Receptari de casa";
       $("#sola").hidden=false;$("#solaA").href=r.fitxer;
     }else{
-      inici();document.title="Receptari de casa";$("#sola").hidden=true;
+      if(vista==="compra"){compra();document.title="Llista de la compra · Receptari de casa";}else{inici();document.title="Receptari de casa";}
+      $("#sola").hidden=true;
     }
     llista();
     $("#navwrap").classList.remove("obert");$("#menu").setAttribute("aria-expanded","false");
@@ -118,11 +198,13 @@ const RECEPTES=/*RECEPTES*/[]/*FI*/;
   $("#menu").addEventListener("click",()=>{const o=!$("#navwrap").classList.contains("obert");$("#navwrap").classList.toggle("obert",o);$("#menu").setAttribute("aria-expanded",String(o));if(o)$("#q").focus()});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#navwrap").classList.contains("obert")){$("#navwrap").classList.remove("obert");$("#menu").setAttribute("aria-expanded","false");$("#menu").focus()}});
   $("#home").addEventListener("click",e=>{e.preventDefault();history.pushState(null,"",location.pathname);mostra()});
-  window.addEventListener("hashchange",()=>{mostra();if(actual)$("#vista").focus({preventScroll:true})});
+  $("#tema").innerHTML=RC.ui("tema")+"Tema";$("#tema").addEventListener("click",()=>RC.canviaTema());RC.aplicaTema(localStorage.getItem("receptari-tema"));
+  window.addEventListener("hashchange",()=>{mostra();if(vista!=="inici")$("#vista").focus({preventScroll:true})});
   window.addEventListener("popstate",mostra);
+  window.addEventListener("storage",e=>{if(e.key===CKEY){compte();if(vista==="compra")compra();}});
   if("serviceWorker" in navigator)navigator.serviceWorker.ready.then(()=>{$("#offline").textContent="Disponible sense connexió."}).catch(()=>{});
   mostra();
-})();
+});
 </script>
 </body>
 </html>

@@ -11,10 +11,26 @@ Tot és HTML, CSS i JavaScript estàtics: no cal cap servidor ni cap framework.
 | `index.html` | Índex: tries una recepta i la calculadora s'obre al costat (es genera, no l'editis a mà) |
 | `*.html` | Les calculadores |
 | `receptari.css` | Sistema de disseny comú: colors, tipografia, components, accessibilitat, mode cuina i impressió |
-| `receptari.js` | Comportament comú: pestanyes amb teclat, mode cuina (lletra gran i pantalla encesa), imprimir, sense connexió |
+| `receptari.js` | Comportament comú: pictogrames, barra d'accions, mode cuina (ingredients per marcar, passos d'un en un, pantalla encesa), temporitzadors, enllaç per compartir, afegir a la llista de la compra, resum fix al mòbil, tema clar/fosc, pestanyes amb teclat, sense connexió |
 | `receptes.json` | **Font única** de la llista de receptes (títol, fitxer, enllaç a claude.ai, categoria...) |
 | `sw.js`, `manifest.webmanifest`, `icones/` | Funcionar sense connexió i afegir el receptari a la pantalla d'inici del mòbil |
 | `codi-font/` | Motor de les calculadores, dades de cada recepta i el script de construcció |
+
+## Interfície de cada calculadora
+
+Cada pàgina exposa `window.RECEPTARI` i `receptari.js` hi penja la resta:
+
+| Funció | Retorna |
+|---|---|
+| `titol()` | «Arrossos secs · De carn · El de casa» |
+| `mesura()` | «4 pers.» |
+| `ingredients()` | `[{grup, items:[{nom, q}]}]` per al mode cuina |
+| `passos()` | `[{quan, t, det?, min?}]`; `min` activa el temporitzador |
+| `compra()` | `[{botiga, nom, n, u, uw, q}]` per sumar a la llista combinada |
+| `estat()` / `carrega(o)` | l'estat serialitzable, per a l'enllaç `?estat=` |
+| `resum()` | `[[etiqueta, valor]]` per a la franja fixa del mòbil |
+
+El motor ja la porta; les pàgines fetes a mà (vermut, ensaïmades, Manitoba) la defineixen al final del seu script.
 
 ## Com s'actualitza
 
