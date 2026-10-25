@@ -111,7 +111,7 @@ nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:colum
       <div class="peu"><span id="sola" hidden><a id="solaA" href="#">Obre-la a pantalla completa</a></span><span id="offline">Es pot fer servir sense connexió un cop oberta.</span><button type="button" class="rc-tema" id="tema">Tema</button></div>
     </div>
   </aside>
-  <main class="vista" id="vista" tabindex="-1"></main>
+  <main class="vista" id="vista" tabindex="-1"><div class="inici" id="vInici"></div><div class="inici compra" id="vCompra" hidden></div></main>
 </div>
 <script>
 const RECEPTES=[{"id": "arrossos-secs", "titol": "Arrossos secs", "fitxer": "arrossos-secs.html", "categoria": "Cuina", "mesura": "Comensals", "descripcio": "Arròs de carn, mixt, de peix i marisc, negre i de conill i caragols: arròs, brou, paella, ordre de cocció i salmorreta."}, {"id": "receptari-manitoba", "titol": "Receptari Manitoba", "fitxer": "manitoba.html", "categoria": "Forn i pastisseria", "mesura": "Peces × grams", "descripcio": "20 masses amb Caputo Manitoba (pizza, pa, rebosteria fermentada): % forner, prefermentats, temperatura de fermentació, nevera i calendari."}, {"id": "obrador-de-pa", "titol": "Obrador de pa", "fitxer": "obrador-de-pa.html", "categoria": "Forn i pastisseria", "mesura": "Grams de farina", "descripcio": "Barra, rodó i motlle abrioixat: % forner, prefermets i temps segons llevat, temperatura i nevera."}, {"id": "coca-brioix", "titol": "Coca de brioix", "fitxer": "coca-brioix.html", "categoria": "Forn i pastisseria", "mesura": "Grams de farina / safata", "descripcio": "Coca de brioix flonja amb tangzhong, cobertures, ajust a la safata i horari amb nevera."}, {"id": "coca-iogurt-magdalenes", "titol": "Coca de iogurt i magdalenes", "fitxer": "coca-iogurt-magdalenes.html", "categoria": "Forn i pastisseria", "mesura": "Iogurts / magdalenes", "descripcio": "Coca de iogurt en grams i gots ajustada al motlle, i magdalenes amb copet."}, {"id": "ensaimades", "titol": "Receptari d'ensaïmades", "fitxer": "ensaimades.html", "categoria": "Forn i pastisseria", "mesura": "Peces", "descripcio": "Ensaïmades amb variants, escalat de la massa, temps de fermentació i fitxa PDF."}, {"id": "vermut-blanc", "titol": "Laboratori de vermut", "fitxer": "vermut-blanc.html", "categoria": "Begudes i licors", "mesura": "Ampolles de vi", "descripcio": "Vermut blanc casolà: perfils, botànics, dolçor amb sucre, caramel o mel, macerats per separat i fitxa PDF."}, {"id": "embotits-curats", "titol": "Assecador d'embotits", "fitxer": "embotits-curats.html", "categoria": "Curats i conserves", "mesura": "Kg de carn", "descripcio": "Cansalada, capocollo i llom: adob per kg amb sal nitro, salaó, pes objectiu i assecat."}];
@@ -159,12 +159,14 @@ document.addEventListener("DOMContentLoaded",function(){
   let segur=false;
   function compra(){
     const C=cget(),G=agrega(C),tot=G.reduce((a,[,it])=>a+it.length,0),fets=G.reduce((a,[,it])=>a+it.filter(e=>C.marcats[e.k]).length,0);
-    $("#vista").innerHTML=`<div class="inici compra"><div class="hd"><span class="ull">Receptari de casa</span><h2>Llista de la compra</h2><p>${C.receptes.length?`Tot el que cal per a ${C.receptes.length} ${C.receptes.length===1?"recepta":"receptes"}, sumat i agrupat per botiga. Marca el que ja tens al carro.`:"Obre una recepta i toca «A la compra»: les quantitats de totes les receptes se sumen aquí, agrupades per botiga."}</p></div>`+
+    const box=$("#vCompra"),sc=box.scrollTop;
+    box.innerHTML=`<div class="hd"><span class="ull">Receptari de casa</span><h2>Llista de la compra</h2><p>${C.receptes.length?`Tot el que cal per a ${C.receptes.length} ${C.receptes.length===1?"recepta":"receptes"}, sumat i agrupat per botiga. Marca el que ja tens al carro.`:"Obre una recepta i toca «A la compra»: les quantitats de totes les receptes se sumen aquí, agrupades per botiga."}</p></div>`+
       (C.receptes.length?`<ul class="recs" aria-label="Receptes de la llista">${C.receptes.map((r,i)=>`<li><a href="#${esc(r.id)}">${esc(r.titol)}</a><small>${esc(r.mesura)}</small><button type="button" data-treu="${i}" aria-label="Treu ${esc(r.titol)} de la llista">${RC.ui("tanca")}</button></li>`).join("")}</ul>
       <div class="barra"><button type="button" class="primary" id="cCopia">Copia la llista</button>${navigator.share?'<button type="button" id="cShare">Comparteix-la</button>':""}<button type="button" id="cDesm"${fets?"":" disabled"}>Desmarca-ho tot</button><button type="button" id="cBuida">${segur?"Segur? Torna a tocar":"Buida la llista"}</button><span class="note" style="align-self:center">${fets}/${tot} al carro</span></div>
       <div class="grups">${G.map(([b,it])=>`<section aria-labelledby="b-${esc(clau(b).replace(/\W+/g,"-"))}"><h3 id="b-${esc(clau(b).replace(/\W+/g,"-"))}">${esc(b)}<span>${it.filter(e=>C.marcats[e.k]).length}/${it.length}</span></h3><ul class="rc-llista">${it.map(e=>`<li><label><input type="checkbox" data-k="${esc(e.k)}"${C.marcats[e.k]?" checked":""}><span class="rc-q">${esc(quant(e))}</span><span class="rc-n">${esc(e.nom)}${e.rec.size>1||C.receptes.length>1?`<small>${esc([...e.rec].join(", "))}</small>`:""}</span></label></li>`).join("")}</ul></section>`).join("")}</div>`
-      :`<p class="buit-c">La llista és buida.</p>`)+`</div>`;
-    const v=$("#vista");
+      :`<p class="buit-c">La llista és buida.</p>`);
+    box.scrollTop=sc;
+    const v=box;
     v.querySelectorAll("[data-treu]").forEach(b=>b.onclick=()=>{const C=cget();C.receptes.splice(+b.dataset.treu,1);cset(C);compte();compra();});
     v.querySelectorAll("[data-k]").forEach(c=>c.onchange=()=>{const C=cget();if(c.checked)C.marcats[c.dataset.k]=1;else delete C.marcats[c.dataset.k];cset(C);const y=window.scrollY;compra();const el=$(`[data-k="${CSS.escape(c.dataset.k)}"]`);if(el)el.focus();});
     const cp=$("#cCopia");if(cp)cp.onclick=()=>{const t=textCompra(cget());navigator.clipboard.writeText(t).then(()=>RC.avis("Llista copiada"),()=>RC.avis("No s'ha pogut copiar"));};
@@ -182,15 +184,21 @@ document.addEventListener("DOMContentLoaded",function(){
     compte();
   }
   function inici(){
-    $("#vista").innerHTML=`<div class="inici"><div class="hd"><span class="ull">Receptari de casa</span><h2>Què cuinem avui?</h2><p>Tria una recepta i la calculadora s'obre aquí mateix: escalat, perfils, avisos, mode cuina amb temporitzadors, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><span class="rc-ico-caixa">${RC.icona(r.id)}</span><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}<i>Obre-la →</i></small></a></li>`).join("")}</ul></div>`;
+    const box=$("#vInici");if(box.dataset.fet)return;box.dataset.fet="1";
+    box.innerHTML=`<div class="hd"><span class="ull">Receptari de casa</span><h2>Què cuinem avui?</h2><p>Tria una recepta i la calculadora s'obre aquí mateix: escalat, perfils, avisos, mode cuina amb temporitzadors, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><span class="rc-ico-caixa">${RC.icona(r.id)}</span><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}<i>Obre-la →</i></small></a></li>`).join("")}</ul>`;
+    try{const y=+sessionStorage.getItem("receptari-inici-y");if(y)requestAnimationFrame(()=>{box.scrollTop=y;window.scrollTo(0,y)});}catch(e){}
+    let t=null;const desa=()=>{clearTimeout(t);t=setTimeout(()=>{try{sessionStorage.setItem("receptari-inici-y",String(box.scrollTop||window.scrollY))}catch(e){}},150)};
+    box.addEventListener("scroll",desa,{passive:true});window.addEventListener("scroll",()=>{if(vista==="inici")desa()},{passive:true});
   }
   function mostra(){
     const h=decodeURIComponent(location.hash.slice(1));
     const r=h&&h!=="compra"?troba(h):null;
     actual=r||null;vista=h==="compra"?"compra":r?"recepta":"inici";
+    const f0=$("#vista iframe");
+    $("#vInici").hidden=vista!=="inici";$("#vCompra").hidden=vista!=="compra";if(f0)f0.hidden=vista!=="recepta";
     if(r){
-      let f=$("#vista iframe");
-      if(!f){$("#vista").innerHTML="";f=document.createElement("iframe");f.setAttribute("allow","screen-wake-lock; clipboard-write; web-share");$("#vista").appendChild(f)}
+      let f=f0;
+      if(!f){f=document.createElement("iframe");f.setAttribute("allow","screen-wake-lock; clipboard-write; web-share");$("#vista").appendChild(f)}
       let src=r.fitxer;
       if(estat){src+="?estat="+encodeURIComponent(estat);estat=null;try{history.replaceState(null,"",location.pathname+location.hash)}catch(e){}}
       if(f.getAttribute("src")!==src)f.setAttribute("src",src);
