@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Receptari d'ensaïmades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: obrador de forn mallorquí — columna de la fornada a l'esquerra, massa i diagnosi a la dreta; porcellana freda amb el daurat de la crosta */
+:root{
+  --bg:#edf0f3; --surface:#fafbfc; --ink:#1d2533; --muted:#5b6474; --line:#d3d9e1;
+  --accent:#a55d16; --accent-soft:#f4e4d0; --accent-ink:#ffffff;
+  --bad:#b3261e; --bad-soft:#f6dedb; --warn:#935800; --warn-soft:#f6e8cf; --info:#2c5f80; --info-soft:#dce8f0;
+  --bar:#c4964e; --sugar:#ffffff;
+  --f-display:"Young Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13161b; --surface:#1b1f26; --ink:#e6e9ee; --muted:#9aa3b2; --line:#2e343e;
+  --accent:#e5a35a; --accent-soft:#3a2a18; --accent-ink:#1a1206;
+  --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86bde0; --info-soft:#16303f;
+  --bar:#d8ad66; --sugar:#e6e9ee; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13161b; --surface:#1b1f26; --ink:#e6e9ee; --muted:#9aa3b2; --line:#2e343e;
+  --accent:#e5a35a; --accent-soft:#3a2a18; --accent-ink:#1a1206;
+  --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86bde0; --info-soft:#16303f;
+  --bar:#d8ad66; --sugar:#e6e9ee; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.15}
+h1,h2{font-family:var(--f-display);font-weight:400}
+h1{font-size:clamp(1.8rem,3.8vw,2.6rem);letter-spacing:-.01em}
+h2{font-size:1.2rem}
+h3{font-size:.76rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-family:var(--f-body);font-weight:700}
+.lede{color:var(--muted);max-width:65ch;margin:6px 0 0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px}
+.brand{display:flex;gap:14px;align-items:center;min-width:0}
+.brand svg{flex:none}
+.grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=number],select,input[type=text],input[type=datetime-local],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%;min-width:0}
+textarea{min-height:60px;resize:vertical}
+input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=range]:disabled{opacity:.4}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:38px;height:38px;font-size:1.2rem;flex:none}
+.stepper input{text-align:center;font-family:var(--f-mono);font-size:1.3rem;font-weight:600}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:6px 12px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted);padding:4px 8px}
+button.ghost:hover{color:var(--bad)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.fmts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fmt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;text-align:center}
+.fmt b{font-family:var(--f-display);font-weight:400;font-size:.98rem}
+.fmt span{font-size:.75rem;color:var(--muted)}
+.fmt[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.fmt svg{display:block}
+.profiles{display:grid;grid-template-columns:1fr;gap:6px}
+.prof{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:1px;padding:8px 10px}
+.prof b{font-family:var(--f-display);font-weight:400;font-size:1rem}
+.prof span{font-size:.8rem;color:var(--muted)}
+.prof[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.rawbox{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.rawbox b{font-family:var(--f-display);font-weight:400;font-size:1rem}
+.rawbox .why{color:var(--muted)}
+.custom-tag{font-size:.78rem;color:var(--accent);font-weight:700}
+dl.out{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:0}
+dl.out dt{color:var(--muted);font-size:.88rem}
+dl.out dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
+dl.out .hl{color:var(--accent)}
+dl.out .sep{grid-column:1/3;border-top:1px solid var(--line);margin:4px 0}
+.note{font-size:.8rem;color:var(--muted);margin:0}
+.mix{display:flex;flex-direction:column}
+.mrow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(120px,1.1fr) 96px 112px 34px;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.mrow.head{border-top:none;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding-bottom:4px}
+.famhead{padding:12px 0 4px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.famhead .fn{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:700}
+.lvl{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.lvl button{border:none;border-radius:0;padding:3px 10px;font-size:.78rem;background:var(--bg);color:var(--muted)}
+.lvl button+button{border-left:1px solid var(--line)}
+.lvl button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.nm b{font-weight:700}
+.nm .es{color:var(--muted);font-size:.85rem}
+.nm .sci{font-style:italic;color:var(--muted);font-size:.8rem}
+.nm .taste{font-size:.8rem;color:var(--muted);display:block}
+.sl .bp{display:block;font-family:var(--f-mono);font-size:.74rem;color:var(--muted);text-align:center}
+.val{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.9rem}
+.val.tot{font-weight:600;color:var(--ink)}
+.req{font-size:.7rem;border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:0 6px;margin-left:4px;vertical-align:1px}
+@media (max-width:640px){
+  .mrow{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+  .mrow.head{display:none}
+  .mrow .nm{grid-column:1/2}
+  .mrow .rm{grid-column:2/3;grid-row:1}
+  .mrow .sl{grid-column:1/3}
+  .mrow .pb{grid-column:1/2;text-align:left}
+  .mrow .pb::before{content:"per peça: ";color:var(--muted);font-family:var(--f-body)}
+  .mrow .tot{grid-column:2/3}
+}
+.cat{display:flex;flex-direction:column;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border-radius:20px;padding:4px 11px;font-size:.85rem;background:var(--bg)}
+.chip .plus{color:var(--accent);font-weight:700;margin-right:3px}
+.flav{display:grid;grid-template-columns:96px minmax(0,1fr) 36px;gap:6px 10px;align-items:center;font-size:.88rem}
+.track{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;background:var(--bar);border-radius:5px;transition:width .25s}
+.fill.hot{background:var(--accent)}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:760px){.split{grid-template-columns:minmax(0,1fr)}}
+.warns{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.w{border-radius:8px;padding:8px 10px;font-size:.88rem;display:flex;gap:8px;align-items:flex-start}
+.w .tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:4px;padding:1px 6px;flex:none;margin-top:2px}
+.w.bad{background:var(--bad-soft)} .w.bad .tag{background:var(--bad);color:var(--surface)}
+.w.warn{background:var(--warn-soft)} .w.warn .tag{background:var(--warn);color:var(--surface)}
+.w.info{background:var(--info-soft)} .w.info .tag{background:var(--info);color:var(--surface)}
+.ok{font-size:.9rem;color:var(--muted)}
+.shop{display:flex;flex-direction:column;gap:12px}
+.shop ul{margin:4px 0 0;padding-left:18px}
+.shop li{font-size:.9rem}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:none}
+.tl .d{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tl .d small{display:block;color:var(--muted);font-weight:400}
+.tl .t{font-size:.9rem}
+.tl .t b{display:block}
+.saved{display:flex;flex-direction:column;gap:6px}
+.srow{display:flex;justify-content:space-between;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:6px;font-size:.9rem}
+.srow .meta{color:var(--muted);font-size:.8rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toast{font-size:.85rem;color:var(--accent);font-weight:700}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{border:none;border-bottom:3px solid transparent;border-radius:0;background:transparent;padding:8px 16px;font-family:var(--f-display);font-size:1.05rem;color:var(--muted);white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;max-height:260px;overflow:auto;margin:0}
+/* pas a pas */
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;counter-reset:st}
+.steps>li{counter-increment:st;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px;padding:16px 0;border-top:1px solid var(--line)}
+.steps>li:first-child{border-top:none;padding-top:4px}
+.steps>li::before{content:counter(st);font-family:var(--f-display);font-size:1.6rem;color:var(--accent);line-height:1;grid-row:1/4;text-align:center;padding-top:2px}
+.steps h3.st{font-family:var(--f-display);font-weight:400;font-size:1.1rem;text-transform:none;letter-spacing:0;color:var(--ink);display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.steps .dur{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:0 8px}
+.steps .body{font-size:.93rem;max-width:72ch;display:flex;flex-direction:column;gap:6px}
+.steps .body p{margin:0}
+.steps .body ul{margin:0;padding-left:18px}
+.steps .q{font-family:var(--f-mono);font-weight:600;color:var(--accent);white-space:nowrap}
+.check{font-size:.85rem;background:var(--accent-soft);border-radius:6px;padding:6px 10px;max-width:72ch}
+.check b{color:var(--accent)}
+.diagram{overflow-x:auto}
+.diagram svg{display:block;min-width:520px;width:100%;height:auto}
+details.pr{border-top:1px solid var(--line);padding:8px 0}
+details.pr summary{cursor:pointer;font-weight:700;font-size:.92rem}
+details.pr p{margin:6px 0 0;font-size:.88rem;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg id="logo" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div style="min-width:0">
+        <h1>Receptari d'ensaïmades</h1>
+        <p class="lede">Tria format i quantes en vols fer, i un perfil. Ajusta la massa, el greix i el farcit: tot es recalcula, et diu si alguna cosa grinyola i et dona l'horari i el pas a pas.</p>
+      </div>
+    </div>
+    <div class="btnrow"><button type="button" class="primary" id="pdfBtn">Exportar fitxa PDF</button><span class="toast" id="pdfMsg" role="status"></span></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Seccions">
+    <button type="button" class="tab" role="tab" id="t-calc" aria-selected="true" aria-controls="tab-calc">Calculadora</button>
+    <button type="button" class="tab" role="tab" id="t-pas" aria-selected="false" aria-controls="tab-pas">Pas a pas</button>
+  </nav>
+
+  <div class="grid" id="tab-calc">
+    <div class="col">
+      <section class="panel" aria-labelledby="h-lot">
+        <h2 id="h-lot">La fornada</h2>
+        <div class="fmts" id="fmts" role="group" aria-label="Format"></div>
+        <label class="f"><span id="nLbl">Quantes ensaïmades</span>
+          <div class="stepper">
+            <button type="button" id="nMinus" aria-label="Una menys">−</button>
+            <input type="number" id="n" min="1" max="40" value="12" inputmode="numeric">
+            <button type="button" id="nPlus" aria-label="Una més">+</button>
+          </div>
+        </label>
+        <label class="f">Massa per peça (sense greix ni farcit): <span class="num" id="massLbl">70 g</span>
+          <input type="range" id="mass" min="50" max="100" step="5" value="70">
+        </label>
+        <div class="row2">
+          <label class="f">Fermentació final: <span class="num" id="hoursLbl">12 h</span>
+            <input type="range" id="hours" min="6" max="18" step="1" value="12">
+          </label>
+          <label class="f">Temperatura: <span class="num" id="tempLbl">22 °C</span>
+            <input type="range" id="temp" min="18" max="28" step="1" value="22">
+          </label>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-prof">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <h2 id="h-prof">Perfil</h2><span class="custom-tag" id="customTag" hidden>Personalitzat</span>
+        </div>
+        <div class="profiles" id="profiles"></div>
+        <div class="rawbox" id="rawRec"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-calc">
+        <h2 id="h-calc">La massa en xifres</h2>
+        <dl class="out" id="calc"></dl>
+        <p class="note" id="calcNote"></p>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel" aria-labelledby="h-mix">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+          <h2 id="h-mix">Ingredients</h2>
+          <span class="note num" id="loadNote"></span>
+        </div>
+        <p class="note">El control lliscant és la dosi per cada 100 g de farina (el percentatge de forner). Les columnes de la dreta ja són les quantitats reals.</p>
+        <div class="mix" id="mix"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-flav">
+          <h2 id="h-flav">Perfil de sabor</h2>
+          <div class="flav" id="flav"></div>
+          <p class="note">Estimació relativa a partir de la dosi de cada ingredient respecte a la seva dosi típica.</p>
+        </section>
+        <section class="panel" aria-labelledby="h-warn">
+          <h2 id="h-warn">Compatibilitats i avisos</h2>
+          <ul class="warns" id="warns"></ul>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-cat">
+        <h2 id="h-cat">Afegir ingredients</h2>
+        <div class="cat" id="catalog"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-shop">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h2 id="h-shop">Llista de la compra</h2>
+            <button type="button" id="copyShop">Copiar</button>
+          </div>
+          <div class="shop" id="shop"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-tl">
+          <h2 id="h-tl">Horari</h2>
+          <label class="f">Quan comences a pastar<input type="datetime-local" id="start"></label>
+          <ol class="tl" id="timeline"></ol>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-save">
+        <h2 id="h-save">Les meves receptes</h2>
+        <div class="row2">
+          <label class="f">Nom de la fornada<input type="text" id="saveName" placeholder="p. ex. Diumenge, amb més llimona"></label>
+          <label class="f">Notes de tast<textarea id="saveNotes" placeholder="Com han quedat? Què canviaries?"></textarea></label>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="primary" id="saveBtn">Guardar recepta</button>
+          <button type="button" id="copyRecipe">Copiar recepta en text</button>
+          <span class="toast" id="toast" role="status"></span>
+        </div>
+        <p class="note">Es guarden només en aquest navegador.</p>
+        <div class="saved" id="saved"></div>
+        <pre class="txt" id="recipeTxt" hidden></pre>
+      </section>
+    </div>
+  </div>
+
+  <div class="grid" id="tab-pas" hidden>
+    <div class="col">
+      <section class="panel" aria-labelledby="h-sum">
+        <h2 id="h-sum">Aquesta fornada</h2>
+        <dl class="out" id="pasSum"></dl>
+      </section>
+      <section class="panel" aria-labelledby="h-mm" id="mmPanel">
+        <h2 id="h-mm">Massa mare casolana</h2>
+        <div id="mmBody"></div>
+      </section>
+      <section class="panel" aria-labelledby="h-prob">
+        <h2 id="h-prob">Si alguna cosa surt malament</h2>
+        <div>
+          <details class="pr"><summary>No ha pujat prou</summary><p>Llevat vell o fred, massa sucre o un lloc massa fresc. Allarga 1–2 h la fermentació en un lloc a 24 °C (el forn apagat amb el llum encès) i la propera vegada puja una mica el llevat.</p></details>
+          <details class="pr"><summary>La làmina s'esquinça quan l'estiro</summary><p>Gluten tens o massa dura. Deixa reposar les boles 15 min més, unta la taula amb més saïm (mai farina) i estira des del centre amb el dors dels dits, no amb les puntes.</p></details>
+          <details class="pr"><summary>S'han escampat i han quedat planes</summary><p>Han fermentat massa o massa calentes: el saïm s'ha fos i les voltes s'han ajuntat. Baixa la temperatura a 20–22 °C o escurça 2 h la fermentació. Deixa un dit d'espai entre voltes, no més.</p></details>
+          <details class="pr"><summary>Queden seques o dures</summary><p>Massa temps de forn o poc greix. Treu-les quan siguin daurades clares, no torrades, i unta tota la làmina. Guarda-les en una capsa tancada, no a la nevera.</p></details>
+          <details class="pr"><summary>Es cremen per sota i queden crues per dins</summary><p>Forn massa fort o safata massa a prop de la resistència. Cou al nivell del mig, baixa 10 °C i, si cal, posa una segona safata a sota.</p></details>
+          <details class="pr"><summary>Tenen gust de llevat</summary><p>Massa llevat per a tantes hores. Amb 12 h de fermentació n'hi ha prou amb un 1–1,5% de llevat fresc sobre la farina.</p></details>
+        </div>
+      </section>
+    </div>
+    <div class="col">
+      <section class="panel" aria-labelledby="h-shape">
+        <h2 id="h-shape">Com es forma una ensaïmada</h2>
+        <div class="diagram" id="diagram"></div>
+        <p class="note" id="diagNote"></p>
+      </section>
+      <section class="panel" aria-labelledby="h-steps">
+        <h2 id="h-steps">Pas a pas</h2>
+        <ol class="steps" id="steps"></ol>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+const DIMS=[["dol","Dolç"],["unt","Untuós"],["bri","Brioix"],["fer","Fermentat"],["cit","Cítric"],["esp","Especiat"],["flo","Floral"],["far","Farcit"]];
+const FAM={mas:"Massa",lle:"Llevats",gre:"Greix per untar",aro:"Aromes",far:"Farcits",aca:"Acabat"};
+const FAMORD=["mas","lle","gre","aro","far","aca"];
+const LVLF=["gre","aro","far","aca"];
+const DOUGH=new Set(["mas","lle","aro"]);
+const UNITS={g:["g","g"],ml:["ml","ml"],ou:["ou","ous"],llimona:["llimona","llimones"],taronja:["taronja","taronges"],beina:["beina","beines"]};
+const WHERE={S:"Súper",F:"Fleca",M:"Xarcuteria o mercat",C:"De casa"};
+// id, fam, ca, es, sci, taste, unit, min, max, step, typ (per 100 g de farina), where, grams per unit, flavour, scaling, water fraction
+const I=[
+ ["farina","mas","Farina de força","","Triticum aestivum","Base de la massa: W 300–350, 12–13% de proteïna","g",100,100,1,100,"S",1,{},"lin",0],
+ ["aigua","mas","Aigua tèbia","","","Hidrata la massa; a uns 25 °C","ml",0,55,1,38,"C",1,{},"lin",1],
+ ["llet","mas","Llet sencera","","","Massa més tendra, amb més color i gust de brioix","ml",0,55,1,40,"S",1.03,{bri:1,dol:.5},"lin",.87],
+ ["sucre","mas","Sucre","","Saccharum officinarum","Dolçor, color de la crosta i tendresa","g",18,42,1,32,"S",1,{dol:4},"lin",0],
+ ["ous","mas","Ou","","","Estructura i gust de brioix (≈50 g sense closca)","ou",.2,.8,.05,.4,"S",50,{bri:3},"lin",.75],
+ ["sal","mas","Sal fina","","","Reforça el gluten i el sabor; l'IGP no en porta","g",0,2,.1,.5,"C",1,{},"sub",0],
+ ["saimmassa","mas","Saïm dins la massa","","Sus scrofa domesticus","Fa la massa més extensible i tendra","g",0,10,.5,4,"S",1,{unt:1},"lin",0],
+ ["oli","mas","Oli d'oliva suau","","Olea europaea","Alternativa al saïm de la massa; molla més humida","g",0,8,.5,4,"S",1,{unt:1},"lin",0],
+ ["llevat","lle","Llevat fresc de forner","","Saccharomyces cerevisiae","Fa pujar la massa; poca dosi per a fermentacions llargues","g",.5,5,.1,1.5,"F",1,{fer:1},"sub",0],
+ ["llevatsec","lle","Llevat sec de forner","","Saccharomyces cerevisiae","1 g de sec equival a 3 g de fresc","g",.2,1.6,.05,.5,"S",1,{fer:1},"sub",0],
+ ["massamare","lle","Massa mare (prefermentat)","","","Aroma, molla més fullada i aguanta més dies","g",5,40,1,12,"F",1,{fer:3},"lin",.4],
+ ["saim","gre","Saïm per untar","","Sus scrofa domesticus","El que fa l'ensaïmada: capes fines, lleugeres i cruixents","g",15,50,1,30,"S",1,{unt:4},"lin",0],
+ ["mantega","gre","Mantega en pomada","","","Gust de mantega i capes més toves; no és IGP","g",15,50,1,28,"S",1,{unt:3,bri:1},"lin",0],
+ ["llimona","aro","Pell de llimona ratllada","","Citrus × limon","Frescor cítrica suau","llimona",.05,.3,.05,.1,"C",3,{cit:3},"lin",0],
+ ["taronja","aro","Pell de taronja ratllada","","Citrus × sinensis","Cítric dolç i rodó","taronja",.05,.3,.05,.1,"C",5,{cit:3},"lin",0],
+ ["flor","aro","Aigua de flor de taronger","","Citrus × aurantium","Perfum floral de pastisseria; poca quantitat","ml",.5,3,.25,1.2,"S",1,{flo:4},"lin",1],
+ ["vainilla","aro","Vainilla (beina)","","Vanilla planifolia","Dolçor aromàtica que arrodoneix","beina",.05,.3,.05,.1,"S",3,{flo:1,dol:1},"lin",0],
+ ["canyella","aro","Canyella mòlta","","Cinnamomum verum","Càlid i dolç","g",.1,1,.1,.3,"S",1,{esp:3},"lin",0],
+ ["anis","aro","Anís verd (gra)","","Pimpinella anisum","Anisat dolç, molt de rebosteria mallorquina","g",.1,.6,.05,.2,"S",1,{esp:2,flo:1},"lin",0],
+ ["mel","aro","Mel","","","Dolçor floral; la molla es manté tendra més dies","g",2,8,.5,4,"S",1,{dol:2,flo:1},"lin",.17],
+ ["cabell","far","Cabell d'àngel","","Cucurbita ficifolia","Confitura de carabassa: la farcida de l'IGP","g",30,120,5,90,"S",1,{dol:4,far:4},"lin",0],
+ ["crema","far","Crema pastissera","","","Crema d'ou i llet; es cou dins l'ensaïmada","g",30,110,5,70,"C",1,{bri:2,dol:2,far:4},"lin",0],
+ ["nata","far","Nata muntada","","","Freda i lleugera; es posa després de coure","g",30,90,5,60,"S",1,{unt:2,dol:1,far:3},"lin",0],
+ ["xocolata","far","Crema de xocolata","","Theobroma cacao","Dolça i intensa; la de pastisseria es fon menys al forn","g",30,80,5,50,"S",1,{dol:3,far:4},"lin",0],
+ ["massapa","far","Massapà","","Prunus dulcis","Ametlla i sucre; s'estova amb una mica d'ou","g",30,80,5,50,"S",1,{dol:3,far:3},"lin",0],
+ ["sobrassada","far","Sobrassada de Mallorca","","","Salada i de pebre vermell: la de les tallades","g",20,60,5,30,"M",1,{esp:3,unt:2,far:3},"lin",0],
+ ["albercoc","far","Albercoc confitat","","Prunus armeniaca","Tallades àcides i dolces per sobre","g",20,60,5,30,"S",1,{dol:2,cit:1,far:3},"lin",0],
+ ["sucrellustre","aca","Sucre llustre","","","Per empolvorar quan ja són fredes","g",3,12,.5,6,"S",1,{dol:1},"lin",0],
+ ["sucrecremat","aca","Sucre per cremar","","","Capa cruixent de la crema cremada","g",4,12,.5,8,"S",1,{dol:1,esp:.5},"lin",0]
+].map(a=>({id:a[0],fam:a[1],ca:a[2],es:a[3],sci:a[4],taste:a[5],unit:a[6],min:a[7],max:a[8],step:a[9],typ:a[10],where:a[11],gpu:a[12],v:a[13],scaling:a[14],hyd:a[15]}));
+const BY=Object.fromEntries(I.map(x=>[x.id,x]));
+const REQ=new Set(["farina","sucre","ous"]);
+
+const BASE={farina:100,aigua:38,sucre:34,ous:.4,sal:.5,saimmassa:4,llevat:1.5,massamare:12,saim:30};
+const PROFILES={
+ trad:{name:"Llisa tradicional",desc:"La de l'IGP: saïm, massa mare i 12 h de fermentació",hours:12,temp:22,d:{...BASE,sucrellustre:6}},
+ casolana:{name:"Casolana amb llet",desc:"Llet, més ou i un punt de llimona; només llevat, més ràpida",hours:9,temp:23,d:{farina:100,llet:40,sucre:30,ous:.6,sal:.6,saimmassa:5,llevat:2.5,saim:30,llimona:.1,sucrellustre:6}},
+ cabell:{name:"De cabell d'àngel",desc:"Farcida de confitura de carabassa, la clàssica de festa",hours:12,temp:22,d:{...BASE,cabell:90,sucrellustre:6}},
+ crema:{name:"De crema cremada",desc:"Crema pastissera dins i sucre cremat per sobre",hours:12,temp:21,d:{...BASE,aigua:36,ous:.5,crema:70,sucrecremat:8}},
+ tallades:{name:"De tallades",desc:"Sobrassada i cabell d'àngel per sobre, de Carnaval",hours:12,temp:22,d:{...BASE,sobrassada:30,cabell:45,sucrellustre:4}}
+};
+const RAW={
+ trad:{t:"Farina de força W 300–350 i saïm de porc fresc",why:"La força aguanta l'estirat fins que la làmina és quasi transparent. El saïm ha de ser blanc, sense olor i a uns 20 °C, perquè s'unti com una crema."},
+ casolana:{t:"Farina de força (12–13% de proteïna) i llet sencera",why:"Amb llet la massa queda més tova i enganxa més: no la deixis escalfar i dona-li un bon repòs abans d'estirar."},
+ cabell:{t:"Cabell d'àngel de fibra llarga i poc xarop",why:"Si porta molt xarop, escorre'l en un colador: el líquid humiteja la làmina i l'esquinça quan l'enrotlles."},
+ crema:{t:"Crema pastissera espessa, feta el dia abans",why:"Ha d'estar freda i ben espessa (45–50 g de midó per litre de llet) perquè no s'escampi mentre fermenta."},
+ tallades:{t:"Sobrassada de Mallorca curada però tova",why:"Tallada a rodanxes fines i sense pell. La massa és la dolça de sempre: la gràcia és el contrast amb el salat."}
+};
+const FORMATS={
+ ind:{name:"Individual",sub:"1 persona",mass:[50,100,70],step:5,n:12,nmax:40,diam:"12–14 cm",temp:185,cook:[12,15],tray:6,turns:2.5,sheet:"40 × 25 cm",cyl:"45 cm de llarg i 1,5 cm de gruix",shape:4},
+ mitj:{name:"Mitjana",sub:"3–4 persones",mass:[180,350,250],step:10,n:3,nmax:10,diam:"20–22 cm",temp:180,cook:[18,22],tray:2,turns:4,sheet:"70 × 45 cm",cyl:"90 cm de llarg i 2,5 cm de gruix",shape:8},
+ fam:{name:"Familiar",sub:"8–10 persones",mass:[400,900,550],step:25,n:1,nmax:6,diam:"30–34 cm",temp:175,cook:[25,30],tray:1,turns:6,sheet:"100 × 60 cm",cyl:"1,5 m de llarg i 3 cm de gruix",shape:14}
+};
+
+const $=id=>document.getElementById(id);
+const st={fmt:"ind",n:12,mass:70,profile:"trad",custom:false,doses:{},lvl:{},hours:12,temp:22,start:null};
+const LVL={low:["Baixa",.7],mid:["Mitja",1],high:["Alta",1.3]};
+const nf=(n,d)=>(+n).toLocaleString("ca-ES",{maximumFractionDigits:d,minimumFractionDigits:0});
+const has=id=>id in st.doses;
+const d=id=>st.doses[id]||0;
+const F=()=>FORMATS[st.fmt];
+
+function setLevel(f,l){
+  const items=I.filter(x=>x.fam===f&&x.id in st.doses&&x.min<x.max);const n=items.length;if(!n)return;
+  const k=n>2?Math.sqrt(2/n):1;
+  for(const x of items){let v=x.typ*LVL[l][1]*k;v=Math.min(x.max,Math.max(x.min,Math.round(v/x.step)*x.step));st.doses[x.id]=+v.toFixed(3);}
+  st.lvl[f]=l;
+}
+function loadProfile(p){const P=PROFILES[p];st.profile=p;st.custom=false;st.doses={...P.d};st.lvl={};st.hours=P.hours;st.temp=P.temp;syncInputs();render();}
+
+// ---- càlculs ----
+function massPer100(){let m=0;for(const id in st.doses){const x=BY[id];if(DOUGH.has(x.fam))m+=st.doses[id]*x.gpu;}return m;}
+function flour(){return st.n*st.mass/(massPer100()/100);}
+function qty(id){const x=BY[id],fl=flour();let v=st.doses[id]*fl/100;if(x.scaling==="sub")v*=Math.pow(500/fl,.2);else if(x.scaling==="fix")v=st.doses[id];return v;}
+function hydration(){let w=0;for(const id in st.doses){const x=BY[id];if(DOUGH.has(x.fam))w+=st.doses[id]*x.gpu*x.hyd;}return w;}
+function famSum(f){let s=0;for(const id in st.doses){const x=BY[id];if(x.fam===f)s+=st.doses[id]*x.gpu;}return s;}
+function yeastEq(){return d("llevat")+3*d("llevatsec")+.03*d("massamare");}
+function yeastRec(){let r=18/st.hours*Math.pow(1.12,22-st.temp);if(d("sucre")>32)r*=1.15;return r;}
+function stats(){
+  const fl=flour(),mp=massPer100(),k=fl/100;
+  const dough=st.n*st.mass,greix=famSum("gre")*k,fill=famSum("far")*k;
+  const piece=(st.mass+greix/st.n*.55+fill/st.n)*.88;
+  const fm=F();const filled=fill>0;
+  const cook=filled&&st.fmt!=="ind"?[fm.cook[0]+5,fm.cook[1]+8]:fm.cook;
+  const temp=filled&&st.fmt!=="ind"?fm.temp-5:fm.temp;
+  return {fl,mp,dough,greix,fill,piece,hyd:hydration(),sug:d("sucre"),trays:Math.ceil(st.n/fm.tray),cook,temp,ye:yeastEq(),yr:yeastRec()};
+}
+function flavour(){
+  const s=Object.fromEntries(DIMS.map(x=>[x[0],0]));
+  for(const [id,val] of Object.entries(st.doses)){const x=BY[id];const r=val/x.typ;for(const k in x.v)s[k]+=x.v[k]*r;}
+  return s;
+}
+
+// ---- format de quantitats ----
+function frac(v){const w=Math.floor(v+1e-9),r=Math.round((v-w)*4)/4;const s={0:"",.25:"¼",.5:"½",.75:"¾"}[r]||"";return (w||!s?String(w):"")+s;}
+function unitLbl(u,n){const p=UNITS[u];return n<=1+1e-9?p[0]:p[1];}
+function gstr(v){const dd=v<1?2:v<10?1:0;return nf(v,dd)+" g";}
+function fmtQ(x,val,total){
+  if(x.unit==="g")return gstr(val);
+  if(x.unit==="ml"){const dd=val<1?2:val<10?1:0;return nf(val,dd)+" ml";}
+  if(x.unit==="ou"){if(!total)return gstr(val*x.gpu)+" d'ou";const v=Math.max(.5,Math.round(val*2)/2);return `${frac(v)} ${unitLbl("ou",v)} (${nf(Math.round(val*x.gpu),0)} g)`;}
+  if(!total)return gstr(val*x.gpu);
+  const v=Math.max(.25,Math.round(val*4)/4);return `${frac(v)} ${unitLbl(x.unit,v)}`;
+}
+const fq=id=>fmtQ(BY[id],qty(id),true);
+const fp=id=>fmtQ(BY[id],qty(id)/st.n,false);
+function bpct(x,v){return x.unit==="ou"?`${nf(v*x.gpu,1)} %`:["g","ml"].includes(x.unit)?`${nf(v,v<10?1:0)} %`:`${nf(v,2)} ${unitLbl(x.unit,v)}/100 g`;}
+
+// ---- avisos ----
+function warnings(S,FL){
+  const w=[];const fm=F();
+  const famCount={};for(const id in st.doses){const f=BY[id].fam;famCount[f]=(famCount[f]||0)+1;}
+  const gre=famSum("gre");
+  if(!has("saim")&&!has("mantega"))w.push(["bad","Sense saïm ni mantega per untar no hi ha capes: el resultat és un brioix en espiral, no una ensaïmada."]);
+  if(gre>0&&gre<20)w.push(["warn",`Només ${nf(gre,0)} g de greix per cada 100 g de farina: les capes quedaran seques i enganxades. Puja'l a 25–35 g.`]);
+  if(gre>42)w.push(["warn",`${nf(gre,0)} g de greix per cada 100 g de farina: s'escampa a la safata i queda greixosa.`]);
+  if(has("mantega")&&!has("saim"))w.push(["info","Amb mantega no és ensaïmada d'IGP. La mantega porta un 16% d'aigua: les capes queden més toves i menys separades. Unta-la ben en pomada, a uns 20 °C."]);
+  if(has("mantega")&&has("saim"))w.push(["info","Saïm i mantega a parts iguals és una barreja vàlida: el saïm separa les capes i la mantega hi posa gust."]);
+  if(S.hyd<52)w.push(["warn",`Hidratació del ${nf(S.hyd,0)}%: massa dura, s'esquinçarà quan l'estiris. Afegeix aigua o llet.`]);
+  if(S.hyd>66)w.push(["warn",`Hidratació del ${nf(S.hyd,0)}%: massa molt tova i enganxosa; costa d'estirar fina. Treu líquid.`]);
+  if(has("aigua")&&has("llet"))w.push(["info","Aigua i llet alhora: compta totes dues per a la hidratació. Si vols més tendresa, passa-ho tot a llet."]);
+  if(!has("aigua")&&!has("llet"))w.push(["bad","No hi ha cap líquid a part de l'ou: la massa no es podrà pastar. Afegeix aigua o llet."]);
+  if(S.sug>38)w.push(["warn",`${nf(S.sug,0)}% de sucre sobre la farina: frena el llevat. Allarga 1–2 h la fermentació o puja una mica el llevat.`]);
+  if(S.sug<24)w.push(["info",`Amb un ${nf(S.sug,0)}% de sucre queda poc dolça i amb poc color. L'IGP en demana un 16–20% del pes de la massa (≈32–40% de la farina).`]);
+  const r=S.ye/S.yr;
+  if(S.ye===0)w.push(["bad","No hi ha cap llevat: la massa no pujarà."]);
+  else if(r>1.7)w.push(["warn",`Massa llevat per a ${st.hours} h a ${st.temp} °C (${nf(S.ye,1)}% equivalent en fresc; en calen ≈${nf(S.yr,1)}%). Es passaran de fermentació i tindran gust de llevat.`]);
+  else if(r<.55)w.push(["warn",`Poc llevat per a ${st.hours} h a ${st.temp} °C (${nf(S.ye,1)}% equivalent en fresc; en calen ≈${nf(S.yr,1)}%). No pujaran prou: allarga la fermentació o puja el llevat.`]);
+  if(has("llevat")&&has("llevatsec"))w.push(["info","Llevat fresc i sec alhora: 1 g de sec equival a 3 g de fresc. Fes servir només un dels dos."]);
+  if(has("massamare")&&!has("llevat")&&!has("llevatsec"))w.push(["warn","Només amb massa mare: si és de fleca (porta llevat) pot anar bé, però amb massa mare natural calen 16–20 h a 24 °C. Afegeix una mica de llevat fresc."]);
+  if(st.temp>26)w.push(["warn",`A ${st.temp} °C el saïm s'estova, les voltes s'enganxen i l'ensaïmada s'escampa. Fermenta-les a 20–24 °C.`]);
+  if(st.temp<20)w.push(["info",`A ${st.temp} °C la fermentació va lenta: compta 2–3 h més del que diu el llevat.`]);
+  if(d("sal")>1.5)w.push(["warn","Més d'un 1,5% de sal frena el llevat i es nota salada."]);
+  if(has("saimmassa")&&has("oli"))w.push(["info","Saïm i oli dins la massa: amb un dels dos n'hi ha prou."]);
+  // farcits
+  const fills=I.filter(x=>x.fam==="far"&&has(x.id)).map(x=>x.id);
+  if(fills.length>2)w.push(["warn",`Tres farcits o més (${fills.map(i=>BY[i].ca.toLowerCase()).join(", ")}): es barregen els gustos i la làmina s'esquinça.`]);
+  if(has("sobrassada")&&(has("nata")||has("xocolata")||has("crema")))w.push(["bad","Sobrassada amb nata, crema o xocolata no lliga. La sobrassada va sola o amb cabell d'àngel o albercoc."]);
+  if(has("nata")&&has("crema"))w.push(["info","Crema i nata alhora: cou la crema dins i afegeix la nata en fred a sobre, amb mànega."]);
+  if(has("cabell")&&!has("sobrassada")&&d("cabell")/S.mp<.4)w.push(["info",`L'IGP demana com a mínim 40 g de cabell d'àngel per cada 100 g de massa. Ara n'hi ha ${nf(d("cabell")/S.mp*100,0)} g.`]);
+  if(has("crema")||has("nata"))w.push(["warn","Amb crema o nata: guarda-les a la nevera (≤ 4 °C) i menja-les en 24–48 h."]);
+  if(has("nata"))w.push(["info","La nata no es cou: obre l'ensaïmada freda per la meitat i farceix-la amb mànega, o posa-la per sobre just abans de servir."]);
+  if(has("sucrecremat")&&!has("crema"))w.push(["warn","El sucre cremat va sobre una capa de crema; sense crema es crema directament la massa i amarga."]);
+  if(has("sucrecremat")&&has("sucrellustre"))w.push(["info","Sucre llustre i sucre cremat alhora: amb un acabat n'hi ha prou."]);
+  if(has("sobrassada"))w.push(["info","Sobrassada: talla-la fina, sense pell, i posa-la per sobre just abans del forn. Si la poses dins, que sigui una capa molt prima."]);
+  if(has("xocolata"))w.push(["info","La crema de xocolata de supermercat es fon i surt pels costats: posa'n un cordó fi i congela-la uns minuts abans d'enrotllar."]);
+  if(fills.length&&st.fmt!=="ind")w.push(["info",`Les ${fm.name.toLowerCase()}s farcides necessiten més forn: ${S.temp} °C i ${S.cook[0]}–${S.cook[1]} min. Si es daura massa, tapa-la amb paper d'alumini.`]);
+  // aromes
+  if(d("flor")>2.5)w.push(["warn","Més de 2,5 ml d'aigua de flor de taronger per cada 100 g de farina fa gust de sabó."]);
+  if((famCount.aro||0)>3)w.push(["warn",`${famCount.aro} aromes alhora: es tapen entre ells. Tria'n dos.`]);
+  if(has("canyella")&&has("anis"))w.push(["info","Canyella i anís junts recorden els rotlets: bé, però lluny de l'ensaïmada clàssica."]);
+  if(has("canyella")&&d("canyella")>.6)w.push(["info","La canyella frena una mica el llevat; amb dosis altes, fermentació més llarga."]);
+  // format i forn
+  if(st.fmt==="ind"&&st.hours>14)w.push(["info","Les individuals fermenten més de pressa que les grans: comprova-les a les 10–12 h."]);
+  if(st.fmt==="fam"&&st.hours<10)w.push(["info","Una familiar amb menys de 10 h de fermentació queda més densa: el saïm no ha tingut temps de separar bé les capes."]);
+  if(S.trays>1)w.push(["info",`Necessites ${S.trays} safates. Cou-les d'una en una al nivell del mig, i mentrestant guarda les altres en un lloc més fresc perquè no es passin.`]);
+  const alg=["gluten","ou"];if(["llet","mantega","crema","nata","xocolata"].some(has))alg.push("llet");if(has("massapa"))alg.push("fruits secs (ametlla)");if(has("xocolata"))alg.push("possibles traces de fruits secs");
+  w.push(["info",`Al·lèrgens: ${alg.join(", ")}.`]);
+  return w;
+}
+
+// ---- interfície ----
+function spiral(cx,cy,turns,r0,r1){const pts=[];const N=Math.round(turns*48);for(let i=0;i<=N;i++){const t=i/N,a=t*turns*2*Math.PI,r=r0+(r1-r0)*t;pts.push(`${(cx+r*Math.cos(a)).toFixed(1)},${(cy+r*Math.sin(a)).toFixed(1)}`);}return "M"+pts.join("L");}
+function spiralSVG(cx,cy,turns,r1,w){const p=spiral(cx,cy,turns,w*.4,r1);return `<path d="${p}" fill="none" stroke="var(--bar)" stroke-width="${w}" stroke-linecap="round"/><path d="${p}" fill="none" stroke="var(--accent)" stroke-width="${Math.max(1,w*.18)}" stroke-linecap="round" opacity=".55"/>`;}
+function renderLogo(){$("logo").innerHTML=spiralSVG(32,32,F().turns,27,F().turns>4?4.5:7);}
+function renderFormats(){
+  $("fmts").innerHTML=Object.entries(FORMATS).map(([k,f])=>`<button type="button" class="fmt" data-fmt="${k}" aria-pressed="${st.fmt===k}"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">${spiralSVG(20,20,f.turns,16,f.turns>4?3:5)}</svg><b>${f.name}</b><span>${f.sub}</span></button>`).join("");
+}
+function syncInputs(){
+  const fm=F();
+  $("n").value=st.n;$("n").max=fm.nmax;$("mass").min=fm.mass[0];$("mass").max=fm.mass[1];$("mass").step=fm.step;$("mass").value=st.mass;
+  $("massLbl").textContent=st.mass+" g";$("hours").value=st.hours;$("hoursLbl").textContent=st.hours+" h";$("temp").value=st.temp;$("tempLbl").textContent=st.temp+" °C";
+  $("nLbl").textContent=`Quantes ensaïmades ${fm.name.toLowerCase()}s`;
+  if(st.start)$("start").value=st.start;
+}
+function renderProfiles(){
+  $("profiles").innerHTML=Object.entries(PROFILES).map(([k,p])=>`<button type="button" class="prof" data-prof="${k}" aria-pressed="${st.profile===k}"><b>${p.name}</b><span>${p.desc}</span></button>`).join("");
+  $("customTag").hidden=!st.custom;
+  const r=RAW[st.profile];$("rawRec").innerHTML=`<h3>Matèria primera</h3><b>${r.t}</b><span class="why">${r.why}</span>`;
+}
+function rowHTML(x){const v=st.doses[x.id];const req=REQ.has(x.id);const fixed=x.min===x.max;
+  return `<div class="mrow"><div class="nm"><b>${x.ca}</b>${req?'<span class="req">obligatori</span>':''}${x.sci?` <span class="sci">${x.sci}</span>`:""}<span class="taste">${x.taste}</span></div>
+  <div class="sl"><input type="range" data-dose="${x.id}" min="${x.min}" max="${x.max}" step="${x.step}" value="${v}" ${fixed?"disabled":""} aria-label="Dosi de ${x.ca} per 100 g de farina"><span class="bp">${fixed?"referència 100 %":bpct(x,v)}</span></div>
+  <div class="val pb">${fp(x.id)}</div>
+  <div class="val tot">${fq(x.id)}</div>
+  <div class="rm"><button type="button" class="ghost" data-rm="${x.id}" ${req?"disabled":""} aria-label="Treure ${x.ca}" title="${req?"Ingredient obligatori":"Treure"}">✕</button></div></div>`;}
+function renderMix(){
+  let h=`<div class="mrow head"><span>Ingredient</span><span style="text-align:center">% forner</span><span style="text-align:right">Per peça</span><span style="text-align:right">Total</span><span></span></div>`;
+  for(const f of FAMORD){
+    const items=I.filter(x=>x.fam===f&&x.id in st.doses);if(!items.length)continue;
+    h+=`<div class="famhead"><span class="fn">${FAM[f]}</span>${LVLF.includes(f)?`<span class="lvl" role="group" aria-label="Intensitat de ${FAM[f].toLowerCase()}">${Object.entries(LVL).map(([k,[n]])=>`<button type="button" data-lvl="${f}:${k}" aria-pressed="${st.lvl[f]===k}">${n}</button>`).join("")}</span>`:""}</div>`;
+    for(const x of items)h+=rowHTML(x);
+  }
+  $("mix").innerHTML=h;
+}
+function updateRowValues(){
+  document.querySelectorAll(".mix .mrow:not(.head)").forEach(r=>{const inp=r.querySelector("[data-dose]");const x=BY[inp.dataset.dose];
+    r.querySelector(".pb").innerHTML=fp(x.id);r.querySelector(".tot").innerHTML=fq(x.id);if(x.min<x.max)r.querySelector(".bp").textContent=bpct(x,st.doses[x.id]);});
+}
+function renderCatalog(){
+  let h="";for(const f of FAMORD){const items=I.filter(x=>x.fam===f&&!(x.id in st.doses));if(!items.length)continue;
+    h+=`<div><h3>${FAM[f]}</h3><div class="chips" style="margin-top:6px">${items.map(x=>`<button type="button" class="chip" data-add="${x.id}" title="${x.taste}${x.sci?" · "+x.sci:""}"><span class="plus">+</span>${x.ca}</button>`).join("")}</div></div>`;}
+  $("catalog").innerHTML=h||'<p class="ok">Ja hi són tots.</p>';
+}
+function renderCalc(S){
+  const fm=F();
+  $("calc").innerHTML=`
+  <dt>Farina de força</dt><dd class="hl">${nf(Math.round(S.fl),0)} g</dd>
+  <dt>Massa total</dt><dd>${nf(Math.round(S.dough),0)} g</dd>
+  <dt>Massa per peça</dt><dd>${st.mass} g</dd>
+  <dt>Greix per untar</dt><dd class="hl">${nf(Math.round(S.greix),0)} g <span style="color:var(--muted);font-weight:400">(${gstr(S.greix/st.n)}/peça)</span></dd>
+  ${S.fill?`<dt>Farcit</dt><dd class="hl">${nf(Math.round(S.fill),0)} g <span style="color:var(--muted);font-weight:400">(${gstr(S.fill/st.n)}/peça)</span></dd>`:""}
+  <span class="sep"></span>
+  <dt>Hidratació</dt><dd>${nf(S.hyd,0)} %</dd>
+  <dt>Sucre sobre farina</dt><dd>${nf(S.sug,0)} %</dd>
+  <dt>Llevat (equivalent en fresc)</dt><dd>${nf(S.ye,1)} % <span style="color:var(--muted);font-weight:400">· cal ≈${nf(S.yr,1)}</span></dd>
+  <span class="sep"></span>
+  <dt>Pes cuit aprox. per peça</dt><dd>${nf(Math.round(S.piece/5)*5,0)} g</dd>
+  <dt>Diàmetre un cop cuita</dt><dd>${fm.diam}</dd>
+  <dt>Forn (dalt i baix)</dt><dd>${S.temp} °C · ${S.cook[0]}–${S.cook[1]} min</dd>
+  <dt>Safates de forn</dt><dd>${S.trays} <span style="color:var(--muted);font-weight:400">(${fm.tray} per safata)</span></dd>`;
+  $("calcNote").textContent=`Percentatges sobre el pes de la farina. La massa és tot el que es pasta (sense el greix d'untar ni el farcit): ${nf(S.mp,0)} g per cada 100 g de farina.`;
+}
+function renderFlavour(FL){
+  const max=14;
+  $("flav").innerHTML=DIMS.map(([k,n])=>`<span>${n}</span><div class="track"><div class="fill${k==="dol"||k==="far"?" hot":""}" style="width:${Math.min(100,FL[k]/max*100)}%"></div></div><span class="num" style="text-align:right">${nf(FL[k],0)}</span>`).join("");
+}
+function renderWarnings(w){
+  const lbl={bad:"Conflicte",warn:"Avís",info:"Consell"};const ord={bad:0,warn:1,info:2};w.sort((a,b)=>ord[a[0]]-ord[b[0]]);
+  $("warns").innerHTML=w.length?w.map(([s,t])=>`<li class="w ${s}"><span class="tag">${lbl[s]}</span><span>${t}</span></li>`).join(""):'<li class="ok">Cap conflicte.</li>';
+}
+function shopQty(id){const x=BY[id],v=qty(id);if(x.unit==="ou"){return `${Math.ceil(v)} ${unitLbl("ou",Math.ceil(v))}`;}return fmtQ(x,v,true);}
+function shopGroups(){const g={S:[],F:[],M:[],C:[]};for(const id in st.doses){const x=BY[id];g[x.where].push(x);}return g;}
+function shopText(){const g=shopGroups();let t=`Ensaïmades: ${st.n} ${F().name.toLowerCase()}${st.n>1?"s":""} de ${st.mass} g\n`;
+  for(const k of ["S","F","M","C"])if(g[k].length)t+=`\n${WHERE[k]}\n`+g[k].map(x=>`- ${x.ca}: ${shopQty(x.id)}`).join("\n")+"\n";return t;}
+function renderShop(){const g=shopGroups();let h="";
+  for(const k of ["S","F","M","C"])if(g[k].length)h+=`<div><h3>${WHERE[k]}</h3><ul>${g[k].map(x=>`<li>${x.ca}: <span class="num">${shopQty(x.id)}</span></li>`).join("")}</ul></div>`;
+  $("shop").innerHTML=h;}
+
+// ---- horari ----
+function startDate(){if(st.start){const t=new Date(st.start);if(!isNaN(t))return t;}const t=new Date();t.setHours(20,0,0,0);return t;}
+const addMin=(dt,m)=>new Date(dt.getTime()+m*60000);
+const fdt=dt=>dt.toLocaleString("ca-ES",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const dmyhm=dt=>dt.toLocaleString("ca-ES",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+function events(S){
+  const fm=F(),ev=[];const shapeMin=Math.round(st.n*fm.shape/5)*5;const fills=I.filter(x=>x.fam==="far"&&has(x.id));
+  if(has("massamare"))ev.push([-240,"Massa mare","Si la fas a casa, barreja-la ara i deixa-la doblar 3–4 h. Si és de fleca, treu-la de la nevera."]);
+  ev.push([0,"Pastar","20–25 min fins que la massa és llisa i elàstica."]);
+  ev.push([25,"Repòs en bloc","1 h, tapada. Ha de créixer la meitat."]);
+  ev.push([85,"Dividir i bolejar",`${st.n} ${st.n>1?"boles":"bola"} de ${st.mass} g; 30 min de repòs tapades.`]);
+  ev.push([115,"Untar, estirar i fer caragols",`Uns ${shapeMin} min${fills.length?", amb el farcit":""}.`]);
+  const fs=115+shapeMin;
+  ev.push([fs,"Fermentació final",`${st.hours} h a ${st.temp} °C, tapades. Han de triplicar el volum.`]);
+  const bake=fs+st.hours*60;
+  ev.push([bake-25,"Encén el forn",`${S.temp} °C, dalt i baix.`]);
+  ev.push([bake,"Al forn",`${S.cook[0]}–${S.cook[1]} min${S.trays>1?` per safata; ${S.trays} tandes`:""}.`]);
+  const fin=bake+S.trays*S.cook[1]+20;
+  const fin2=has("sucrecremat")?"Crema per sobre i sucre cremat amb pala o bufador.":has("nata")?"Farceix de nata quan siguin fredes.":has("sucrellustre")?"Sucre llustre quan siguin fredes.":"Deixa-les refredar en una reixeta.";
+  ev.push([fin,"Acabat",fin2]);
+  return ev;
+}
+function renderTimeline(S){
+  const s=startDate(),ev=events(S);
+  const keep=has("crema")||has("nata")?"A la nevera; menja-les en 24–48 h.":"En una capsa tancada, fora de la nevera: 3–4 dies.";
+  $("timeline").innerHTML=ev.map(([m,t,b])=>`<li><span class="d">${fdt(addMin(s,m))}<small>${m<0?"abans":m===0?"inici":"+"+Math.floor(m/60)+" h "+String(m%60).padStart(2,"0")}</small></span><span class="t"><b>${t}</b>${b}</span></li>`).join("")+
+   `<li><span class="d" style="color:var(--muted)">després</span><span class="t"><b>Conservació</b>${keep}</span></li>`;
+}
+
+// ---- pas a pas ----
+function mmFormula(){const g=qty("massamare");return {g,fa:g*.6,ai:g*.39,ll:Math.max(.5,g*.01)};}
+const Q=s=>`<span class="q">${s}</span>`;
+function stepsData(S){
+  const fm=F(),out=[];const liq=has("llet")?"llet":"aigua";const liqQ=has("llet")&&has("aigua")?`${fq("llet")} de llet i ${fq("aigua")} d'aigua`:has("llet")?`${fq("llet")} de llet`:has("aigua")?`${fq("aigua")} d'aigua`:"el líquid";
+  const greix=has("saim")&&has("mantega")?"saïm i mantega":has("mantega")?"mantega":"saïm";
+  const aro=I.filter(x=>x.fam==="aro"&&has(x.id));
+  const fills=I.filter(x=>x.fam==="far"&&has(x.id));
+  const TOP=has("sobrassada")?["sobrassada","albercoc","cabell"]:["sobrassada","albercoc"];
+  const inFill=fills.filter(x=>x.id!=="nata"&&!TOP.includes(x.id));
+  const topFill=fills.filter(x=>TOP.includes(x.id));
+  const yeast=has("llevat")?`${fq("llevat")} de llevat fresc`:has("llevatsec")?`${fq("llevatsec")} de llevat sec`:"";
+  out.push({t:"Prepara-ho tot",dur:"10 min, la vigília",b:`<p>Treu el ${greix} de la nevera 1–2 hores abans: l'has d'untar com una crema, a uns 20 °C. Posa els ous a temperatura ambient.</p><p>Pesa-ho tot amb balança: ${Q(fq("farina"))} de farina de força${has("massamare")?`, ${Q(fq("massamare"))} de massa mare`:""}, ${Q(fq("sucre"))} de sucre i ${Q(fq("ous"))}.</p>`,c:`Necessites una taula llisa d'uns ${fm.sheet} lliure, un corró i ${S.trays} ${S.trays>1?"safates":"safata"} amb paper de forn.`});
+  out.push({t:"Fes la massa",dur:"5 min",b:`<p>Escalfa ${Q(liqQ)} fins a uns 25–28 °C (tebi al dit, mai calent: per sobre de 40 °C el llevat mor). ${yeast?`Desfés-hi ${Q(yeast)}.`:""}</p><p>En un bol gran barreja el sucre, els ous batuts${aro.length?` i ${aro.map(x=>`${x.ca.toLowerCase()} (${Q(fq(x.id))})`).join(", ")}`:""}. Afegeix el líquid amb el llevat.</p><p>Tira-hi la farina a poc a poc${has("massamare")?" i la massa mare a trossets":""}, remenant amb una espàtula. ${has("sal")?`La ${Q(fq("sal"))} de sal, al final i que no toqui directament el llevat.`:""}</p>`,c:`Ha de quedar una massa enganxosa i sense grumolls de farina seca. No hi afegeixis més farina encara que enganxi.`});
+  const fat=has("saimmassa")?`${Q(fq("saimmassa"))} de saïm`:has("oli")?`${Q(fq("oli"))} d'oli`:"";
+  out.push({t:"Pasta",dur:"15–20 min",b:`<p>A mà sobre la taula (sense farina) o amb pastadora a velocitat baixa uns 8 min. Estira la massa amb el palmell, plega-la i gira-la; fes 1 minut, deixa-la reposar 5 min tapada, i repeteix 3–4 vegades.</p>${fat?`<p>Quan ja sigui llisa, afegeix-hi ${fat} i pasta fins que l'absorbeixi del tot.</p>`:""}`,c:`<b>Prova de la finestra:</b> estira un tros amb els dits; s'ha de fer una membrana fina que deixi passar la llum sense trencar-se. Si es trenca, pasta 3 min més.`});
+  out.push({t:"Repòs en bloc",dur:"1 h",b:`<p>Fes una bola, posa-la en un bol untat amb una mica de ${greix} i tapa-la amb film. A uns 22–24 °C.</p>`,c:`Ha de créixer la meitat, no doblar. Si la teva cuina és freda, posa-la al forn apagat amb el llum encès.`});
+  out.push({t:"Divideix i boleja",dur:"10 min + 30 min de repòs",b:`<p>Divideix la massa en ${Q(st.n+" "+(st.n>1?"trossos":"tros"))} de ${Q(st.mass+" g")} amb la balança. Fes boles tensant la superfície cap a sota, unta-les lleugerament i tapa-les.</p><p>Deixa-les reposar 30 min: el gluten es relaxa i després s'estiren sense esquinçar-se.</p>`,c:`Les boles han de quedar llises i tenses. Si s'esquincen en tensar-les, encara necessiten repòs.`});
+  out.push({t:`Unta i estira la làmina`,dur:`${Math.round(fm.shape*.6)} min per peça`,b:`<p>Unta la taula i el corró amb ${greix}, mai farina: la farina asseca les capes. Aixafa una bola, unta-la i estira-la amb el corró en un rectangle.</p><p>Després, aixeca-la i estira-la amb el dors dels dits des del centre cap a fora, fins a ${Q(fm.sheet)}, tan fina que s'hi vegi la taula a través. Si fa un forat petit, no passa res.</p><p>Unta tota la làmina amb ${Q(gstr(S.greix/st.n))} de ${greix} per peça, també les vores.</p>`,c:`<b>Ha de ser quasi transparent.</b> Com més fina, més capes i més lleugera queda. Si es retira cap enrere, deixa-la reposar 5 min i torna-hi.`});
+  if(inFill.length)out.push({t:"Farceix",dur:"2 min per peça",b:`<p>Al llarg d'un dels costats llargs, a 2 dits de la vora, posa-hi un cordó de ${inFill.map(x=>`${x.ca.toLowerCase()} (${Q(fp(x.id))} per peça)`).join(" i ")}.</p>${has("cabell")?"<p>El cabell d'àngel, escorregut i ben repartit; no en posis a les puntes.</p>":""}${has("crema")?"<p>La crema, freda i en un cordó prim amb mànega, perquè no s'escampi.</p>":""}`,c:`El cordó ha de ser regular d'una punta a l'altra: si n'hi ha més en un lloc, aquell tram s'obrirà al forn.`});
+  out.push({t:"Enrotlla",dur:"1 min per peça",b:`<p>Comença pel costat llarg${inFill.length?" del farcit":""} i enrotlla cap a tu, sense estrènyer, fent un cilindre de ${Q(fm.cyl)}. ${st.fmt!=="ind"?"Quan el tinguis, estira'l una mica pels extrems perquè s'allargui i s'aprimi.":""}</p><p>Deixa'l reposar 10–15 min, untat i tapat, abans de fer el caragol.</p>`,c:`El cilindre ha de tenir el mateix gruix a tot arreu. Si es trenca, ajunta'l pressionant: quedarà amagat dins el caragol.`});
+  out.push({t:"Fes el caragol",dur:"1 min per peça",b:`<p>Sobre la safata amb paper, enrotlla el cilindre en espiral des del centre, amb la costura cap a dins, fent unes ${Q(nf(fm.turns,1)+" voltes")}. Deixa un dit d'espai entre volta i volta: és on creixerà.</p><p>Remata la punta per sota. ${st.fmt==="ind"?`Posa'n ${fm.tray} per safata, ben separades.`:st.fmt==="mitj"?"Dues per safata com a màxim.":"Una sola per safata."} Unta-les per sobre amb ${greix}.</p>`,c:`Si estrenys les voltes, creixerà cap amunt i es rebentarà. Fluixes, però tocant-se al final de la fermentació.`});
+  out.push({t:"Fermentació final",dur:`${st.hours} h a ${st.temp} °C`,b:`<p>Tapa-les amb film untat de ${greix}, sense que les toqui, en un lloc sense corrents a ${Q(st.temp+" °C")}: és la fermentació llarga que fa l'ensaïmada.</p>${st.temp>24?"<p>Si fa calor, posa-les en un lloc més fresc: el saïm no s'ha de fondre.</p>":""}`,c:`<b>Està a punt</b> quan ha triplicat el volum, les voltes es toquen i tremola tota si mous la safata. Si la toques amb un dit, el clot torna a pujar a poc a poc.`});
+  out.push({t:"Al forn",dur:`${S.cook[0]}–${S.cook[1]} min`,b:`<p>Encén el forn a ${Q(S.temp+" °C")}, dalt i baix, 20–25 min abans. Safata al nivell del mig.</p><p>Just abans d'entrar, ruixa-les amb un polvoritzador d'aigua, molt fi: la crosta queda més tendra. ${topFill.length?`Posa-hi ara ${topFill.map(x=>`${x.ca.toLowerCase()} (${Q(fp(x.id))} per peça)`).join(" i ")}, repartit per sobre: la sobrassada a rodanxes fines i la resta a cullerades petites entremig.`:""}</p><p>Cou ${Q(S.cook[0]+"–"+S.cook[1]+" min")}${S.trays>1?`, d'una safata en una (${S.trays} tandes)`:""}.</p>`,c:`Ha de quedar daurada clara i uniforme, amb la base rossa. Si es daura massa abans d'hora, tapa-la amb paper d'alumini.`});
+  const fin=[];if(has("sucrellustre"))fin.push(`Quan siguin fredes del tot, empolvora-les amb ${Q(fq("sucrellustre"))} de sucre llustre amb un colador: en calent es fon.`);
+  if(has("sucrecremat"))fin.push(`Per a la crema cremada: estén una capa fina de crema per sobre, escampa-hi ${Q(fp("sucrecremat"))} de sucre per peça i crema'l amb la pala calenta o el bufador just abans de servir.`);
+  if(has("nata"))fin.push(`Obre-les per la meitat quan siguin fredes i farceix-les amb ${Q(fp("nata"))} de nata muntada per peça, amb mànega.`);
+  out.push({t:"Refreda i acaba",dur:"20 min",b:`<p>Deixa-les 10 min a la safata (encara són fràgils) i passa-les a una reixeta.</p>${fin.map(s=>`<p>${s}</p>`).join("")}`,c:has("crema")||has("nata")?`<b>Conservació:</b> a la nevera i menjar-les en 24–48 h.`:`<b>Conservació:</b> en una capsa tancada, fora de la nevera, 3–4 dies. Per refrescar-les, 3 min al forn a 160 °C (abans del sucre).`});
+  return out;
+}
+function renderPas(S){
+  const fm=F();
+  $("steps").innerHTML=stepsData(S).map(s=>`<li><h3 class="st">${s.t}<span class="dur">${s.dur}</span></h3><div class="body">${s.b}</div><div class="check">${s.c}</div></li>`).join("");
+  $("pasSum").innerHTML=`<dt>Perfil</dt><dd>${PROFILES[st.profile].name}${st.custom?" *":""}</dd><dt>Format</dt><dd>${st.n} × ${fm.name.toLowerCase()} de ${st.mass} g</dd><dt>Farina</dt><dd class="hl">${nf(Math.round(S.fl),0)} g</dd><dt>Greix per untar</dt><dd class="hl">${nf(Math.round(S.greix),0)} g</dd>${S.fill?`<dt>Farcit</dt><dd class="hl">${nf(Math.round(S.fill),0)} g</dd>`:""}<dt>Làmina estirada</dt><dd>${fm.sheet}</dd><dt>Voltes del caragol</dt><dd>${nf(fm.turns,1)}</dd><dt>Fermentació</dt><dd>${st.hours} h · ${st.temp} °C</dd><dt>Forn</dt><dd>${S.temp} °C · ${S.cook[0]}–${S.cook[1]} min</dd>`;
+  if(has("massamare")){const m=mmFormula();$("mmPanel").hidden=false;
+    $("mmBody").innerHTML=`<p class="note" style="font-size:.88rem;color:var(--ink)">Si no la compres a la fleca, fes-la 3–4 h abans de pastar. Per a ${Q(fq("massamare"))}:</p><dl class="out"><dt>Farina de força</dt><dd>${gstr(m.fa)}</dd><dt>Aigua tèbia</dt><dd>${gstr(m.ai)}</dd><dt>Llevat fresc</dt><dd>${gstr(m.ll)}</dd></dl><p class="note">Pasta-ho 2 min, tapa-ho i deixa-ho a temperatura ambient fins que dobli. També es pot fer el vespre abans i guardar-la a la nevera.</p>`;}
+  else $("mmPanel").hidden=true;
+  renderDiagram();
+}
+function renderDiagram(){
+  const fm=F();const sp=spiral(500,85,fm.turns,6,58);
+  $("diagram").innerHTML=`<svg viewBox="0 0 600 190" role="img" aria-label="Làmina estirada, cilindre i caragol">
+  <rect x="14" y="20" width="160" height="110" rx="6" fill="var(--accent-soft)" stroke="var(--bar)" stroke-dasharray="4 3"/>
+  <rect x="14" y="118" width="160" height="14" rx="7" fill="var(--bar)"/>
+  <path d="M94 112 v-28 m-8 8 l8 -10 l8 10" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="94" y="58" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="var(--f-body)">untada</text>
+  <rect x="210" y="74" width="190" height="18" rx="9" fill="var(--bar)"/><path d="M219 83 H391" stroke="var(--accent)" stroke-width="1.4" opacity=".55"/>
+  <path d="M183 83 h18 m-6 -6 l6 6 l-6 6 M409 83 h18 m-6 -6 l6 6 l-6 6" stroke="var(--muted)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="${sp}" fill="none" stroke="var(--bar)" stroke-width="${fm.turns>4?7:11}" stroke-linecap="round"/><path d="${sp}" fill="none" stroke="var(--accent)" stroke-width="1.4" opacity=".55"/>
+  <g font-family="var(--f-body)" font-size="13" fill="var(--ink)" text-anchor="middle"><text x="94" y="162">1. Làmina</text><text x="305" y="162">2. Cilindre</text><text x="500" y="168">3. Caragol</text></g>
+  <g font-family="var(--f-mono)" font-size="11" fill="var(--muted)" text-anchor="middle"><text x="94" y="179">${fm.sheet}</text><text x="305" y="179">${fm.cyl.split(" i ")[0]}</text><text x="500" y="184">${nf(fm.turns,1)} voltes</text></g>
+  </svg>`;
+  $("diagNote").textContent=`Enrotlla la làmina untada per la vora llarga cap a tu, i després fes el caragol des del centre deixant un dit entre voltes. Mides per a una ${fm.name.toLowerCase()} de ${st.mass} g.`;
+}
+
+// ---- text ----
+function recipeText(S){
+  const P=PROFILES[st.profile],fm=F();
+  let t=`ENSAÏMADES — ${P.name}${st.custom?" (personalitzat)":""}\n${st.n} × ${fm.name.toLowerCase()} de ${st.mass} g de massa · ${nf(Math.round(S.fl),0)} g de farina · hidratació ${nf(S.hyd,0)}%\n`;
+  t+=`Fermentació ${st.hours} h a ${st.temp} °C · forn ${S.temp} °C, ${S.cook[0]}-${S.cook[1]} min\n\nIngredients (total · per peça):\n`;
+  for(const f of FAMORD)for(const x of I.filter(x=>x.fam===f&&has(x.id)))t+=`- ${x.ca}${x.sci?` (${x.sci})`:""}: ${fq(x.id)} · ${fp(x.id)}\n`;
+  t+=`\nPassos:\n`+stepsData(S).map((s,i)=>`${i+1}. ${s.t} (${s.dur}): ${s.b.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim()}`).join("\n")+"\n";
+  return t;
+}
+
+let lastS=null;
+function render(){renderLogo();renderFormats();renderProfiles();renderMix();renderCatalog();renderComputed();}
+function renderComputed(){
+  const S=stats();lastS=S;const FL=flavour();
+  renderCalc(S);renderFlavour(FL);renderWarnings(warnings(S,FL));renderShop();renderTimeline(S);renderPas(S);
+  $("loadNote").textContent=`${Object.keys(st.doses).length} ingredients · ${nf(Math.round(S.fl),0)} g de farina`;
+}
+function markCustom(){if(!st.custom){st.custom=true;$("customTag").hidden=false;}}
+
+document.addEventListener("click",e=>{
+  const fb=e.target.closest("[data-fmt]");if(fb){const k=fb.dataset.fmt;if(k!==st.fmt){st.fmt=k;const fm=F();st.n=fm.n;st.mass=fm.mass[2];syncInputs();render();}return;}
+  const p=e.target.closest("[data-prof]");if(p){loadProfile(p.dataset.prof);return;}
+  const lv=e.target.closest("[data-lvl]");if(lv){const [f,l]=lv.dataset.lvl.split(":");setLevel(f,l);markCustom();render();return;}
+  const a=e.target.closest("[data-add]");if(a){const x=BY[a.dataset.add];st.doses[x.id]=x.typ;if(st.lvl[x.fam])setLevel(x.fam,st.lvl[x.fam]);markCustom();render();return;}
+  const r=e.target.closest("[data-rm]");if(r&&!r.disabled){const f=BY[r.dataset.rm].fam;delete st.doses[r.dataset.rm];if(st.lvl[f])setLevel(f,st.lvl[f]);markCustom();render();return;}
+});
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.dose){st.doses[t.dataset.dose]=parseFloat(t.value);const f=BY[t.dataset.dose].fam;if(st.lvl[f]){delete st.lvl[f];document.querySelectorAll(`[data-lvl^="${f}:"]`).forEach(b=>b.setAttribute("aria-pressed","false"));}markCustom();updateRowValues();renderComputed();return;}
+  const fm=F();
+  switch(t.id){
+    case"n":{const n=parseInt(t.value,10);if(isNaN(n))return;st.n=Math.min(fm.nmax,Math.max(1,n));break;}
+    case"mass":st.mass=+t.value;$("massLbl").textContent=st.mass+" g";break;
+    case"hours":st.hours=+t.value;$("hoursLbl").textContent=st.hours+" h";markCustom();break;
+    case"temp":st.temp=+t.value;$("tempLbl").textContent=st.temp+" °C";markCustom();break;
+    case"start":st.start=t.value;break;
+    default:return;
+  }
+  updateRowValues();renderComputed();
+});
+function stepN(k){st.n=Math.min(F().nmax,Math.max(1,st.n+k));$("n").value=st.n;updateRowValues();renderComputed();}
+$("nMinus").onclick=()=>stepN(-1);$("nPlus").onclick=()=>stepN(1);
+
+function flash(m){$("toast").textContent=m;clearTimeout(flash.t);flash.t=setTimeout(()=>$("toast").textContent="",2500);}
+function copy(text,okMsg){
+  const show=()=>{const pre=$("recipeTxt");pre.textContent=text;pre.hidden=false;const rg=document.createRange();rg.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(rg);flash("Text seleccionat: copia'l amb Ctrl+C");};
+  try{navigator.clipboard.writeText(text).then(()=>flash(okMsg),show);}catch(_){show();}
+}
+$("copyShop").onclick=()=>copy(shopText(),"Llista copiada");
+$("copyRecipe").onclick=()=>copy(recipeText(lastS),"Recepta copiada");
+
+function showTab(m){const pas=m==="pas";$("tab-calc").hidden=pas;$("tab-pas").hidden=!pas;$("t-calc").setAttribute("aria-selected",String(!pas));$("t-pas").setAttribute("aria-selected",String(pas));try{localStorage.setItem("ensaimada-tab",m);}catch(_){}}
+$("t-calc").onclick=()=>showTab("calc");$("t-pas").onclick=()=>showTab("pas");
+
+// ---- PDF ----
+const PS=s=>String(s).replace(/≈/g,"~").replace(/[—–]/g,"-").replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/…/g,"...").replace(/≤/g,"<=").replace(/≥/g,">=");
+const dmy=dt=>dt.toLocaleDateString("ca-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
+function buildPDF(){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:"a4"});
+  const S=stats(),FL=flavour(),P=PROFILES[st.profile],fm=F();
+  const INK=[29,37,51],MUT=[91,100,116],ACC=[165,93,22],LN=[211,217,225],BAR=[196,150,78],RED=[179,38,30];
+  const col=a=>doc.setTextColor(...a);const font=(s,z)=>{doc.setFont("helvetica",s);doc.setFontSize(z);};
+  const T=(s,x,y,o)=>doc.text(PS(s),x,y,o);
+  const fit=(s,w)=>{s=PS(s);if(doc.getTextWidth(s)<=w)return s;while(s.length>1&&doc.getTextWidth(s+".")>w)s=s.slice(0,-1);return s+".";};
+  const H=(s,x,y)=>{font("bold",7.5);col(ACC);doc.text(PS(s.toUpperCase()),x,y,{charSpace:.35});};
+  const line=(x1,y,x2)=>{doc.setDrawColor(...LN);doc.setLineWidth(.2);doc.line(x1,y,x2,y);};
+  const M=12,R=198,BOT=285;let y=17;
+  font("bold",17);col(INK);T(`Ensaïmades · ${P.name}${st.custom?" (personalitzat)":""}`,M,y);
+  font("normal",8.5);col(MUT);T("Fornada",140,y-1);line(153,y-.6,R);
+  const lot=$("saveName").value.trim();if(lot){font("bold",9);col(INK);T(fit(lot,44),154,y-1.6);}
+  y+=6;font("normal",8.8);col(MUT);
+  T(`${st.n} × ${fm.name.toLowerCase()} de ${st.mass} g · ${Math.round(S.fl)} g de farina · hidratació ${nf(S.hyd,0)}% · fermentació ${st.hours} h a ${st.temp} °C · forn ${S.temp} °C, ${S.cook[0]}-${S.cook[1]} min`,M,y);
+  y+=4.6;font("bold",8.4);col(INK);T(`Matèria primera: ${RAW[st.profile].t}`,M,y);
+  y+=3.5;doc.setDrawColor(...ACC);doc.setLineWidth(.7);doc.line(M,y,R,y);
+  y+=6.5;
+  H("La massa en xifres",M,y);H("Perfil de sabor",110,y);
+  const rows1=[["Farina de força",Math.round(S.fl)+" g"],["Massa total",Math.round(S.dough)+" g"],["Greix per untar",Math.round(S.greix)+" g"],["Farcit",S.fill?Math.round(S.fill)+" g":"-"],["Sucre sobre farina",nf(S.sug,0)+" %"],["Llevat equiv. fresc / recomanat",`${nf(S.ye,1)} / ${nf(S.yr,1)} %`],["Pes cuit aprox. per peça",Math.round(S.piece/5)*5+" g"],["Safates de forn",String(S.trays)]];
+  let ly=y+5;for(const [k,v] of rows1){font("normal",8.8);col(MUT);T(k,M,ly);font("bold",8.8);col(INK);T(v,100,ly,{align:"right"});line(M,ly+1.3,100);ly+=4.7;}
+  let fy=y+5;
+  for(const [k,n] of DIMS){const val=FL[k];font("normal",8);col(MUT);T(n,110,fy);
+    doc.setFillColor(...LN);doc.rect(130,fy-2.4,58,2.8,"F");doc.setFillColor(...(k==="dol"||k==="far"?ACC:BAR));doc.rect(130,fy-2.4,Math.max(.3,Math.min(58,val/14*58)),2.8,"F");
+    font("bold",8);col(INK);T(nf(val,0),R,fy,{align:"right"});fy+=4.6;}
+  y=Math.max(ly,fy)+1.5;
+  const ws=warnings(S,FL).filter(w=>w[0]!=="info").slice(0,3);
+  for(const [s,t] of ws){font("bold",7.8);col(s==="bad"?RED:ACC);const l=doc.splitTextToSize(PS((s==="bad"?"Conflicte: ":"Avís: ")+t),R-M)[0];doc.text(l,M,y);y+=3.8;}
+  y+=2.5;
+  const rows=[];for(const f of FAMORD){const it=I.filter(x=>x.fam===f&&has(x.id));if(!it.length)continue;rows.push({fam:FAM[f]});it.forEach(x=>rows.push({x}));}
+  const ev=events(S);
+  const bottomH=40+ev.length*8;const avail=BOT-bottomH-y;const rh=Math.max(3.1,Math.min(4.8,avail/(rows.length+1)));const fs=Math.max(6.2,Math.min(8.8,rh*1.9));
+  H("Ingredients",M,y);y+=1.5;
+  font("bold",fs-.6);col(MUT);y+=rh;T("Ingredient",M,y);T("Nom científic",62,y);T("% forner",130,y,{align:"right"});T("Per peça",162,y,{align:"right"});T("Total",R,y,{align:"right"});
+  line(M,y+1.2,R);
+  for(const r of rows){y+=rh;
+    if(r.fam){font("bold",fs-1);col(ACC);T(r.fam.toUpperCase(),M,y);continue;}
+    const x=r.x,v=st.doses[x.id];
+    font("bold",fs);col(INK);T(fit(x.ca,48),M,y);
+    font("italic",fs);col(MUT);T(fit(x.sci||"",44),62,y);
+    font("normal",fs);T(x.min===x.max?"100 %":bpct(x,v),130,y,{align:"right"});
+    T(fit(fp(x.id),30),162,y,{align:"right"});
+    font("bold",fs);col(INK);T(fq(x.id),R,y,{align:"right"});
+    line(M,y+rh*.32,R);
+  }
+  y+=7;
+  H("Procés",M,y);H("Nota de tast",120,y);
+  const s0=startDate();let py=y+5.5;
+  for(const [m,t] of ev){font("bold",8.4);col(INK);T(t,M,py);font("normal",7.6);col(MUT);T(`previst ${dmyhm(addMin(s0,m))}`,M,py+3.4);T("real",62,py+3.4);line(69,py+3.7,110);py+=7.8;}
+  let ty=y+5.5;
+  font("normal",8.2);col(MUT);T("Data del tast",120,ty);line(141,ty+.4,R);ty+=6.6;
+  T("Valoració",120,ty);doc.setDrawColor(...MUT);doc.setLineWidth(.25);for(let i=0;i<5;i++)doc.circle(141+i*6.5,ty-1.1,2,"S");ty+=6.6;
+  T("Fullat",120,ty);font("normal",7.2);T("dens",141,ty);for(let i=0;i<5;i++)doc.circle(152+i*5.6,ty-1.1,1.6,"S");T("fullat",180,ty);ty+=6.6;
+  font("normal",8.2);T("Dolçor",120,ty);font("normal",7.2);T("poca",141,ty);for(let i=0;i<5;i++)doc.circle(152+i*5.6,ty-1.1,1.6,"S");T("molta",180,ty);ty+=6.6;
+  for(const t of ["Aspecte i color","Aroma","Textura","Gust","Han durat"]){font("normal",8.2);col(MUT);T(t,120,ty);line(145,ty+.4,R);ty+=6.6;}
+  y=Math.max(py,ty)+2;
+  H("Notes i canvis per a la propera fornada",M,y);
+  for(let ny=y+7;ny<=BOT-1;ny+=7)line(M,ny,R);
+  font("normal",6.8);col(MUT);T(`Receptari d'ensaïmades · generat el ${dmy(new Date())}`,M,BOT+6);
+  return doc;
+}
+$("pdfBtn").onclick=async()=>{
+  const msg=m=>{$("pdfMsg").textContent=m;clearTimeout(msg.t);msg.t=setTimeout(()=>$("pdfMsg").textContent="",4000);};
+  if(!window.jspdf){msg("No s'ha pogut carregar el generador de PDF. Torna a carregar la pàgina.");return;}
+  const fname=`ensaimades-${st.profile}-${startDate().toISOString().slice(0,10)}.pdf`;
+  if(!window.claude){try{buildPDF().save(fname);msg("PDF desat");}catch(_){msg("No s'ha pogut generar el PDF");}return;}
+  let dl=null;try{dl=window.claude.use?await window.claude.use("downloads"):null;}catch(_){dl=null;}
+  if(!dl){msg("La descàrrega no està disponible en aquesta vista. Copia la recepta en text.");return;}
+  try{await dl.save({filename:fname,data:buildPDF().output("blob")});msg("PDF desat");}
+  catch(e){const c=e&&e.code;msg(c==="declined"?"Descàrrega cancel·lada":c==="rate_limited"?"Ja hi ha una descàrrega pendent":"No s'ha pogut desar el PDF");}
+};
+
+// ---- receptes guardades ----
+const KEY="ensaimades-receptes-v1";
+function getSaved(){try{return JSON.parse(localStorage.getItem(KEY)||"[]");}catch(_){return[];}}
+function setSaved(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true;}catch(_){return false;}}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function renderSaved(){
+  const a=getSaved();
+  $("saved").innerHTML=a.length?a.map((r,i)=>`<div class="srow"><div style="min-width:0"><b>${esc(r.name)}</b> <span class="meta">${PROFILES[r.st.profile]?.name||""} · ${r.st.n} × ${FORMATS[r.st.fmt]?.name.toLowerCase()||""} · ${new Date(r.when).toLocaleDateString("ca-ES")}</span>${r.notes?`<div class="meta">${esc(r.notes)}</div>`:""}</div><div class="btnrow" style="flex:none"><button type="button" data-load="${i}">Carregar</button><button type="button" class="ghost" data-del="${i}" aria-label="Esborrar ${esc(r.name)}">✕</button></div></div>`).join(""):'<p class="ok">Encara no n\'has guardat cap.</p>';
+}
+$("saveBtn").onclick=()=>{
+  const name=$("saveName").value.trim()||`${PROFILES[st.profile].name} · ${new Date().toLocaleDateString("ca-ES")}`;
+  const a=getSaved();a.unshift({name,notes:$("saveNotes").value.trim(),when:Date.now(),st:JSON.parse(JSON.stringify(st))});
+  if(setSaved(a)){flash("Recepta guardada");$("saveName").value="";$("saveNotes").value="";renderSaved();}else flash("Aquest navegador no permet guardar");
+};
+$("saved").addEventListener("click",e=>{
+  const l=e.target.closest("[data-load]"),dl=e.target.closest("[data-del]");const a=getSaved();
+  if(l){Object.assign(st,a[+l.dataset.load].st);syncInputs();render();flash("Recepta carregada");window.scrollTo({top:0,behavior:"smooth"});}
+  if(dl){a.splice(+dl.dataset.del,1);setSaved(a);renderSaved();}
+});
+
+// ---- inici ----
+const s0=new Date();s0.setHours(20,0,0,0);const pad=n=>String(n).padStart(2,"0");
+st.start=`${s0.getFullYear()}-${pad(s0.getMonth()+1)}-${pad(s0.getDate())}T20:00`;
+loadProfile("trad");renderSaved();
+try{if(localStorage.getItem("ensaimada-tab")==="pas")showTab("pas");}catch(_){}
+})();
+</script>
+
+</body></html>

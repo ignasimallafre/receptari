@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coca de iogurt i magdalenes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700&family=Overpass+Mono:wght@400;600&display=swap">
+<style>
+[hidden]{display:none!important}body{margin:0}
+/* Layout: berenar: blanc de iogurt blavós, accent de nabius, barres de llimona */
+:root{ --bg:#eceff4; --surface:#f8f9fb; --ink:#23252e; --muted:#5d6170; --line:#d2d6e0; --accent:#5a3f99; --accent-soft:#e6def6; --accent-ink:#ffffff; --bad:#ad2a1f; --bad-soft:#f6dcd8; --warn:#8a5a00; --warn-soft:#f5e8cc; --info:#2f6a78; --info-soft:#d9ecef; --bar:#c9a400;
+  --f-display:"Bagel Fat One", "Cooper Black", Georgia, serif; --f-body:"Nunito Sans", "Segoe UI", system-ui, sans-serif; --f-mono:"Overpass Mono", ui-monospace, Menlo, monospace; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --bg:#15161c; --surface:#1d1f27; --ink:#e4e5ec; --muted:#9ea1b0; --line:#30333f; --accent:#b49cf0; --accent-soft:#2e2545; --accent-ink:#16112a; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#7fc3d2; --info-soft:#15313a; --bar:#e5c840; color-scheme:dark}}
+:root[data-theme="dark"]{ --bg:#15161c; --surface:#1d1f27; --ink:#e4e5ec; --muted:#9ea1b0; --line:#30333f; --accent:#b49cf0; --accent-soft:#2e2545; --accent-ink:#16112a; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#7fc3d2; --info-soft:#15313a; --bar:#e5c840; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.15rem;font-weight:700}
+h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--f-body);font-weight:700}
+.lede{color:var(--muted);max-width:68ch;margin:6px 0 0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px}
+.grid{display:grid;grid-template-columns:350px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.params{display:flex;flex-direction:column;gap:12px}
+.params .sub{border-top:1px solid var(--line);padding-top:10px;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+input[type=number],select,input[type=text],input[type=date],input[type=datetime-local],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%;min-width:0}
+textarea{min-height:60px;resize:vertical}
+input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=range]:disabled{opacity:.4}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:38px;height:38px;font-size:1.2rem;flex:none}
+.stepper input{text-align:center;font-family:var(--f-mono);font-size:1.3rem;font-weight:600}
+.stepper .u{color:var(--muted);font-size:.9rem;flex:none}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:6px 12px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted);padding:4px 8px}
+button.ghost:hover{color:var(--bad)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.profiles{display:grid;grid-template-columns:1fr;gap:6px}
+.prof{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:1px;padding:8px 10px}
+.prof b{font-family:var(--f-display);font-size:.98rem}
+.prof span{font-size:.8rem;color:var(--muted)}
+.prof[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.recbox{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.recbox b{font-family:var(--f-display);font-size:.98rem}
+.recbox .why{color:var(--muted)}
+.custom-tag{font-size:.78rem;color:var(--accent);font-weight:700}
+dl.out{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:0}
+dl.out dt{color:var(--muted);font-size:.88rem}
+dl.out dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
+dl.out .hl{color:var(--accent)}
+dl.out .sec{grid-column:1/-1;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;padding-top:8px;border-top:1px solid var(--line);margin-top:4px;font-family:var(--f-body)}
+dl.out .sec:first-child{border-top:none;padding-top:0;margin-top:0}
+.note{font-size:.8rem;color:var(--muted);margin:0}
+.mix{display:flex;flex-direction:column}
+.mrow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(120px,1.2fr) 92px 110px 34px;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.mrow.head{border-top:none;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding-bottom:4px}
+.famhead{padding:12px 0 4px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.famhead .fn{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.lvl{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.lvl button{border:none;border-radius:0;padding:3px 10px;font-size:.78rem;background:var(--bg);color:var(--muted)}
+.lvl button+button{border-left:1px solid var(--line)}
+.lvl button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.nm b{font-weight:700}
+.nm .es{color:var(--muted);font-size:.85rem}
+.nm .sci{font-style:italic;color:var(--muted);font-size:.8rem}
+.nm .taste{font-size:.8rem;color:var(--muted);display:block}
+.val{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.9rem}
+.val.tot{font-weight:600;color:var(--ink)}
+.val .mac{display:block;font-size:.76rem;color:var(--muted);font-weight:400}
+.req{font-size:.7rem;border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:0 6px;margin-left:4px;vertical-align:1px}
+.calc{font-size:.7rem;border:1px dashed var(--muted);color:var(--muted);border-radius:20px;padding:0 6px;margin-left:4px;vertical-align:1px}
+@media (max-width:640px){
+  .mrow{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+  .mrow.head{display:none}
+  .mrow .nm{grid-column:1/2}
+  .mrow .rm{grid-column:2/3;grid-row:1}
+  .mrow .sl{grid-column:1/3}
+  .mrow .pb{grid-column:1/2;text-align:left}
+  .mrow .pb::before{content:attr(data-l) ": ";color:var(--muted);font-family:var(--f-body)}
+  .mrow .tot{grid-column:2/3}
+}
+.cat{display:flex;flex-direction:column;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border-radius:20px;padding:4px 11px;font-size:.85rem;background:var(--bg)}
+.chip .plus{color:var(--accent);font-weight:700;margin-right:3px}
+.flav{display:grid;grid-template-columns:110px minmax(0,1fr) 36px;gap:6px 10px;align-items:center;font-size:.88rem}
+.track{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;background:var(--bar);border-radius:5px;transition:width .25s}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:760px){.split{grid-template-columns:minmax(0,1fr)}}
+.warns{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.w{border-radius:8px;padding:8px 10px;font-size:.88rem;display:flex;gap:8px;align-items:flex-start}
+.w .tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:4px;padding:1px 6px;flex:none;margin-top:2px}
+.w.bad{background:var(--bad-soft)} .w.bad .tag{background:var(--bad);color:var(--surface)}
+.w.warn{background:var(--warn-soft)} .w.warn .tag{background:var(--warn);color:var(--surface)}
+.w.info{background:var(--info-soft)} .w.info .tag{background:var(--info);color:var(--surface)}
+.ok{font-size:.9rem;color:var(--muted)}
+.shop{display:flex;flex-direction:column;gap:12px}
+.shop ul{margin:4px 0 0;padding-left:18px}
+.shop li{font-size:.9rem}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:none}
+.tl .d{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tl .d small{display:block;color:var(--muted);font-weight:400}
+.tl .t{font-size:.9rem}
+.saved{display:flex;flex-direction:column;gap:6px}
+.srow{display:flex;justify-content:space-between;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:6px;font-size:.9rem}
+.srow .meta{color:var(--muted);font-size:.8rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toast{font-size:.85rem;color:var(--accent);font-weight:700}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{border:none;border-bottom:3px solid transparent;border-radius:0;background:transparent;padding:8px 16px;font-family:var(--f-display);font-weight:700;font-size:1rem;color:var(--muted);white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+.chk input{width:auto;accent-color:var(--accent)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;max-height:260px;overflow:auto;margin:0}
+.hint{font-size:.78rem;color:var(--muted)}
+.eqh{color:var(--muted);font-weight:400;font-size:.8em;font-family:var(--f-body)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1 id="pTitle">Coca de iogurt i magdalenes</h1>
+      <p class="lede" id="pLede">La coca de got de iogurt i les magdalenes amb copet, en grams i en gots. Tria el sabor, el motlle o el nombre de càpsules, i comprova les proporcions abans d'enfornar.</p>
+    </div>
+    <div class="btnrow"><button type="button" class="primary" id="pdfBtn">Exportar fitxa PDF</button><span class="toast" id="pdfMsg" role="status"></span></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Receptes" id="tabs"></nav>
+
+  <div class="grid">
+    <div class="col">
+      <section class="panel" aria-labelledby="h-lot">
+        <h2 id="h-lot">La pastada</h2>
+        <label class="f"><span id="mLabel">Quantitat</span>
+          <div class="stepper">
+            <button type="button" id="mMinus" aria-label="Menys">−</button>
+            <input type="number" id="mVal" inputmode="decimal">
+            <span class="u" id="mUnit"></span>
+            <button type="button" id="mPlus" aria-label="Més">+</button>
+          </div>
+        </label>
+        <p class="hint" id="mHint"></p>
+        <div class="params" id="params"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-prof">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <h2 id="h-prof">Perfil</h2><span class="custom-tag" id="customTag" hidden>Personalitzat</span>
+        </div>
+        <div class="profiles" id="profiles"></div>
+        <div class="recbox" id="recBox" hidden></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-calc">
+        <h2 id="h-calc">Càlculs</h2>
+        <dl class="out" id="calc"></dl>
+        <p class="note" id="calcNote"></p>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel" aria-labelledby="h-mix">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+          <h2 id="h-mix">Ingredients</h2>
+          <span class="note num" id="loadNote"></span>
+        </div>
+        <div class="mix" id="mix"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-flav">
+          <h2 id="h-flav">Perfil de sabor</h2>
+          <div class="flav" id="flav"></div>
+          <p class="note" id="flavNote">Estimació relativa a partir de la dosi de cada ingredient respecte a la seva dosi típica.</p>
+        </section>
+        <section class="panel" aria-labelledby="h-warn">
+          <h2 id="h-warn">Compatibilitats i avisos</h2>
+          <ul class="warns" id="warns"></ul>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-cat">
+        <h2 id="h-cat">Afegir ingredients</h2>
+        <div class="cat" id="catalog"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-shop">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h2 id="h-shop">Llista de la compra</h2>
+            <button type="button" id="copyShop">Copiar</button>
+          </div>
+          <div class="shop" id="shop"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-tl">
+          <h2 id="h-tl">Cronologia</h2>
+          <label class="f"><span id="startLbl">Comences</span><input type="datetime-local" id="startDate"></label>
+          <div class="params" id="paramsTl"></div>
+          <ol class="tl" id="timeline"></ol>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-how" id="howPanel" hidden>
+        <h2 id="h-how">Com fer-ho</h2>
+        <ol class="steps" id="how"></ol>
+      </section>
+
+      <section class="panel" aria-labelledby="h-save">
+        <h2 id="h-save">Les meves receptes</h2>
+        <div class="row2">
+          <label class="f">Nom<input type="text" id="saveName" placeholder="p. ex. Prova diumenge"></label>
+          <label class="f">Notes de tast<textarea id="saveNotes" placeholder="Com ha quedat? Què canviaries?"></textarea></label>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="primary" id="saveBtn">Guardar recepta</button>
+          <button type="button" id="copyRecipe">Copiar recepta en text</button>
+          <span class="toast" id="toast" role="status"></span>
+        </div>
+        <p class="note">Es guarden només en aquest navegador.</p>
+        <div class="saved" id="saved"></div>
+        <pre class="txt" id="recipeTxt" hidden></pre>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ===== Coca de iogurt i magdalenes =====
+(function(){
+const nf=(n,d)=>(isFinite(n)?n:0).toLocaleString("ca-ES",{maximumFractionDigits:d,minimumFractionDigits:0});
+// grams per got de iogurt (125 ml)
+const CUP={sucre:105,farina:70,integral:65,ametllam:55,cacau:50,oli:115,olioliva:115,mantega:120,llet:125,iogurt:125,grec:125,iogllim:125,coco:40};
+const ING=[
+ ["iogurt","ba","Iogurt natural","","","La base: humitat i un punt àcid que activa el llevat","g",0,250,5,125,"S",{lac:3}],
+ ["grec","ba","Iogurt grec","","","Més greix: molla més tendra i densa","g",0,250,5,125,"S",{lac:3,gre:1}],
+ ["iogllim","ba","Iogurt de llimona","","","La versió de tota la vida, ja aromatitzada","g",0,250,5,125,"S",{lac:2,cit:2,dol:1}],
+ ["llet","ba","Llet sencera","","","Afluixa la massa","g",0,150,5,50,"S",{lac:1}],
+ ["ou","ba","Ous","","","Estructura i volum (≈50 g sense closca)","g",50,300,5,150,"S",{},"lin",["ou","ous",50]],
+ ["farina","fa","Farina de rebosteria","","Triticum aestivum","Farina fluixa (W 100–150): molla tendra","g",100,350,5,210,"S",{}],
+ ["integral","fa","Farina integral fina","","Triticum aestivum","Gust de cereal, molla més humida","g",0,120,5,50,"S",{esp:.5}],
+ ["ametllam","fa","Ametlla mòlta","","Prunus dulcis","Molla humida i rica; substitueix part de la farina","g",0,120,5,50,"S",{fru:1,gre:1}],
+ ["cacau","fa","Cacau pur en pols","","Theobroma cacao","Treu-ne el mateix pes de farina","g",0,50,1,25,"S",{xoc:4}],
+ ["llevat","fa","Llevat químic (impulsor)","","","4–6,5% de la farina; un sobre de 16 g és per a 250 g","g",4,24,.5,16,"S",{},"sub"],
+ ["sal","fa","Sal","","","Un pessic realça tots els sabors","g",0,3,.25,1,"S",{},"sub"],
+ ["sucre","dg","Sucre blanc","","","Dolçor i crosta daurada","g",80,300,5,200,"S",{dol:3}],
+ ["moreno","dg","Sucre moreno","","","Gust de caramel, molla més humida","g",0,150,5,60,"S",{dol:2,esp:1}],
+ ["mel","dg","Mel","","","Aroma i molla humida; es daura abans","g",0,80,5,40,"S",{dol:2}],
+ ["oli","dg","Oli de gira-sol","","Helianthus annuus","Neutre: molla tendra que no s'endureix a la nevera","g",0,160,5,110,"S",{gre:3}],
+ ["olioliva","dg","Oli d'oliva suau","","Olea europaea","Gust afruitat; ideal amb cítrics","g",0,160,5,110,"S",{gre:3,fru:1}],
+ ["mantega","dg","Mantega fosa","","","Més gust, molla més ferma en fred","g",0,160,5,110,"S",{gre:3,lac:1}],
+ ["llimona","ar","Ratlladura de llimona","","Citrus × limon","Cítric fresc","g",0,8,.5,3,"C",{cit:4}],
+ ["taronja","ar","Ratlladura i suc de taronja","","Citrus × sinensis","Cítric dolç","g",0,40,1,15,"C",{cit:3}],
+ ["vainilla","ar","Extracte de vainilla","","Vanilla planifolia","Rodó i dolç","g",0,10,.5,5,"S",{dol:1}],
+ ["canyella","ar","Canyella mòlta","","Cinnamomum verum","Càlida; fantàstica amb poma","g",0,5,.25,2,"S",{esp:4}],
+ ["anis","ar","Anís (licor) o matafaluga","","Pimpinella anisum","Aroma de rebosteria tradicional","g",0,15,1,6,"S",{esp:3}],
+ ["xips","ex","Xips de xocolata","","Theobroma cacao","Enfarinades perquè no s'enfonsin","g",0,150,5,80,"S",{xoc:3,dol:1}],
+ ["nabius","ex","Nabius","","Vaccinium corymbosum","Àcids i sucosos","g",0,180,5,100,"M",{fru:3,cit:1}],
+ ["poma","ex","Poma a daus","","Malus domestica","Molla molt humida","g",0,250,10,150,"M",{fru:3}],
+ ["platan","ex","Plàtan madur aixafat","","Musa × paradisiaca","Dolç; substitueix part de l'oli","g",0,250,10,120,"M",{fru:3,dol:1}],
+ ["coco","ex","Coco ratllat","","Cocos nucifera","Aroma tropical, molla més seca","g",0,80,5,40,"S",{fru:2,gre:1}],
+ ["nous","ex","Nous picades","","Juglans regia","Cruixents i lleugerament amargants","g",0,100,5,50,"S",{fru:1,esp:1}],
+ ["sucrecob","co","Sucre per sobre","","","Crosta cruixent","g",0,30,1,15,"S",{dol:1}],
+ ["llustre","co","Sucre de llustre","","","Per empolsar en fred","g",0,30,1,10,"S",{dol:1}],
+ ["glas","co","Glacejat de llimona (sucre llustre + suc)","","","Sucre llustre amb suc de llimona: crosta blanca","g",0,150,5,80,"S",{dol:2,cit:2}],
+ ["xocfosa","co","Cobertura de xocolata","","Theobroma cacao","Xocolata negra fosa amb un raig de nata","g",0,200,10,100,"S",{xoc:3}]
+];
+const FAM={ba:"Iogurt, lactis i ous",fa:"Farines i impulsor",dg:"Sucre i greix",ar:"Aromes",ex:"Extres",co:"Cobertura"};
+const FAMORD=["ba","fa","dg","ar","ex","co"];
+const DIMS=[["dol","Dolç"],["cit","Cítric"],["lac","Làctic"],["gre","Greix"],["xoc","Xocolata"],["fru","Fruita"],["esp","Especiat"]];
+const P0=(id,s)=>s.doses[id]||0;
+const flour=s=>P0("farina",s)+P0("integral",s)+P0("ametllam",s)*.5+P0("cacau",s);
+const sugar=s=>P0("sucre",s)+P0("moreno",s)+.8*P0("mel",s)+.15*(P0("iogllim",s));
+const fatG=s=>P0("oli",s)+P0("olioliva",s)+.82*P0("mantega",s)+.1*P0("grec",s)+.1*P0("ou",s)+.5*P0("ametllam",s)+.6*P0("coco",s);
+const liq=s=>.85*(P0("iogurt",s)+P0("iogllim",s))+.75*P0("grec",s)+.88*P0("llet",s)+.75*P0("ou",s)+.15*P0("taronja",s)+.7*P0("platan",s)+.4*P0("poma",s)+.2*P0("mel",s);
+const BAT=["iogurt","grec","iogllim","llet","ou","farina","integral","ametllam","cacau","llevat","sal","sucre","moreno","mel","oli","olioliva","mantega","llimona","taronja","vainilla","canyella","anis","xips","nabius","poma","platan","coco","nous"];
+const batter=(s,k)=>BAT.reduce((t,id)=>t+P0(id,s),0)*k;
+const cups=(id,g)=>CUP[id]?` <span class="eqh">≈${nf(Math.round(g/CUP[id]*4)/4,2)} ${g/CUP[id]>1.1?"gots":"got"}</span>`:"";
+
+function commonWarn(s,w,base){
+  const f=flour(s);const L=P0("llevat",s)/Math.max(1,P0("farina",s)+P0("integral",s)+P0("cacau",s))*100;
+  if(L>7)w.push(["warn",`Llevat químic al ${nf(L,1)}% de la farina: puja massa de pressa i s'enfonsa, amb gust metàl·lic. L'ideal és 4–6,5% (un sobre de 16 g és per a 250 g de farina).`]);
+  if(L<3)w.push(["warn",`Llevat químic al ${nf(L,1)}%: molla densa i baixa.`]);
+  const sr=sugar(s)/f;if(sr>1.15)w.push(["warn","Més sucre que farina: crosta enganxosa i molla que s'enfonsa en refredar."]);
+  if(sr<.6)w.push(["info","Poc sucre: queda menys tendra i es daura menys."]);
+  const fr=fatG(s)/f;if(fr>.95)w.push(["warn","Molt greix respecte a la farina: molla oliosa que es desfà."]);
+  if(fr<.3)w.push(["warn","Poc greix: s'asseca en un dia."]);
+  const lr=liq(s)/f;if(lr>1.35)w.push(["warn","Massa molt líquida per a la farina: pot quedar crua i compacta al centre."]);
+  if(lr<.65)w.push(["warn","Massa espessa: la molla quedarà seca. Afegeix una mica de llet."]);
+  if(P0("mantega",s)&&(P0("oli",s)||P0("olioliva",s)))w.push(["info","Mantega i oli junts funcionen bé: gust de mantega i molla tendra."]);
+  const nIog=["iogurt","grec","iogllim"].filter(i=>P0(i,s)).length;if(nIog>1)w.push(["info","Dos tipus de iogurt: el pes total és el que compta."]);
+  if(P0("cacau",s)&&P0("farina",s)>base.farina)w.push(["warn","Amb cacau, treu el mateix pes de farina; si no, queda seca."]);
+  if(P0("cacau",s)&&L<4.5)w.push(["info","El cacau és àcid i pesa: amb un 5% de llevat queda més lleugera."]);
+  if(P0("nabius",s)||P0("xips",s))w.push(["info","Passa els nabius i les xips per una mica de farina perquè no s'enfonsin."]);
+  if(P0("poma",s)>180||P0("platan",s)>180)w.push(["warn","Molta fruita humida: allarga 10 min el forn i comprova amb una broqueta."]);
+  if(P0("platan",s)&&fr>.5)w.push(["info","El plàtan ja aporta humitat i tendresa: pots baixar l'oli un 25%."]);
+  if(P0("canyella",s)>3)w.push(["warn","Molta canyella amarga: amb 1–2 g per iogurt n'hi ha prou."]);
+  if(P0("llimona",s)&&P0("taronja",s)&&P0("iogllim",s))w.push(["info","Triple cítric: molt perfumat. Potser n'hi ha prou amb dos."]);
+  if(P0("mel",s)>40)w.push(["info","Molta mel: es daura de pressa. Baixa el forn 10 °C."]);
+  if(P0("olioliva",s)&&P0("xocfosa",s))w.push(["info","Oli d'oliva i xocolata fan bona parella; tria un oli suau o arbequina."]);
+}
+
+const coca={
+  name:"Coca de iogurt",lotTitle:"La coca",calcTitle:"Massa, motlle i forn",mixTitle:"Ingredients",
+  measure:{label:"Receptes d'un iogurt",unit:"× iogurt",min:.5,max:4,step:.5,def:1,k:1,base:1,
+    hint:(s,C)=>`Massa ≈ <b class="num">${nf(C.bat,0)} g</b> · ocupa el <b class="num">${nf(C.fill*100,0)} %</b> del motlle`},
+  perLabel:"Per iogurt",totLabel:"Total",
+  per:(x,v)=>`${nf(v,v<10?1:0)} g`+cups(x.id,v),
+  fmtTot:(x,a)=>{let t=(a<10?nf(a,1):nf(Math.round(a),0))+" g";if(x.eq){const n=Math.max(1,Math.round(a/50));t+=` <span class="eqh">(≈${n} ${n===1?"ou":"ous"})</span>`;}else t+=cups(x.id,a);return t;},
+  fam:FAM,famOrd:FAMORD,ing:ING.map(a=>a[0]),req:["ou","farina","llevat"],noLevel:["ba","fa"],famMax:{ex:2,ar:3,co:2,dg:4},
+  params:[
+    {id:"pan",label:"Motlle",type:"select",def:"r22",opts:[["r20","Rodó de 20 cm"],["r22","Rodó de 22 cm"],["r24","Rodó de 24 cm"],["r26","Rodó de 26 cm"],["p25","Plum-cake 25 × 11 cm"],["p30","Plum-cake 30 × 11 cm"],["s","Safata 30 × 20 cm"],["bund","Bundt / corona de 24 cm"]],noCustom:true},
+    {id:"met",label:"Mètode",type:"select",def:"tot",opts:[["tot","Tot batut (de tota la vida)"],["blanq","Ous i sucre blanquejats 5 min"],["clares","Clares muntades a part (més esponjosa)"]]},
+    {id:"forn",label:"Forn",type:"select",def:"conv",opts:[["conv","Dalt i baix, sense ventilador"],["vent","Amb ventilador (−15 °C)"]],noCustom:true}
+  ],
+  actions:[{id:"fit",label:"Ajusta les quantitats al motlle",run:(s,C)=>{const k=C.panV*.5/(C.bat/s.n/1.05);s.n=Math.max(.5,Math.min(4,Math.round(k*2)/2));return `Ara són ${nf(s.n,1)} receptes d'iogurt`;}}],
+  dims:DIMS,dimMax:10,
+  calc:s=>{
+    const PAN={r20:[Math.PI*100*6,"rodó",5.5],r22:[Math.PI*121*6,"rodó",5.5],r24:[Math.PI*144*6,"rodó",5.5],r26:[Math.PI*169*6,"rodó",5.5],p25:[25*11*8,"plum",7],p30:[30*11*8,"plum",7],s:[30*20*5,"safata",4],bund:[2400,"bundt",8]}[s.p.pan];
+    const bat=batter(s,s.n);const vol=bat/1.05;const fill=vol/PAN[0];const C={bat,panV:PAN[0],fill};
+    const area=s.p.pan[0]==="r"?Math.PI*Math.pow(+s.p.pan.slice(1)/2,2):s.p.pan==="p25"?275:s.p.pan==="p30"?330:s.p.pan==="s"?600:Math.PI*144*.75;
+    const hRaw=vol/area;const hBaked=hRaw*2.2;
+    const T=s.p.forn==="vent"?165:180;const min=Math.round(18+hRaw*6+(PAN[1]==="plum"?12:0)+(PAN[1]==="bundt"?8:0));C.oven={T,min};
+    const f=flour(s);
+    C.rows=[["§","Massa"],["Massa total",nf(bat,0)+" g"],["Volum aproximat",nf(vol/1000,2)+" L"],
+      ["Sucre / farina",nf(sugar(s)/f,2)],["Greix / farina",nf(fatG(s)/f,2)],["Líquid / farina",nf(liq(s)/f,2)],
+      ["Llevat sobre farina",nf(P0("llevat",s)/Math.max(1,P0("farina",s)+P0("integral",s)+P0("cacau",s))*100,1)+" %"],
+      ["§","Motlle"],["Volum del motlle",nf(PAN[0]/1000,1)+" L"],["Ompliment",nf(fill*100,0)+" %",fill>.7||fill<.3],
+      ["Alçada en cru",nf(hRaw,1)+" cm"],["Alçada cuita (aprox.)",nf(hBaked,1)+" cm"],
+      ["§","Forn"],["Temperatura",T+" °C",true],["Temps",`${min}–${min+8} min`,true],["Prova","broqueta neta i 96 °C a dins"]];
+    C.note="Els gots són de 125 ml (el got del iogurt). Pesar és més fiable: un got de farina pot variar ±10 g.";
+    C.summary=`${nf(bat,0)} g de massa · ${s.p.pan.startsWith("r")?"motlle rodó "+s.p.pan.slice(1)+" cm":PAN[1]} (${nf(fill*100,0)}%) · ${T} °C ${min}–${min+8} min`;
+    return C;
+  },
+  warn:(s,C)=>{const w=[];commonWarn(s,w,{farina:210*s.n/s.n});
+    if(C.fill>.7)w.push(["bad",`La massa omple el ${nf(C.fill*100,0)}% del motlle: vessarà. Màxim 2/3; usa «Ajusta les quantitats al motlle».`]);
+    if(C.fill<.3)w.push(["warn",`Només omple el ${nf(C.fill*100,0)}% del motlle: quedarà baixa i seca.`]);
+    if(s.p.met==="clares")w.push(["info","Amb clares muntades, incorpora-les al final amb moviments envolvents i enforna de seguida."]);
+    if(s.p.pan==="bund")w.push(["info","Motlle bundt: unta'l molt bé amb mantega i farina, també el con central."]);
+    return w;},
+  rec:s=>({title:"Truc de la casa",main:"Mesura-ho tot amb el got del iogurt",sub:"1 iogurt · 3 ous · 1 got d'oli · 2 de sucre · 3 de farina · 1 sobre de llevat",why:"És la proporció 1-1-2-3 de sempre. La calculadora la converteix a grams perquè pugis o baixis quantitats sense perdre l'equilibri."}),
+  tl:{mode:"h",startLabel:"Comences (dia i hora)",defTime:"17:00"},
+  timeline:(s,C)=>{const ev=[];const pre=0;
+    ev.push([0,`Encén el forn a ${C.oven.T} °C. Unta el motlle amb mantega i farina o folra'l amb paper.`]);
+    ev.push([.05,s.p.met==="clares"?"Separa els ous. Bat els rovells amb el sucre, afegeix iogurt, oli i aromes.":s.p.met==="blanq"?"Bat els ous amb el sucre 5 min fins que blanquegin i dupliquin volum.":"Bat els ous amb el sucre fins que facin escuma."]);
+    ev.push([.15,"Afegeix iogurt, oli i aromes. Tamisa la farina amb el llevat i la sal i barreja només fins que no quedin grumolls."+(s.p.met==="clares"?" Munta les clares amb un pessic de sal i incorpora-les.":"")]);
+    ev.push([.3,"Aboca-ho al motlle"+(P0("sucrecob",s)?" i escampa el sucre per sobre":"")+". Al forn, a mitja alçada, sense obrir la porta els primers 25 min."]);
+    ev.push([.3+C.oven.min/60,"Punxa amb una broqueta: si surt neta, és cuita."]);
+    ev.push([.3+C.oven.min/60+.17,"Desemmotlla després de 10 min i deixa-la refredar sobre una reixa."]);
+    if(P0("glas",s)||P0("xocfosa",s))ev.push([.3+C.oven.min/60+1,"Quan sigui freda, cobreix-la amb el glacejat o la xocolata."]);
+    return {ev,tail:[["Conservació","3–4 dies tapada a temperatura ambient; amb oli es manté tendra més dies. Es congela a llesques."]]};},
+  loadNote:(s,C)=>`${nf(C.bat,0)} g de massa`,
+  pdfTaste:["Alçada","Molla","Humitat","Gust"],
+  def:"llimona",
+  profiles:{
+    llimona:{name:"Clàssica de llimona",desc:"La de tota la vida: 1-1-2-3",d:{iogurt:125,ou:150,oli:110,sucre:200,farina:210,llevat:13,sal:1,llimona:3}},
+    taronja:{name:"Taronja i oli d'oliva",desc:"Ratlladura i suc de taronja, oli suau",d:{iogurt:125,ou:150,olioliva:110,sucre:190,farina:210,llevat:13,sal:1,taronja:20,glas:60}},
+    xocolata:{name:"Marbre de xocolata",desc:"Meitat de la massa amb cacau",d:{iogurt:125,ou:150,oli:110,sucre:200,farina:190,cacau:20,llevat:14,sal:1,vainilla:5,xocfosa:80}},
+    poma:{name:"Poma i canyella",desc:"Daus de poma i sucre moreno",d:{iogurt:125,ou:150,oli:100,sucre:140,moreno:50,farina:210,llevat:13,sal:1,canyella:2,poma:150,sucrecob:12}},
+    grec:{name:"Grec i nabius",desc:"Iogurt grec, nabius, glacejat",d:{grec:125,ou:150,oli:90,sucre:190,farina:220,llevat:14,sal:1,llimona:3,nabius:100,glas:60}}
+  }
+};
+
+const mag={
+  name:"Magdalenes",lotTitle:"La fornada",calcTitle:"Massa, càpsules i forn",mixTitle:"Ingredients (per a 12)",
+  measure:{label:"Nombre de magdalenes",unit:"u.",min:6,max:60,step:1,def:12,k:1/12,base:12,
+    hint:(s,C)=>`≈ <b class="num">${nf(C.per,0)} g</b> de massa per càpsula`},
+  perLabel:"Per a 12",totLabel:"Total",
+  per:(x,v)=>`${nf(v,v<10?1:0)} g`,
+  fmtTot:(x,a)=>{let t=(a<10?nf(a,1):nf(Math.round(a),0))+" g";if(x.eq){const n=Math.max(1,Math.round(a/50));t+=` <span class="eqh">(≈${n} ${n===1?"ou":"ous"})</span>`;}return t;},
+  fam:FAM,famOrd:FAMORD,ing:ING.map(a=>a[0]).filter(i=>!["glas","xocfosa","bund"].includes(i)),req:["ou","farina","llevat","sucre"],noLevel:["ba","fa"],famMax:{ex:2,ar:3,co:2,dg:4},
+  params:[
+    {id:"cap",label:"Càpsula",type:"select",def:"std",opts:[["mini","Mini (Ø 3,5 cm)"],["std","Estàndard de magdalena (Ø 5 cm)"],["muf","Muffin (Ø 7 cm)"]],noCustom:true},
+    {id:"rest",label:"Repòs de la massa a la nevera",type:"range",min:0,max:24,step:1,def:12,fmt:v=>v?v+" h":"sense repòs",group:"tl",hint:"El repòs en fred i el xoc tèrmic del forn calent fan el copet."},
+    {id:"forn",label:"Forn",type:"select",def:"conv",opts:[["conv","Dalt i baix, sense ventilador"],["vent","Amb ventilador (−15 °C)"]],noCustom:true}
+  ],
+  dims:DIMS,dimMax:10,
+  calc:s=>{
+    const CAP={mini:[20,15,"mini"],std:[50,40,"estàndard"],muf:[95,80,"muffin"]}[s.p.cap];
+    const bat=batter(s,s.n/12);const per=bat/s.n;const fillR=per/CAP[0];
+    const pre=s.p.forn==="vent"?205:220,bake=s.p.forn==="vent"?185:200;const min=s.p.cap==="mini"?11:s.p.cap==="std"?17:22;
+    const C={bat,per,cap:CAP,fillR,oven:{pre,bake,min}};const f=flour(s);
+    C.rows=[["§","Massa"],["Massa total",nf(bat,0)+" g"],["Per càpsula",nf(per,0)+" g",true],["Ideal per a la càpsula",`${CAP[1]}–${CAP[0]} g`],
+      ["Sucre / farina",nf(sugar(s)/f,2)],["Greix / farina",nf(fatG(s)/f,2)],["Líquid / farina",nf(liq(s)/f,2)],
+      ["Llevat sobre farina",nf(P0("llevat",s)/Math.max(1,P0("farina",s)+P0("integral",s)+P0("cacau",s))*100,1)+" %"],
+      ["§","Forn"],["Preescalfar a",pre+" °C",true],["Coure a",`${bake} °C`,true],["Temps",`${min}–${min+3} min`,true],["Safates de 12",String(Math.ceil(s.n/12))]];
+    C.note="El copet surt de tres coses: massa freda i reposada, sucre per sobre i forn molt calent que es baixa en entrar.";
+    C.summary=`${s.n} magdalenes ${CAP[2]} de ≈${nf(per,0)} g · repòs ${s.p.rest} h · forn ${pre}→${bake} °C ${min} min`;
+    return C;
+  },
+  warn:(s,C)=>{const w=[];commonWarn(s,w,{farina:200});
+    if(C.per>C.cap[0]*1.1)w.push(["bad",`${nf(C.per,0)} g per càpsula: vessarà. Omple-les fins a 3/4 (${C.cap[0]} g) o fes més magdalenes.`]);
+    if(C.per<C.cap[1]*.85)w.push(["warn",`Només ${nf(C.per,0)} g per càpsula: no faran copet. Baixa el nombre de magdalenes.`]);
+    if(s.p.rest<1)w.push(["warn","Sense repòs en fred el copet surt baix. Mínim 1 h a la nevera; millor tota la nit."]);
+    if(!P0("sucrecob",s))w.push(["info","Un pessic de sucre per sobre de cada magdalena ajuda a fer el copet i la crosta."]);
+    if(P0("mantega",s)&&!P0("oli",s)&&!P0("olioliva",s))w.push(["info","Només amb mantega queden més dures l'endemà: les magdalenes clàssiques porten oli."]);
+    if(s.p.rest>24)w.push(["warn","Més de 24 h el llevat químic perd força."]);
+    return w;},
+  rec:s=>({title:"Secret del copet",main:"Massa freda + forn a 220 °C",sub:"baixa a 200 °C en tancar la porta",why:"El xoc tèrmic fa que el llevat reaccioni de cop al centre quan les vores ja s'han fixat: el centre puja i obre el copet."}),
+  tl:{mode:"h",startLabel:"Comences (dia i hora)",defTime:"20:00"},
+  timeline:(s,C)=>{const ev=[];
+    ev.push([0,"Bat els ous amb el sucre fins que blanquegin (5 min). Afegeix-hi l'oli a fil, el iogurt o la llet i les aromes."]);
+    ev.push([.15,"Tamisa la farina amb el llevat i la sal; barreja-ho suaument, sense batre més del compte."]);
+    const r=s.p.rest;ev.push([.2,r?`Tapa la massa amb film en contacte i a la nevera ${r} h.`:"Deixa reposar la massa 15 min."]);
+    const tf=.2+(r||.25);
+    ev.push([tf-.4,`Encén el forn a ${C.oven.pre} °C (20–25 min perquè sigui ben calent).`]);
+    ev.push([tf,"Remena un moment la massa freda i omple les càpsules fins a 3/4. Sucre per sobre."+(P0("nabius",s)||P0("xips",s)?" Reparteix-hi els nabius o les xips per sobre.":"")]);
+    ev.push([tf+.05,`Al forn i baixa a ${C.oven.bake} °C: ${C.oven.min}–${C.oven.min+3} min sense obrir la porta.`]);
+    ev.push([tf+.05+C.oven.min/60,"Treu-les i deixa-les refredar a la reixa."+(s.n>12?" Torna a pujar el forn abans de cada safata.":"")]);
+    return {ev,tail:[["Conservació","4–5 dies en una capsa tancada. Es congelen molt bé."]]};},
+  loadNote:(s,C)=>`${nf(C.bat,0)} g · ${nf(C.per,0)} g per càpsula`,
+  pdfTaste:["Copet","Molla","Humitat","Gust"],
+  def:"clas",
+  profiles:{
+    clas:{name:"Magdalenes de llimona",desc:"Les de copet, amb oli i llimona",d:{ou:150,sucre:130,oli:130,llet:40,farina:170,llevat:8,sal:.5,llimona:3,sucrecob:12},p:{rest:12}},
+    iog:{name:"De iogurt",desc:"Més tendres, amb iogurt natural",d:{iogurt:70,ou:100,sucre:110,oli:100,farina:160,llevat:8,sal:.5,llimona:2,sucrecob:12},p:{rest:12}},
+    xoc:{name:"Xocolata",desc:"Cacau i xips de xocolata",d:{iogurt:70,ou:100,sucre:115,oli:100,farina:140,cacau:20,llevat:8.5,sal:.5,xips:50,sucrecob:10},p:{rest:8}},
+    nabius:{name:"Muffins de nabius",desc:"Grosses, de grec i nabius",d:{grec:125,ou:100,sucre:150,mantega:60,oli:60,llet:60,farina:260,llevat:13,sal:1.5,llimona:3,nabius:150,sucrecob:15},p:{cap:"muf",rest:2},n:8},
+    taronja:{name:"Taronja i ametlla",desc:"Oli d'oliva i ametlla mòlta",d:{iogurt:70,ou:100,sucre:110,olioliva:95,farina:130,ametllam:40,llevat:8,sal:.5,taronja:12,sucrecob:12},p:{rest:12}}
+  }
+};
+window.PAGE={key:"coca-iogurt",title:"Coca de iogurt i magdalenes",titleShort:"COCA DE IOGURT I MAGDALENES",where:{S:"Súper",M:"Mercat / fruita",C:"De casa"},ing:ING,tabOrd:["coca","mag"],recipes:{coca,mag},
+  pdf:{INK:[35,37,46],MUT:[93,97,112],ACC:[90,63,153],LN:[210,214,224],BAR:[201,164,0],RED:[173,42,31]}};
+})();
+
+// ===== Motor comú del receptari (basat en la calculadora de vermut) =====
+(function(){
+const P=window.PAGE;
+const $=id=>document.getElementById(id);
+const I=P.ing.map(a=>({id:a[0],fam:a[1],ca:a[2],es:a[3],sci:a[4],taste:a[5],unit:a[6],min:a[7],max:a[8],step:a[9],typ:a[10],where:a[11],v:a[12]||{},scaling:a[13]||"lin",eq:a[14]||null}));
+const BY=Object.fromEntries(I.map(x=>[x.id,x]));
+P.BY=BY;
+const LVL={low:["Baixa",.7],mid:["Mitja",1],high:["Alta",1.3]};
+const nf=(n,d)=>(isFinite(n)?n:0).toLocaleString("ca-ES",{maximumFractionDigits:d,minimumFractionDigits:0});
+P.nf=nf;
+const UNITS=Object.assign({g:["g","g"],ml:["ml","ml"],ou:["ou","ous"],unitat:["unitat","unitats"],fulla:["fulla","fulles"],beina:["beina","beines"],gra:["gra","grans"],branca:["branca","branques"],llimona:["llimona","llimones"],taronja:["taronja","taronges"]},P.units||{});
+const CONT=new Set(["g","ml"]);
+const INTU=new Set(["gra","unitat"]);
+const unitLbl=(u,n)=>{const p=UNITS[u]||[u,u];return Math.abs(n-1)<1e-9?p[0]:p[1];};
+function fmtAmt(x,a,plain){
+  if(CONT.has(x.unit)){const d=a<.1?3:a<1?2:a<10?1:0;let s=nf(a>=200?Math.round(a/5)*5:a,d)+" "+x.unit;
+    if(x.eq&&!plain){const n=a/x.eq[2];const r=Math.max(.5,Math.round(n*2)/2);s+=` <span class="eqh">(≈${nf(r,1)} ${r===1?x.eq[0]:x.eq[1]})</span>`;}
+    return s;}
+  let v=INTU.has(x.unit)?Math.max(1,Math.round(a)):Math.max(.5,Math.round(a*2)/2);
+  return nf(v,1)+" "+unitLbl(x.unit,v);
+}
+P.fmtAmt=fmtAmt;
+const strip=s=>String(s).replace(/<[^>]+>/g,"");
+
+// ---------- estat ----------
+const S={tab:P.tabOrd[0],tabs:{}};
+const R=()=>P.recipes[S.tab];
+const st=()=>S.tabs[S.tab];
+function freshState(k){
+  const r=P.recipes[k];const s={n:r.measure.def,p:{},doses:{},profile:r.def,custom:false,lvl:{},start:null};
+  for(const q of (r.params||[]))s.p[q.id]=q.def;
+  return s;
+}
+function loadProfile(k){
+  const r=R(),s=st(),pr=r.profiles[k];
+  s.profile=k;s.custom=false;s.doses={...pr.d};s.lvl={};
+  for(const q of (r.params||[]))s.p[q.id]=q.def;
+  Object.assign(s.p,pr.p||{});
+  if(pr.n!=null)s.n=pr.n;
+  render();
+}
+function setLevel(f,l){
+  const s=st(),r=R();
+  const items=I.filter(x=>x.fam===f&&x.id in s.doses&&!(r.derived||[]).includes(x.id));const n=items.length;if(!n)return;
+  const k=n>2?Math.sqrt(2/n):1;
+  for(const x of items){let v=x.typ*LVL[l][1]*k;v=Math.min(x.max,Math.max(x.min,Math.round(v/x.step)*x.step));s.doses[x.id]=+v.toFixed(4);}
+  s.lvl[f]=l;
+}
+function derive(){const r=R();if(r.derive)r.derive(st());}
+
+// ---------- quantitats ----------
+function K(x){const r=R(),s=st(),m=r.measure;
+  if(x.scaling==="fix")return 1;
+  if(x.scaling==="sub"){const b=m.base||m.def;return b*m.k*Math.pow(s.n/b,.8);}
+  return s.n*m.k;}
+function amount(x,v){const r=R();return r.amount?r.amount(x,v,st(),K(x)):v*K(x);}
+P.amount=(id)=>{const s=st();return id in s.doses?amount(BY[id],s.doses[id]):0;};
+function perStr(x,v){const r=R();if(r.per)return r.per(x,v,st());
+  if(r.pct)return nf(v,v<1?2:v<10?1:0)+" %";
+  return fmtAmt(x,v,true)+(r.perSuffix||"");}
+function totStr(x,v){const r=R();const a=amount(x,v);return r.fmtTot?r.fmtTot(x,a,st()):fmtAmt(x,a);}
+
+// ---------- sabor ----------
+function flavour(C){
+  const r=R(),s=st();const F=Object.fromEntries(r.dims.map(d=>[d[0],0]));
+  for(const [id,val] of Object.entries(s.doses)){const x=BY[id];if(!x)continue;const q=x.typ?val/x.typ:0;for(const k in x.v)if(k in F)F[k]+=x.v[k]*q;}
+  if(r.flavExtra)r.flavExtra(s,C,F);
+  return F;
+}
+
+// ---------- avisos ----------
+function warnings(C,F){
+  const r=R(),s=st();const w=r.warn?r.warn(s,C,F):[];
+  const famCount={};for(const id in s.doses){const f=BY[id].fam;famCount[f]=(famCount[f]||0)+1;}
+  const lim=r.famMax||{};
+  for(const f of r.famOrd){const L=lim[f]||4;if((famCount[f]||0)>L)w.push(["warn",`Tens ${famCount[f]} ingredients de ${r.fam[f].toLowerCase()}: el perfil es difumina.`]);}
+  return w;
+}
+
+// ---------- renders ----------
+function renderTabs(){
+  const nav=$("tabs");if(P.tabOrd.length<2){nav.hidden=true;return;}
+  nav.innerHTML=P.tabOrd.map(k=>`<button type="button" class="tab" role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${P.recipes[k].name}</button>`).join("");
+}
+function paramHTML(q,s){
+  if(q.show&&!q.show(s))return "";
+  const v=s.p[q.id];let h=q.sec?`<div class="sub">${q.sec}</div>`:"";
+  if(q.type==="range")h+=`<label class="f">${q.label}: <span class="num" id="pl-${q.id}">${q.fmt?q.fmt(v,s):v}</span><input type="range" id="p-${q.id}" data-p="${q.id}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}"></label>`;
+  else if(q.type==="select")h+=`<label class="f">${q.label}<select id="p-${q.id}" data-p="${q.id}">${q.opts.map(([k,n])=>`<option value="${k}"${String(k)===String(v)?" selected":""}>${n}</option>`).join("")}</select></label>`;
+  else if(q.type==="check")h+=`<label class="f chk"><input type="checkbox" id="p-${q.id}" data-p="${q.id}"${v?" checked":""}> ${q.label}</label>`;
+  else if(q.type==="number")h+=`<label class="f">${q.label}<input type="number" id="p-${q.id}" data-p="${q.id}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}"></label>`;
+  if(q.hint)h+=`<p class="hint">${typeof q.hint==="function"?q.hint(s):q.hint}</p>`;
+  return h;
+}
+function renderParams(){
+  const r=R(),s=st();const ps=r.params||[];
+  const acts=g=>(r.actions||[]).filter(a=>(a.group||"main")===g&&(!a.show||a.show(s))).map(a=>`<button type="button" data-act="${a.id}">${a.label}</button>`).join("");
+  $("params").innerHTML=ps.filter(q=>q.group!=="tl").map(q=>paramHTML(q,s)).join("")+(acts("main")?`<div class="btnrow">${acts("main")}</div>`:"");
+  $("paramsTl").innerHTML=ps.filter(q=>q.group==="tl").map(q=>paramHTML(q,s)).join("")+(acts("tl")?`<div class="btnrow">${acts("tl")}</div>`:"");
+}
+function renderMeasure(){
+  const r=R(),s=st(),m=r.measure;
+  $("h-lot").textContent=r.lotTitle||"La pastada";$("mLabel").textContent=m.label;$("mUnit").textContent=m.unit||"";
+  const inp=$("mVal");inp.min=m.min;inp.max=m.max;inp.step=m.step;inp.value=s.n;
+}
+function renderProfiles(){
+  const r=R(),s=st();
+  $("profiles").innerHTML=Object.entries(r.profiles).map(([k,p])=>`<button type="button" class="prof" data-prof="${k}" aria-pressed="${s.profile===k}"><b>${p.name}</b><span>${p.desc}</span></button>`).join("");
+  $("customTag").hidden=!s.custom;
+}
+function renderRec(C){
+  const r=R(),s=st();const rec=r.rec?r.rec(s,C):null;const b=$("recBox");
+  if(!rec){b.hidden=true;return;}b.hidden=false;
+  b.innerHTML=`<h3>${rec.title}</h3><b>${rec.main}</b>${rec.sub?`<span class="num" style="font-size:.82rem">${rec.sub}</span>`:""}<span class="why">${rec.why}</span>`;
+}
+function renderMix(){
+  const r=R(),s=st();const der=r.derived||[];
+  $("h-mix").textContent=r.mixTitle||"Ingredients";
+  let h=`<div class="mrow head"><span>Ingredient</span><span>Dosi</span><span style="text-align:right">${r.perLabel}</span><span style="text-align:right">${r.totLabel||"Total"}</span><span></span></div>`;
+  for(const f of r.famOrd){
+    const items=I.filter(x=>x.fam===f&&x.id in s.doses);if(!items.length)continue;
+    const lvlable=items.some(x=>!der.includes(x.id)&&!(r.noLevel||[]).includes(f));
+    h+=`<div class="famhead"><span class="fn">${r.fam[f]}</span>${lvlable?`<span class="lvl" role="group" aria-label="Intensitat de ${r.fam[f].toLowerCase()}">${Object.entries(LVL).map(([k,[n]])=>`<button type="button" data-lvl="${f}:${k}" aria-pressed="${s.lvl&&s.lvl[f]===k}">${n}</button>`).join("")}</span>`:""}</div>`;
+    for(const x of items){const v=s.doses[x.id];const req=r.req.includes(x.id);const dv=der.includes(x.id);
+      h+=`<div class="mrow"><div class="nm"><b>${x.ca}</b>${req?'<span class="req">obligatori</span>':''}${dv?'<span class="calc">calculat</span>':''}${x.sci?` <span class="sci">${x.sci}</span>`:""}<span class="taste">${x.taste}</span></div>
+      <div class="sl"><input type="range" id="r-${x.id}" data-dose="${x.id}" min="${x.min}" max="${x.max}" step="${x.step}" value="${v}" aria-label="Dosi de ${x.ca}"${dv?" disabled":""}></div>
+      <div class="val pb" data-l="${r.perLabel}">${perStr(x,v)}</div>
+      <div class="val tot">${totStr(x,v)}</div>
+      <div class="rm"><button type="button" class="ghost" data-rm="${x.id}" ${req?"disabled":""} aria-label="Treure ${x.ca}" title="${req?"Obligatori":"Treure"}">✕</button></div></div>`;}
+  }
+  $("mix").innerHTML=h;
+}
+function updateRowValues(){
+  const s=st();
+  document.querySelectorAll(".mix .mrow:not(.head)").forEach(row=>{const inp=row.querySelector("[data-dose]");const x=BY[inp.dataset.dose];const v=s.doses[x.id];
+    if(inp.disabled||document.activeElement!==inp)inp.value=v;
+    row.querySelector(".pb").innerHTML=perStr(x,v);row.querySelector(".tot").innerHTML=totStr(x,v);});
+}
+function renderCatalog(){
+  const r=R(),s=st();let h="";
+  for(const f of r.famOrd){const items=I.filter(x=>x.fam===f&&r.ing.includes(x.id)&&!(x.id in s.doses));if(!items.length)continue;
+    h+=`<div><h3>${r.fam[f]}</h3><div class="chips" style="margin-top:6px">${items.map(x=>`<button type="button" class="chip" data-add="${x.id}" title="${x.taste}${x.sci?" · "+x.sci:""}"><span class="plus">+</span>${x.ca}</button>`).join("")}</div></div>`;}
+  $("catalog").innerHTML=h||'<p class="ok">Ja hi són tots.</p>';
+}
+function renderCalc(C){
+  $("h-calc").textContent=R().calcTitle||"Càlculs";
+  $("calc").innerHTML=C.rows.map(r=>r[0]==="§"?`<dt class="sec">${r[1]}</dt>`:`<dt>${r[0]}</dt><dd${r[2]?' class="hl"':""}>${r[1]}</dd>`).join("");
+  $("calcNote").innerHTML=C.note||"";
+}
+function renderFlavour(F){
+  const r=R();const max=r.dimMax||10;
+  $("flav").innerHTML=r.dims.map(([k,n])=>`<span>${n}</span><div class="track"><div class="fill" style="width:${Math.max(0,Math.min(100,F[k]/max*100))}%"></div></div><span class="num" style="text-align:right">${nf(Math.max(0,F[k]),0)}</span>`).join("");
+}
+function renderWarnings(w){
+  const lbl={bad:"Conflicte",warn:"Avís",info:"Consell"};const ord={bad:0,warn:1,info:2};w.sort((a,b)=>ord[a[0]]-ord[b[0]]);
+  $("warns").innerHTML=w.length?w.map(([s,t])=>`<li class="w ${s}"><span class="tag">${lbl[s]}</span><span>${t}</span></li>`).join(""):'<li class="ok">Cap conflicte. La recepta està equilibrada.</li>';
+}
+function shopGroups(C){
+  const r=R(),s=st();const g={};
+  for(const id in s.doses){const x=BY[id];if(r.shopSkip&&r.shopSkip.includes(id))continue;const a=amount(x,s.doses[id]);if(a<=0)continue;(g[x.where]=g[x.where]||[]).push([x,a]);}
+  const out=[];
+  for(const k of Object.keys(P.where))if(g[k])out.push({h:P.where[k],items:g[k].map(([x,a])=>[x.ca,r.fmtTot?r.fmtTot(x,a,s):fmtAmt(x,a)])});
+  if(r.shopExtra)out.push(...r.shopExtra(s,C));
+  return out;
+}
+function renderShop(C){
+  $("shop").innerHTML=shopGroups(C).map(gr=>`<div><h3>${gr.h}</h3><ul>${gr.items.map(([n,a])=>`<li>${n}${a?`: <span class="num">${a}</span>`:""}</li>`).join("")}</ul></div>`).join("");
+}
+function shopText(C){return shopGroups(C).map(gr=>gr.h+"\n"+gr.items.map(([n,a])=>"- "+n+(a?": "+strip(a):"")).join("\n")).join("\n\n");}
+
+// ---------- cronologia ----------
+const mode=()=>R().tl.mode;
+function startDate(){const s=st();
+  if(mode()==="d")return s.start?new Date(s.start.slice(0,10)+"T12:00:00"):new Date();
+  return s.start?new Date(s.start):new Date();}
+function addOff(d,o){const r=new Date(d);if(mode()==="d")r.setDate(r.getDate()+o);else r.setTime(r.getTime()+o*3600000);return r;}
+const fdD=d=>d.toLocaleDateString("ca-ES",{weekday:"short",day:"numeric",month:"short"});
+const fdT=d=>d.toLocaleTimeString("ca-ES",{hour:"2-digit",minute:"2-digit"});
+function offLbl(o){if(mode()==="d")return "dia "+Math.round(o);const h=Math.floor(o+1e-6),m=Math.round((o-h)*60);return `+${h} h${m?" "+String(m).padStart(2,"0"):""}`;}
+function evDate(o){const d=addOff(startDate(),o);return mode()==="d"?fdD(d):`${fdD(d)} ${fdT(d)}`;}
+function events(C){const T=R().timeline(st(),C);T.ev.sort((a,b)=>a[0]-b[0]);return T;}
+function renderTimeline(C){
+  $("startLbl").textContent=R().tl.startLabel||"Comences";
+  const T=events(C);
+  $("timeline").innerHTML=T.ev.map(([o,t])=>`<li><span class="d">${evDate(o)}<small>${offLbl(o)}</small></span><span class="t">${t}</span></li>`).join("")+
+    (T.tail||[]).map(([a,b])=>`<li><span class="d" style="color:var(--muted)">${a}</span><span class="t">${b}</span></li>`).join("");
+}
+function renderHow(){const r=R();const h=typeof r.how==="function"?r.how(st()):r.how;$("howPanel").hidden=!h;if(h)$("how").innerHTML=h.map(t=>`<li>${t}</li>`).join("");}
+
+// ---------- muntatge ----------
+let lastC=null;
+function computeAll(){derive();const C=R().calc(st());lastC=C;return C;}
+function render(){
+  const s=st();
+  renderTabs();renderMeasure();renderParams();renderProfiles();
+  const C=computeAll();renderMix();renderCatalog();renderComputedWith(C);
+  const sd=$("startDate");sd.type=mode()==="d"?"date":"datetime-local";sd.value=mode()==="d"?(s.start||"").slice(0,10):(s.start||"");
+  renderHow();
+}
+function renderComputed(){const C=computeAll();updateRowValues();renderComputedWith(C);}
+function renderComputedWith(C){
+  const F=flavour(C);
+  renderCalc(C);renderRec(C);renderFlavour(F);renderWarnings(warnings(C,F));renderShop(C);renderTimeline(C);
+  const r=R(),s=st();if(r.measure.hint)$("mHint").innerHTML=r.measure.hint(s,C);else $("mHint").textContent="";
+  $("loadNote").textContent=r.loadNote?r.loadNote(s,C):`${Object.keys(s.doses).length} ingredients`;
+  for(const q of (r.params||[]))if(q.type==="range"&&q.fmt){const l=$("pl-"+q.id);if(l)l.textContent=q.fmt(s.p[q.id],s);}
+  document.querySelectorAll(".prof").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.prof===s.profile)));
+}
+function markCustom(){const s=st();if(!s.custom){s.custom=true;$("customTag").hidden=false;}}
+
+// ---------- esdeveniments ----------
+document.addEventListener("click",e=>{
+  const s=st(),r=R();
+  const tb=e.target.closest("[data-tab]");if(tb){showTab(tb.dataset.tab);return;}
+  const p=e.target.closest("[data-prof]");if(p){loadProfile(p.dataset.prof);return;}
+  const ac=e.target.closest("[data-act]");if(ac){const a=(r.actions||[]).find(z=>z.id===ac.dataset.act);if(a){const m=a.run(s,lastC);markCustom();render();if(m)flash(m);}return;}
+  const lv=e.target.closest("[data-lvl]");if(lv){const [f,l]=lv.dataset.lvl.split(":");setLevel(f,l);markCustom();render();return;}
+  const a=e.target.closest("[data-add]");if(a){const x=BY[a.dataset.add];s.doses[x.id]=x.typ;if(s.lvl[x.fam])setLevel(x.fam,s.lvl[x.fam]);markCustom();render();return;}
+  const rm=e.target.closest("[data-rm]");if(rm&&!rm.disabled){const f=BY[rm.dataset.rm].fam;delete s.doses[rm.dataset.rm];if(s.lvl[f])setLevel(f,s.lvl[f]);markCustom();render();return;}
+});
+document.addEventListener("input",e=>{
+  const t=e.target,s=st(),r=R();
+  if(t.dataset.dose){s.doses[t.dataset.dose]=parseFloat(t.value);const f=BY[t.dataset.dose].fam;if(s.lvl[f]){delete s.lvl[f];document.querySelectorAll(`[data-lvl^="${f}:"]`).forEach(b=>b.setAttribute("aria-pressed","false"));}markCustom();renderComputed();return;}
+  if(t.dataset.p){const q=r.params.find(z=>z.id===t.dataset.p);
+    let v=q.type==="check"?t.checked:q.type==="select"?(isNaN(+t.value)?t.value:+t.value):parseFloat(t.value);
+    if(q.type==="number"){if(isNaN(v))return;v=Math.min(q.max,Math.max(q.min,v));}
+    s.p[q.id]=v;if(!q.noCustom)markCustom();
+    if(q.type==="select"||q.type==="check"||q.rerender){if(q.onSet)q.onSet(s,v);render();}else{if(q.onSet)q.onSet(s,v);renderComputed();}
+    return;}
+  if(t.id==="mVal"){const m=r.measure;const n=parseFloat(t.value);if(isNaN(n))return;s.n=Math.min(m.max,Math.max(m.min,n));renderComputed();return;}
+  if(t.id==="startDate"){s.start=t.value;renderComputed();return;}
+});
+$("mMinus").onclick=()=>{const m=R().measure,s=st();s.n=Math.max(m.min,+(s.n-m.step).toFixed(3));$("mVal").value=s.n;renderComputed();};
+$("mPlus").onclick=()=>{const m=R().measure,s=st();s.n=Math.min(m.max,+(s.n+m.step).toFixed(3));$("mVal").value=s.n;renderComputed();};
+function showTab(k){S.tab=k;try{localStorage.setItem(P.key+"-tab",k);}catch(_){}render();}
+
+// ---------- text ----------
+function recipeText(C){
+  const r=R(),s=st(),pr=r.profiles[s.profile];
+  let t=`${P.titleShort||P.title} — ${r.name} · ${pr.name}${s.custom?" (personalitzat)":""}\n${r.measure.label}: ${nf(s.n,2)} ${r.measure.unit||""}\n`;
+  if(C.summary)t+=C.summary+"\n";
+  t+="\n";
+  for(const row of C.rows)t+=row[0]==="§"?`\n${row[1]}\n`:`- ${strip(row[0])}: ${strip(row[1])}\n`;
+  t+=`\nIngredients (${r.perLabel.toLowerCase()} · ${(r.totLabel||"total").toLowerCase()}):\n`;
+  for(const f of r.famOrd)for(const x of I.filter(x=>x.fam===f&&x.id in s.doses))t+=`- ${x.ca}${x.sci?" ("+x.sci+")":""}: ${strip(perStr(x,s.doses[x.id]))} · ${strip(totStr(x,s.doses[x.id]))}\n`;
+  const T=events(C);t+="\nCronologia:\n";
+  for(const [o,tx] of T.ev)t+=`- ${evDate(o)} (${offLbl(o)}): ${strip(tx)}\n`;
+  for(const [a,b] of (T.tail||[]))t+=`- ${a}: ${strip(b)}\n`;
+  return t;
+}
+function flash(m){$("toast").textContent=m;clearTimeout(flash.t);flash.t=setTimeout(()=>$("toast").textContent="",2500);}
+function copy(text,ok){
+  const show=()=>{const pre=$("recipeTxt");pre.textContent=text;pre.hidden=false;const rg=document.createRange();rg.selectNodeContents(pre);const sl=getSelection();sl.removeAllRanges();sl.addRange(rg);flash("Text seleccionat: copia'l amb Ctrl+C");};
+  try{navigator.clipboard.writeText(text).then(()=>flash(ok),show);}catch(_){show();}
+}
+$("copyShop").onclick=()=>copy(shopText(lastC),"Llista copiada");
+$("copyRecipe").onclick=()=>copy(recipeText(lastC),"Recepta copiada");
+
+// ---------- PDF ----------
+const PS=s=>strip(s).replace(/≈/g,"~").replace(/[—–]/g,"-").replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/…/g,"...").replace(/→/g,"->").replace(/×/g,"x").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/·/g,"·").replace(/[½]/g,"1/2").replace(/[⅓]/g,"1/3").replace(/[¼]/g,"1/4").replace(/ | /g," ");
+const dmy=d=>d.toLocaleDateString("ca-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
+function buildPDF(){
+  const {jsPDF}=window.jspdf;const d=new jsPDF({unit:"mm",format:"a4"});
+  const r=R(),s=st(),C=computeAll(),F=flavour(C),pr=r.profiles[s.profile];const K0=P.pdf;
+  const col=a=>d.setTextColor(...a);const font=(z,y)=>{d.setFont("helvetica",z);d.setFontSize(y);};
+  const T=(t,x,y,o)=>d.text(PS(t),x,y,o);
+  const fit=(t,w)=>{t=PS(t);if(d.getTextWidth(t)<=w)return t;while(t.length>1&&d.getTextWidth(t+".")>w)t=t.slice(0,-1);return t+".";};
+  const H=(t,x,y)=>{font("bold",7.5);col(K0.ACC);d.text(PS(t.toUpperCase()),x,y,{charSpace:.35});};
+  const line=(x1,y,x2)=>{d.setDrawColor(...K0.LN);d.setLineWidth(.2);d.line(x1,y,x2,y);};
+  const M=12,RR=198,BOT=285;let y=17;
+  font("bold",16);col(K0.INK);T(fit(`${r.name} · ${pr.name}${s.custom?" (personalitzat)":""}`,125),M,y);
+  font("normal",8.5);col(K0.MUT);T("Lot",142,y-1);line(149,y-.6,RR);
+  const lot=$("saveName").value.trim();if(lot){font("bold",9);col(K0.INK);T(fit(lot,48),150,y-1.6);}
+  y+=6;font("normal",8.6);col(K0.MUT);
+  const sumL=d.splitTextToSize(PS(`${r.measure.label}: ${nf(s.n,2)} ${r.measure.unit||""}${C.summary?" · "+C.summary:""}`),RR-M).slice(0,2);
+  sumL.forEach(l=>{d.text(l,M,y);y+=4.2;});
+  y-=.7;d.setDrawColor(...K0.ACC);d.setLineWidth(.7);d.line(M,y,RR,y);y+=6;
+  // càlculs i sabor
+  H(r.calcTitle||"Càlculs",M,y);H("Perfil de sabor",112,y);
+  const rows=C.rows.filter(x=>x[0]!=="§");const crh=Math.min(4.4,58/Math.max(1,rows.length));const cfs=Math.min(8.6,crh*2);
+  let ly=y+5;for(const [k,v] of rows){font("normal",cfs);col(K0.MUT);T(fit(k,62),M,ly);font("bold",cfs);col(K0.INK);T(fit(v,34),102,ly,{align:"right"});line(M,ly+1.1,102);ly+=crh;}
+  let fy=y+5;for(const [k,n] of r.dims){const val=Math.max(0,F[k]),mx=r.dimMax||10;
+    font("normal",8);col(K0.MUT);T(n,112,fy);d.setFillColor(...K0.LN);d.rect(136,fy-2.4,52,2.8,"F");
+    d.setFillColor(...K0.BAR);d.rect(136,fy-2.4,Math.max(.3,Math.min(52,val/mx*52)),2.8,"F");
+    font("bold",8);col(K0.INK);T(nf(val,0),RR,fy,{align:"right"});fy+=4.2;}
+  y=Math.max(ly,fy)+1.5;
+  const ws=warnings(C,F).filter(w=>w[0]!=="info").slice(0,3);
+  for(const [sv,t] of ws){font("bold",7.6);col(sv==="bad"?K0.RED:K0.ACC);const l=d.splitTextToSize(PS((sv==="bad"?"Conflicte: ":"Avís: ")+t),RR-M)[0];d.text(l,M,y);y+=3.8;}
+  y+=2.5;
+  // taula
+  const tr=[];for(const f of r.famOrd){const it=I.filter(x=>x.fam===f&&x.id in s.doses);if(!it.length)continue;tr.push({fam:r.fam[f]});it.forEach(x=>tr.push({x}));}
+  const T2=events(C);const bottomH=Math.max(78,Math.min(110,30+T2.ev.length*8.4));const avail=BOT-bottomH-y;
+  const rh=Math.max(3.1,Math.min(4.8,avail/(tr.length+1)));const fs=Math.max(6.1,Math.min(8.8,rh*1.9));
+  H("Ingredients",M,y);y+=1.5;font("bold",fs-.6);col(K0.MUT);y+=rh;
+  T("Ingredient",M,y);T("Nom científic",80,y);T(r.perLabel,163,y,{align:"right"});T(r.totLabel||"Total",RR,y,{align:"right"});line(M,y+1.2,RR);
+  for(const z of tr){y+=rh;if(z.fam){font("bold",fs-1);col(K0.ACC);T(z.fam.toUpperCase(),M,y);continue;}
+    const x=z.x,v=s.doses[x.id];font("bold",fs);col(K0.INK);T(fit(x.ca,64),M,y);font("italic",fs);col(K0.MUT);T(fit(x.sci||"",48),80,y);font("normal",fs);col(K0.MUT);T(fit(perStr(x,v),24),163,y,{align:"right"});
+    font("bold",fs);col(K0.INK);T(fit(totStr(x,v),32),RR,y,{align:"right"});line(M,y+rh*.32,RR);}
+  y+=7;
+  // procés
+  H("Procés",M,y);
+  let py=y+5.5;const pstep=Math.min(8.6,Math.max(6.6,(BOT-y-30)/Math.max(1,T2.ev.length)));
+  for(const [o,t] of T2.ev){if(py>BOT-6)break;font("bold",7.8);col(K0.INK);T(fit(t.replace(/\.$/,""),94),M,py);font("normal",7.2);col(K0.MUT);
+    const dd=addOff(startDate(),o);T(`previst ${mode()==="d"?dmy(dd):dmy(dd)+" "+fdT(dd)} (${offLbl(o)})`,M,py+3.3);T("real",70,py+3.3);line(76,py+3.6,104);py+=pstep;}
+  // nota de tast o registre de pes
+  let ty=y;
+  if(r.pdfLog){H("Registre de pes",112,ty);ty+=5.5;font("bold",7.4);col(K0.MUT);T("Data",112,ty);T("Pes (g)",140,ty);T("% pèrdua",164,ty);T("HR / °C",RR,ty,{align:"right"});ty+=2;line(112,ty,RR);
+    const tgt=C.target?`Objectiu: ${C.target}`:"";for(let i=0;i<9;i++){ty+=6.2;line(112,ty,RR);}ty+=4.6;font("bold",7.6);col(K0.ACC);if(tgt)T(fit(tgt,86),112,ty);ty+=2;}
+  else{H("Nota de tast",112,ty);ty+=5.5;font("normal",8.2);col(K0.MUT);T("Data del tast",112,ty);line(133,ty+.4,RR);ty+=6.6;
+    T("Valoració",112,ty);d.setDrawColor(...K0.MUT);d.setLineWidth(.25);for(let i=0;i<5;i++)d.circle(133+i*6.5,ty-1.1,2,"S");ty+=6.6;
+    for(const t of (r.pdfTaste||["Aspecte","Aroma","Textura","Gust"])){font("normal",8.2);col(K0.MUT);T(t,112,ty);line(133,ty+.4,RR);ty+=6.6;}}
+  y=Math.max(py,ty)+2;
+  if(y<BOT-8){H("Notes i canvis per a la propera vegada",M,y);for(let ny=y+7;ny<=BOT-1;ny+=7)line(M,ny,RR);}
+  font("normal",6.8);col(K0.MUT);T(`${P.title} · generat el ${dmy(new Date())}`,M,BOT+6);
+  return d;
+}
+$("pdfBtn").onclick=async()=>{
+  const msg=m=>{$("pdfMsg").textContent=m;clearTimeout(msg.t);msg.t=setTimeout(()=>$("pdfMsg").textContent="",4000);};
+  if(!window.jspdf){msg("No s'ha pogut carregar el generador de PDF. Torna a carregar la pàgina.");return;}
+  const s=st();const fname=`${P.key}-${S.tab}-${s.profile}-${new Date().toISOString().slice(0,10)}.pdf`;
+  if(!window.claude){try{buildPDF().save(fname);msg("PDF desat");}catch(e){console.error(e);msg("No s'ha pogut generar el PDF");}return;}
+  let dl=null;try{dl=window.claude.use?await window.claude.use("downloads"):null;}catch(_){dl=null;}
+  if(!dl){msg("La descàrrega no està disponible en aquesta vista. Copia la recepta en text.");return;}
+  try{await dl.save({filename:fname,data:buildPDF().output("blob")});msg("PDF desat");}
+  catch(e){const c=e&&e.code;msg(c==="declined"?"Descàrrega cancel·lada":c==="rate_limited"?"Ja hi ha una descàrrega pendent":"No s'ha pogut desar el PDF");}
+};
+
+// ---------- receptes guardades ----------
+const KEY=P.key+"-receptes-v1";
+function getSaved(){try{return JSON.parse(localStorage.getItem(KEY)||"[]");}catch(_){return[];}}
+function setSaved(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true;}catch(_){return false;}}
+function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function renderSaved(){
+  const a=getSaved();
+  $("saved").innerHTML=a.length?a.map((z,i)=>{const rr=P.recipes[z.tab];return `<div class="srow"><div style="min-width:0"><b>${esc(z.name)}</b> <span class="meta">${rr?rr.name:""} · ${rr&&rr.profiles[z.st.profile]?rr.profiles[z.st.profile].name:""} · ${new Date(z.when).toLocaleDateString("ca-ES")}</span>${z.notes?`<div class="meta">${esc(z.notes)}</div>`:""}</div><div class="btnrow" style="flex:none"><button type="button" data-load="${i}">Carregar</button><button type="button" class="ghost" data-del="${i}" aria-label="Esborrar ${esc(z.name)}">✕</button></div></div>`;}).join(""):'<p class="ok">Encara no n\'has guardat cap.</p>';
+}
+$("saveBtn").onclick=()=>{
+  const r=R(),s=st();const name=$("saveName").value.trim()||`${r.name} · ${r.profiles[s.profile].name} · ${new Date().toLocaleDateString("ca-ES")}`;
+  const a=getSaved();a.unshift({name,notes:$("saveNotes").value.trim(),when:Date.now(),tab:S.tab,st:JSON.parse(JSON.stringify(s))});
+  if(setSaved(a)){flash("Recepta guardada");$("saveName").value="";$("saveNotes").value="";renderSaved();}else flash("Aquest navegador no permet guardar");
+};
+$("saved").addEventListener("click",e=>{
+  const l=e.target.closest("[data-load]"),dl=e.target.closest("[data-del]");const a=getSaved();
+  if(l){const z=a[+l.dataset.load];if(!P.recipes[z.tab])return;S.tab=z.tab;S.tabs[z.tab]=Object.assign(freshState(z.tab),JSON.parse(JSON.stringify(z.st)));render();flash("Recepta carregada");window.scrollTo({top:0,behavior:"smooth"});}
+  if(dl){a.splice(+dl.dataset.del,1);setSaved(a);renderSaved();}
+});
+
+// ---------- inici ----------
+const pad=n=>String(n).padStart(2,"0");
+const now=new Date();const local=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+for(const k of P.tabOrd){S.tabs[k]=freshState(k);const s=S.tabs[k];const pr=P.recipes[k].profiles[s.profile];s.doses={...pr.d};Object.assign(s.p,pr.p||{});if(pr.n!=null)s.n=pr.n;
+  s.start=P.recipes[k].tl.mode==="d"?local:`${local}T${P.recipes[k].tl.defTime||"09:00"}`;}
+let t0=null;try{t0=localStorage.getItem(P.key+"-tab");}catch(_){}
+if(t0&&P.recipes[t0])S.tab=t0;
+const hs=(location.hash||"").slice(1);if(P.recipes[hs])S.tab=hs;
+render();renderSaved();
+})();
+
+</script>
+</body>
+</html>
