@@ -32,17 +32,21 @@ nav.llista{overflow-y:auto;min-height:0;flex:1;display:flex;flex-direction:colum
 .vista{min-width:0;min-height:0;position:relative;background:var(--bg)}
 .vista iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
 .inici{height:100%;overflow-y:auto;padding:var(--s4) max(var(--s2),env(safe-area-inset-right,0px)) var(--s4) var(--s3)}
-.inici .hd{max-width:62ch;margin-bottom:var(--s3)}
-.inici .hd p{color:var(--muted);margin-top:var(--s0)}
+.inici .hd{max-width:60ch;margin-bottom:var(--s3)}
+.inici .hd h2{font-size:var(--fs-xl);line-height:1.05;letter-spacing:-.02em;margin:0}
+.inici .hd p{color:var(--muted);margin-top:var(--s1);font-size:1.0625rem}
+.inici .hd .ull{display:block;color:var(--accent2);font-family:var(--f-body);font-size:var(--fs-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:var(--s0)}
 .inici h2{font-size:var(--fs-md);margin:var(--s3) 0 var(--s1)}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--s1);list-style:none;margin:0;padding:0}
 .tile{display:flex;flex-direction:column;gap:var(--s-1);height:100%;padding:var(--s1);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   box-shadow:var(--shadow-1);color:var(--ink);text-decoration:none;transition:border-color var(--t-fast),transform var(--t-fast)}
-.tile:hover{border-color:var(--accent);transform:translateY(-1px)}
-.tile em{font-style:normal;font-family:var(--f-mono);font-size:var(--fs-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tile:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgb(60 40 20 / .10)}
+.tile em{font-style:normal;font-family:var(--f-body);font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2)}
 .tile b{font-family:var(--f-display);font-size:var(--fs-lg);line-height:1.2}
 .tile span{color:var(--muted);font-size:var(--fs-sm)}
-.tile small{margin-top:auto;padding-top:var(--s0);font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--accent)}
+.tile small{margin-top:auto;padding-top:var(--s1);display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--muted)}
+.tile small i{font-style:normal;font-family:var(--f-body);font-weight:700;font-size:var(--fs-sm);color:var(--accent)}
+.tile:hover small i{text-decoration:underline;text-underline-offset:3px}
 .buit{color:var(--muted);font-size:var(--fs-sm);padding:0 10px}
 @media (max-width:760px){
   body{overflow:auto}
@@ -91,7 +95,7 @@ const RECEPTES=/*RECEPTES*/[]/*FI*/;
     $("#llista").innerHTML=arr.length?grups(arr).map(([c,rs])=>`<div class="cat"><h2>${esc(c)}</h2><ul>${rs.map(r=>`<li><a class="it" href="#${esc(r.id)}"${actual&&actual.id===r.id?' aria-current="page"':""}>${esc(r.titol)}</a></li>`).join("")}</ul></div>`).join(""):'<p class="buit">Cap recepta coincideix amb la cerca.</p>';
   }
   function inici(){
-    $("#vista").innerHTML=`<div class="inici"><div class="hd"><h2 class="sr-only">Totes les receptes</h2><p style="font-size:var(--fs-lg);color:var(--ink);margin:0">Tria una recepta i la calculadora s'obre aquí mateix.</p><p>${L.length} calculadores: escalat, perfils, avisos, calendari, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}</small></a></li>`).join("")}</ul></div>`;
+    $("#vista").innerHTML=`<div class="inici"><div class="hd"><span class="ull">Receptari de casa</span><h2>Què cuinem avui?</h2><p>Tria una recepta i la calculadora s'obre aquí mateix: escalat, perfils, avisos, calendari, llista de la compra i fitxa PDF.</p></div><ul class="tiles">${grups(L).flatMap(([c,rs])=>rs).map(r=>`<li><a class="tile" href="#${esc(r.id)}"><em>${esc(r.categoria)}</em><b>${esc(r.titol)}</b><span>${esc(r.descripcio)}</span><small>${esc(r.mesura)}<i>Obre-la →</i></small></a></li>`).join("")}</ul></div>`;
   }
   function mostra(){
     const h=decodeURIComponent(location.hash.slice(1));

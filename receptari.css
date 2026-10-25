@@ -1,7 +1,7 @@
 /* ==========================================================================
    Receptari de casa · sistema de disseny compartit
-   Un sol fitxer per a totes les calculadores. Cada pàgina només redefineix
-   --accent, --accent-soft, --accent-ink, --bar (i, si cal, --accent2).
+   Un sol fitxer per a totes les calculadores. Tot el receptari comparteix
+   els mateixos colors: cap pàgina redefineix l'accent.
    Es carrega DESPRÉS de l'estil propi de cada pàgina: aquí manen els colors,
    la tipografia, els radis, l'espaiat dels components i l'accessibilitat.
    La disposició (columnes de cada graella) és cosa de cada pàgina.
@@ -9,38 +9,40 @@
 
 /* ---------- Tokens: tema clar ---------- */
 :root{
-  /* neutres (lleugerament verdosos, mai blanc ni negre purs) */
-  --bg:#eceeea; --surface:#f9faf7; --sunk:#f1f3ee; --ink:#1c201d; --muted:#4f5751;
-  --line:#d3d8d0; --field:#7d857f;
-  /* accent per defecte (cada pàgina el canvia) */
-  --accent:#2f5d46; --accent-soft:#e1ebe3; --accent-ink:#ffffff; --accent2:#7a5410; --bar:#6f8f5e;
+  /* neutres: paper de receptari, càlids i mai blanc ni negre purs */
+  --bg:#f3eee6; --surface:#fffcf7; --sunk:#f8f2e9; --ink:#221c16; --muted:#5b5146;
+  --line:#e2d8ca; --field:#8a7e70;
+  /* un sol accent per a tot el receptari: terracota (controls) i verd oliva (marca) */
+  --accent:#a3401a; --accent-soft:#f8e3d8; --accent-ink:#ffffff; --accent2:#2f5d46; --bar:#d08a3c;
   /* semàntics */
-  --bad:#a8251b; --bad-soft:#f7dfdb; --warn:#7a4f00; --warn-soft:#f6ead2; --info:#245a7a; --info-soft:#dde9f0;
+  --bad:#a8251b; --bad-soft:#f8ded8; --warn:#7a4f00; --warn-soft:#f6e9d0; --info:#245a7a; --info-soft:#e0eaf0;
   /* tipografia */
   --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --fs-xs:.75rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.25rem; --fs-xl:clamp(1.75rem,1.2rem + 2vw,2.5rem);
+  --fs-xs:.75rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.25rem; --fs-xl:clamp(2rem,1.3rem + 2.4vw,3rem);
   /* espaiat (regla dels 8 px) */
   --s-1:4px; --s0:8px; --s1:16px; --s2:24px; --s3:32px; --s4:48px; --s5:64px;
   /* radis i ombres */
   --r-sm:6px; --r-md:8px; --r-lg:12px; --r-pill:999px;
-  --shadow-1:0 1px 2px rgb(20 24 21 / .05),0 2px 8px rgb(20 24 21 / .04);
+  --shadow-1:0 1px 2px rgb(60 40 20 / .05),0 4px 14px rgb(60 40 20 / .05);
   --t-fast:.15s ease-in-out;
   /* àlies per a pàgines antigues */
-  --panel:var(--surface); --fg:var(--ink); --soft:var(--accent-soft); --danger:var(--bad); --spice:var(--accent2);
-  --crust:var(--accent2); --crust-soft:var(--accent-soft); --sugar:var(--surface);
+  --panel:var(--surface); --fg:var(--ink); --soft:var(--accent-soft); --danger:var(--bad); --spice:var(--accent);
+  --crust:var(--accent); --crust-soft:var(--accent-soft); --sugar:var(--surface);
 }
 /* ---------- Tokens: tema fosc ---------- */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141715; --surface:#1c201d; --sunk:#181b19; --ink:#e7ebe6; --muted:#aab2ab;
-  --line:#343a35; --field:#7a837c;
+  --bg:#16120f; --surface:#201a15; --sunk:#1a1511; --ink:#f2eadf; --muted:#b8ab9b;
+  --line:#3a3029; --field:#85796b;
+  --accent:#f08c62; --accent-soft:#3e2419; --accent-ink:#1e0c04; --accent2:#8cc4a1; --bar:#e0a64f;
   --bad:#f39a90; --bad-soft:#3d201d; --warn:#f2bd60; --warn-soft:#3a2d15; --info:#8fc0dc; --info-soft:#17303d;
   --shadow-1:0 1px 2px rgb(0 0 0 / .3);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#141715; --surface:#1c201d; --sunk:#181b19; --ink:#e7ebe6; --muted:#aab2ab;
-  --line:#343a35; --field:#7a837c;
+  --bg:#16120f; --surface:#201a15; --sunk:#1a1511; --ink:#f2eadf; --muted:#b8ab9b;
+  --line:#3a3029; --field:#85796b;
+  --accent:#f08c62; --accent-soft:#3e2419; --accent-ink:#1e0c04; --accent2:#8cc4a1; --bar:#e0a64f;
   --bad:#f39a90; --bad-soft:#3d201d; --warn:#f2bd60; --warn-soft:#3a2d15; --info:#8fc0dc; --info-soft:#17303d;
   --shadow-1:0 1px 2px rgb(0 0 0 / .3);
   color-scheme:dark}
@@ -165,6 +167,17 @@ pre.txt{background:var(--sunk);border:1px solid var(--line);border-radius:var(--
 .brand h1,.sheet h2{font-family:var(--f-display);font-weight:700}
 .tile b{font-family:var(--f-display);font-weight:700}
 .tile,.item{border-radius:var(--r-md)}
+
+/* ---------- Marca i capçalera comunes ---------- */
+.rc-marca{display:inline-flex;align-items:center;gap:var(--s0);margin:0 0 var(--s0);color:var(--accent2);text-decoration:none;
+  font-family:var(--f-body);font-size:var(--fs-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.rc-marca img{width:24px;height:24px;border-radius:6px}
+.rc-marca:hover{text-decoration:underline;text-underline-offset:3px}
+header .lede,.lede{font-size:1.0625rem;line-height:1.55}
+.famhead .fn{font-family:var(--f-body)}
+.tab[aria-selected="true"]{color:var(--accent)}
+.chip:hover{background:var(--accent-soft);border-color:var(--accent)}
+.panel h2{letter-spacing:-.01em}
 
 /* ---------- Accessibilitat ---------- */
 :focus{outline:none}

@@ -204,5 +204,5 @@ window.PAGE={key:"arrossos-secs",title:"Arrossos secs",titleShort:"ARROSSOS SECS
   where:{K:"Carnisseria",P:"Peixateria",M:"Mercat (verdura i bolets)",S:"Súper",C:"De casa"},
   units:{gamba:["gamba","gambes"],escamarla:["escamarlà","escamarlans"],musclo:["musclo","musclos"],caragol:["caragol","caragols"]},
   ing:ING,tabOrd:["carn","mixt","peix","negre","conill"],recipes,
-  pdf:{INK:[34,31,28],MUT:[100,94,86],ACC:[176,82,12],LN:[214,208,198],BAR:[214,150,30],RED:[176,40,28]}};
+  pdf:{INK:[34,28,22],MUT:[91,81,70],ACC:[163,64,26],LN:[226,216,202],BAR:[208,138,60],RED:[168,37,27]}};
 })();

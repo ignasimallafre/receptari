@@ -192,5 +192,5 @@ const mag={
   }
 };
 window.PAGE={key:"coca-iogurt",title:"Coca de iogurt i magdalenes",titleShort:"COCA DE IOGURT I MAGDALENES",where:{S:"Súper",M:"Mercat / fruita",C:"De casa"},ing:ING,tabOrd:["coca","mag"],recipes:{coca,mag},
-  pdf:{INK:[35,37,46],MUT:[93,97,112],ACC:[90,63,153],LN:[210,214,224],BAR:[201,164,0],RED:[173,42,31]}};
+  pdf:{INK:[34,28,22],MUT:[91,81,70],ACC:[163,64,26],LN:[226,216,202],BAR:[208,138,60],RED:[168,37,27]}};
 })();

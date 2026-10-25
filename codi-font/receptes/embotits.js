@@ -165,5 +165,5 @@ const PROF={
 };
 window.PAGE={key:"embotits-curats",title:"Assecador d'embotits",titleShort:"EMBOTITS CURATS",where:{S:"Súper",B:"Botiga especialitzada / en línia",C:"De casa / mercat"},ing:ING,tabOrd:["cansalada","capocollo","llom"],
   recipes:{cansalada:make("cansalada"),capocollo:make("capocollo"),llom:make("llom")},
-  pdf:{INK:[36,32,31],MUT:[98,90,87],ACC:[140,28,43],LN:[210,204,200],BAR:[194,125,125],RED:[176,40,28]}};
+  pdf:{INK:[34,28,22],MUT:[91,81,70],ACC:[163,64,26],LN:[226,216,202],BAR:[208,138,60],RED:[168,37,27]}};
 })();

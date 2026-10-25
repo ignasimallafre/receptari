@@ -312,6 +312,6 @@ window.PAGE={
   where:{S:"Súper",B:"Botiga especialitzada / molí",C:"De casa"},
   ing:ING,tabOrd:["barra","rodo","motlle"],
   recipes:{barra:makeRecipe("barra"),rodo:makeRecipe("rodo"),motlle:makeRecipe("motlle")},
-  pdf:{INK:[38,36,33],MUT:[104,99,92],ACC:[139,74,23],LN:[205,200,192],BAR:[176,138,60],RED:[170,40,30]}
+  pdf:{INK:[34,28,22],MUT:[91,81,70],ACC:[163,64,26],LN:[226,216,202],BAR:[208,138,60],RED:[168,37,27]}
 };
 })();

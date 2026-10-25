@@ -69,7 +69,6 @@
     barra.className = "rc-barra";
     barra.setAttribute("aria-label", "Eines de la pàgina");
     var h = "";
-    if (web && !dinsIndex) h += '<a class="rc-b" href="index.html' + (location.pathname.split("/").pop() ? "#" + location.pathname.split("/").pop().replace(/\.html$/, "") : "") + '">← Receptari</a>';
     h += '<button type="button" class="rc-b" id="rcCuina" aria-pressed="false">Mode cuina</button>';
     h += '<button type="button" class="rc-b" id="rcPrint">Imprimeix</button>';
     barra.innerHTML = h;
@@ -79,12 +78,23 @@
     if (store.get("receptari-cuina") === "1") cuina(true); else estat();
   }
 
+  /* ---------- Marca: enllaç a l'índex (només a GitHub Pages, fora de l'índex) ---------- */
+  function marca() {
+    if (!web || dinsIndex || root.hasAttribute("data-sense-barra")) return;
+    var h1 = doc.querySelector("main h1, h1"); if (!h1) return;
+    var nom = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+    var a = doc.createElement("a");
+    a.className = "rc-marca"; a.href = "index.html" + (nom ? "#" + nom : "");
+    a.innerHTML = '<img src="icones/icona.svg" alt="">Receptari de casa';
+    var cap = h1.parentNode; cap.insertBefore(a, h1);
+  }
+
   /* ---------- Sense connexió (només a GitHub Pages) ---------- */
   function offline() {
     if (!web || !("serviceWorker" in navigator) || (location.protocol !== "https:" && location.hostname !== "localhost")) return;
     navigator.serviceWorker.register("sw.js").catch(function () {});
   }
 
-  function inici() { totesLesPestanyes(); barraEines(); if (!dinsIndex) offline(); }
+  function inici() { totesLesPestanyes(); marca(); barraEines(); if (!dinsIndex) offline(); }
   if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", inici); else inici();
 })();

@@ -172,5 +172,5 @@ const R={
   }
 };
 window.PAGE={key:"coca-brioix",title:"Coca de brioix",titleShort:"COCA DE BRIOIX",where:{S:"Súper",B:"Botiga de pastisseria",C:"De casa"},ing:ING,tabOrd:["coca"],recipes:{coca:R},
-  pdf:{INK:[42,38,32],MUT:[106,99,88],ACC:[168,103,10],LN:[221,216,204],BAR:[217,165,33],RED:[173,42,31]}};
+  pdf:{INK:[34,28,22],MUT:[91,81,70],ACC:[163,64,26],LN:[226,216,202],BAR:[208,138,60],RED:[168,37,27]}};
 })();

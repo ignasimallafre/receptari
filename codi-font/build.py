@@ -17,7 +17,6 @@ import hashlib, json, os, re, sys
 CF = os.path.dirname(os.path.abspath(__file__))
 R = os.path.dirname(CF)
 sys.path.insert(0, CF)
-import accents
 
 rd = lambda p: open(p, encoding="utf8").read()
 def wr(p, s):
@@ -56,7 +55,7 @@ def motor(r):
     return ('<!doctype html>\n<html lang="ca">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
             f'<title>{r["titol"]}</title>\n{cap(r["descripcio"])}{FONTS}<style>\n{layout}</style>\n'
-            f'<link rel="stylesheet" href="receptari.css">\n<style>\n{accents.css(r["accent"])}</style>\n</head>\n<body>\n{sk}\n'
+            f'<link rel="stylesheet" href="receptari.css">\n</head>\n<body>\n{sk}\n'
             f'<script src="{JSPDF}"></script>\n<script>\n{code}\n</script>\n</body>\n</html>\n'), code
 
 def artefacte(html):
@@ -94,7 +93,7 @@ def main():
     idx = rd(os.path.join(CF, "index.html"))
     idx = idx.replace("<!--CAP-->\n", cap("Calculadores de receptes de casa: escalat, perfils, avisos, calendari i fitxa PDF."))
     idx = idx.replace("<!--FONTS-->\n", FONTS + '<link rel="stylesheet" href="receptari.css">\n')
-    idx = idx.replace("<!--ACCENT-->", "<style>\n" + accents.css("index") + "</style>")
+    idx = idx.replace("<!--ACCENT-->\n", "")
     idx = re.sub(r"/\*RECEPTES\*/.*?/\*FI\*/", lambda m: json.dumps(pub, ensure_ascii=False), idx, flags=re.S)
     wr(os.path.join(R, "index.html"), idx)
     print("pàgina index.html")

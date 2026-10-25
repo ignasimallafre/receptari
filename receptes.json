@@ -9,7 +9,6 @@
   "descripcio": "Arròs de carn, mixt, de peix i marisc, negre i de conill i caragols: arròs, brou, paella, ordre de cocció i salmorreta.",
   "afegit": "2026-10-25",
   "motor": "arros",
-  "accent": "arros",
   "entradeta": "Arròs de carn, mixt, de peix i marisc, negre i de conill i caragols, per comensals. Calcula l'arròs, el brou i la paella que et cal, amb l'ordre de la cocció i la salmorreta per si la vols."
  },
  {
@@ -20,8 +19,7 @@
   "categoria": "Forn i pastisseria",
   "mesura": "Peces × grams",
   "descripcio": "20 masses amb Caputo Manitoba (pizza, pa, rebosteria fermentada): % forner, prefermentats, temperatura de fermentació, nevera i calendari.",
-  "afegit": "2026-10-25",
-  "accent": "manitoba"
+  "afegit": "2026-10-25"
  },
  {
   "id": "obrador-de-pa",
@@ -33,7 +31,6 @@
   "descripcio": "Barra, rodó i motlle abrioixat: % forner, prefermets i temps segons llevat, temperatura i nevera.",
   "afegit": "2026-10-20",
   "motor": "pa",
-  "accent": "pa",
   "entradeta": "Barra, rodó i motlle abrioixat amb percentatges de forner. Tria la farina, la hidratació i el prefermet; els temps es calculen segons el llevat i la temperatura, també amb el bloc a la nevera."
  },
  {
@@ -46,7 +43,6 @@
   "descripcio": "Coca de brioix flonja amb tangzhong, cobertures, ajust a la safata i horari amb nevera.",
   "afegit": "2026-10-20",
   "motor": "brioix",
-  "accent": "brioix",
   "entradeta": "Coca de brioix flonja escalada per safata. Ajusta mantega, ou i sucre, tria la cobertura i segueix l'horari amb el bloc a la nevera."
  },
  {
@@ -59,7 +55,6 @@
   "descripcio": "Coca de iogurt en grams i gots ajustada al motlle, i magdalenes amb copet.",
   "afegit": "2026-10-20",
   "motor": "iogurt",
-  "accent": "iogurt",
   "entradeta": "La coca de got de iogurt i les magdalenes amb copet, en grams i en gots. Tria el sabor, el motlle o el nombre de càpsules, i comprova les proporcions abans d'enfornar."
  },
  {
@@ -70,8 +65,7 @@
   "categoria": "Forn i pastisseria",
   "mesura": "Peces",
   "descripcio": "Ensaïmades amb variants, escalat de la massa, temps de fermentació i fitxa PDF.",
-  "afegit": "2026-10-20",
-  "accent": "ensaimades"
+  "afegit": "2026-10-20"
  },
  {
   "id": "vermut-blanc",
@@ -81,8 +75,7 @@
   "categoria": "Begudes i licors",
   "mesura": "Ampolles de vi",
   "descripcio": "Vermut blanc casolà: perfils, botànics, dolçor amb sucre, caramel o mel, macerats per separat i fitxa PDF.",
-  "afegit": "2026-10-20",
-  "accent": "vermut"
+  "afegit": "2026-10-20"
  },
  {
   "id": "embotits-curats",
@@ -94,7 +87,6 @@
   "descripcio": "Cansalada, capocollo i llom: adob per kg amb sal nitro, salaó, pes objectiu i assecat.",
   "afegit": "2026-10-20",
   "motor": "embotits",
-  "accent": "embotits",
   "entradeta": "Cansalada, capocollo i llom curats per equilibri: sal, sal nitrada i espècies per quilo de carn, dies de salaó, pes objectiu i temps d'assecat."
  }
 ]

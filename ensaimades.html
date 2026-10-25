@@ -157,11 +157,6 @@ details.pr summary{cursor:pointer;font-weight:700;font-size:.92rem}
 details.pr p{margin:6px 0 0;font-size:.88rem;color:var(--muted)}
 </style>
 <link rel="stylesheet" href="receptari.css">
-<style>
-:root{ --accent:#8a4a10; --accent-soft:#f4e3cf; --accent-ink:#ffffff; --bar:#c4964e; --accent2:#8a4a10; }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#e9a862; --accent-soft:#3a2a18; --accent-ink:#1a1206; --bar:#d8ad66; --accent2:#e9a862; }}
-:root[data-theme="dark"]{ --accent:#e9a862; --accent-soft:#3a2a18; --accent-ink:#1a1206; --bar:#d8ad66; --accent2:#e9a862; }
-</style>
 </head>
 <body>
 <main class="wrap">
@@ -712,7 +707,7 @@ const dmy=dt=>dt.toLocaleDateString("ca-ES",{day:"2-digit",month:"2-digit",year:
 function buildPDF(){
   const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:"a4"});
   const S=stats(),FL=flavour(),P=PROFILES[st.profile],fm=F();
-  const INK=[29,37,51],MUT=[91,100,116],ACC=[165,93,22],LN=[211,217,225],BAR=[196,150,78],RED=[179,38,30];
+  const INK=[34,28,22],MUT=[91,81,70],ACC=[163,64,26],LN=[226,216,202],BAR=[208,138,60],RED=[168,37,27];
   const col=a=>doc.setTextColor(...a);const font=(s,z)=>{doc.setFont("helvetica",s);doc.setFontSize(z);};
   const T=(s,x,y,o)=>doc.text(PS(s),x,y,o);
   const fit=(s,w)=>{s=PS(s);if(doc.getTextWidth(s)<=w)return s;while(s.length>1&&doc.getTextWidth(s+".")>w)s=s.slice(0,-1);return s+".";};

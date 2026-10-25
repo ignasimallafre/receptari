@@ -142,11 +142,6 @@ label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
 pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;max-height:260px;overflow:auto;margin:0}
 </style>
 <link rel="stylesheet" href="receptari.css">
-<style>
-:root{ --accent:#7f5307; --accent-soft:#f3e6c8; --accent-ink:#ffffff; --bar:#6f8f5e; --accent2:#7f5307; }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#e6ad48; --accent-soft:#3a2f17; --accent-ink:#1a1408; --bar:#8fb27c; --accent2:#e6ad48; }}
-:root[data-theme="dark"]{ --accent:#e6ad48; --accent-soft:#3a2f17; --accent-ink:#1a1408; --bar:#8fb27c; --accent2:#e6ad48; }
-</style>
 </head>
 <body>
 <main class="wrap">
@@ -765,7 +760,7 @@ const dmy=d=>d.toLocaleDateString("ca-ES",{day:"2-digit",month:"2-digit",year:"n
 function buildPDF(){
   const {jsPDF}=window.jspdf;const d=new jsPDF({unit:"mm",format:"a4"});
   const L=liquids(),F=flavour(),P=PROFILES[st.profile];
-  const INK=[28,42,33],MUT=[89,105,94],ACC=[168,114,15],LN=[199,208,193],BAR=[111,143,94],RED=[179,38,30];
+  const INK=[34,28,22],MUT=[91,81,70],ACC=[163,64,26],LN=[226,216,202],BAR=[208,138,60],RED=[168,37,27];
   const col=a=>d.setTextColor(...a);const font=(s,z)=>{d.setFont("helvetica",s);d.setFontSize(z);};
   const T=(s,x,y,o)=>d.text(PS(s),x,y,o);
   const fit=(s,w)=>{s=PS(s);if(d.getTextWidth(s)<=w)return s;while(s.length>1&&d.getTextWidth(s+".")>w)s=s.slice(0,-1);return s+".";};
@@ -871,7 +866,7 @@ $("pdfBtn").onclick=async()=>{
 function buildLabels(){
   const {jsPDF}=window.jspdf;const d=new jsPDF({unit:"mm",format:"a4"});
   const L=liquids(),P=PROFILES[st.profile],wr=WINE[st.profile];
-  const INK=[28,42,33],MUT=[89,105,94],ACC=[168,114,15],LN=[170,180,165];
+  const INK=[34,28,22],MUT=[91,81,70],ACC=[163,64,26],LN=[200,188,172];
   const lot=$("saveName").value.trim();
   const s0=st.start?new Date(st.start+"T12:00:00"):new Date();
   const dEnv=addDays(s0,st.mac),dOk=addDays(s0,st.mac+st.rest*7);
