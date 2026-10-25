@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arrossos secs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Karla:wght@400;700&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+[hidden]{display:none!important}body{margin:0}
+/* Layout: paella a la llenya: ferro negre, safrà i rajola blava; panells com a cassoles */
+:root{ --bg:#ebeae6; --surface:#f7f6f3; --ink:#221f1c; --muted:#645e56; --line:#d6d0c6; --accent:#b0520c; --accent-soft:#f5e0cc; --accent-ink:#ffffff; --bad:#b0281c; --bad-soft:#f6dcd6; --warn:#8a5a00; --warn-soft:#f5e8cc; --info:#2b5d8a; --info-soft:#dce7f2; --bar:#d6961e;
+  --f-display:"Yeseva One", Didot, Georgia, serif; --f-body:Karla, "Segoe UI", system-ui, sans-serif; --f-mono:"Martian Mono", ui-monospace, Menlo, monospace; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --bg:#161514; --surface:#201e1c; --ink:#ece7df; --muted:#a59e93; --line:#38342f; --accent:#f08a3e; --accent-soft:#3c2614; --accent-ink:#1f1006; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86b4e0; --info-soft:#17293d; --bar:#e8b04a; color-scheme:dark}}
+:root[data-theme="dark"]{ --bg:#161514; --surface:#201e1c; --ink:#ece7df; --muted:#a59e93; --line:#38342f; --accent:#f08a3e; --accent-soft:#3c2614; --accent-ink:#1f1006; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86b4e0; --info-soft:#17293d; --bar:#e8b04a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.15rem;font-weight:700}
+h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--f-body);font-weight:700}
+.lede{color:var(--muted);max-width:68ch;margin:6px 0 0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px}
+.grid{display:grid;grid-template-columns:350px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.params{display:flex;flex-direction:column;gap:12px}
+.params .sub{border-top:1px solid var(--line);padding-top:10px;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+input[type=number],select,input[type=text],input[type=date],input[type=datetime-local],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%;min-width:0}
+textarea{min-height:60px;resize:vertical}
+input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=range]:disabled{opacity:.4}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:38px;height:38px;font-size:1.2rem;flex:none}
+.stepper input{text-align:center;font-family:var(--f-mono);font-size:1.3rem;font-weight:600}
+.stepper .u{color:var(--muted);font-size:.9rem;flex:none}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:6px 12px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted);padding:4px 8px}
+button.ghost:hover{color:var(--bad)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.profiles{display:grid;grid-template-columns:1fr;gap:6px}
+.prof{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:1px;padding:8px 10px}
+.prof b{font-family:var(--f-display);font-size:.98rem}
+.prof span{font-size:.8rem;color:var(--muted)}
+.prof[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.recbox{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.recbox b{font-family:var(--f-display);font-size:.98rem}
+.recbox .why{color:var(--muted)}
+.custom-tag{font-size:.78rem;color:var(--accent);font-weight:700}
+dl.out{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:0}
+dl.out dt{color:var(--muted);font-size:.88rem}
+dl.out dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
+dl.out .hl{color:var(--accent)}
+dl.out .sec{grid-column:1/-1;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;padding-top:8px;border-top:1px solid var(--line);margin-top:4px;font-family:var(--f-body)}
+dl.out .sec:first-child{border-top:none;padding-top:0;margin-top:0}
+.note{font-size:.8rem;color:var(--muted);margin:0}
+.mix{display:flex;flex-direction:column}
+.mrow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(120px,1.2fr) 92px 110px 34px;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.mrow.head{border-top:none;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding-bottom:4px}
+.famhead{padding:12px 0 4px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.famhead .fn{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.lvl{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.lvl button{border:none;border-radius:0;padding:3px 10px;font-size:.78rem;background:var(--bg);color:var(--muted)}
+.lvl button+button{border-left:1px solid var(--line)}
+.lvl button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.nm b{font-weight:700}
+.nm .es{color:var(--muted);font-size:.85rem}
+.nm .sci{font-style:italic;color:var(--muted);font-size:.8rem}
+.nm .taste{font-size:.8rem;color:var(--muted);display:block}
+.val{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.9rem}
+.val.tot{font-weight:600;color:var(--ink)}
+.val .mac{display:block;font-size:.76rem;color:var(--muted);font-weight:400}
+.req{font-size:.7rem;border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:0 6px;margin-left:4px;vertical-align:1px}
+.calc{font-size:.7rem;border:1px dashed var(--muted);color:var(--muted);border-radius:20px;padding:0 6px;margin-left:4px;vertical-align:1px}
+@media (max-width:640px){
+  .mrow{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+  .mrow.head{display:none}
+  .mrow .nm{grid-column:1/2}
+  .mrow .rm{grid-column:2/3;grid-row:1}
+  .mrow .sl{grid-column:1/3}
+  .mrow .pb{grid-column:1/2;text-align:left}
+  .mrow .pb::before{content:attr(data-l) ": ";color:var(--muted);font-family:var(--f-body)}
+  .mrow .tot{grid-column:2/3}
+}
+.cat{display:flex;flex-direction:column;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border-radius:20px;padding:4px 11px;font-size:.85rem;background:var(--bg)}
+.chip .plus{color:var(--accent);font-weight:700;margin-right:3px}
+.flav{display:grid;grid-template-columns:110px minmax(0,1fr) 36px;gap:6px 10px;align-items:center;font-size:.88rem}
+.track{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;background:var(--bar);border-radius:5px;transition:width .25s}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:760px){.split{grid-template-columns:minmax(0,1fr)}}
+.warns{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.w{border-radius:8px;padding:8px 10px;font-size:.88rem;display:flex;gap:8px;align-items:flex-start}
+.w .tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:4px;padding:1px 6px;flex:none;margin-top:2px}
+.w.bad{background:var(--bad-soft)} .w.bad .tag{background:var(--bad);color:var(--surface)}
+.w.warn{background:var(--warn-soft)} .w.warn .tag{background:var(--warn);color:var(--surface)}
+.w.info{background:var(--info-soft)} .w.info .tag{background:var(--info);color:var(--surface)}
+.ok{font-size:.9rem;color:var(--muted)}
+.shop{display:flex;flex-direction:column;gap:12px}
+.shop ul{margin:4px 0 0;padding-left:18px}
+.shop li{font-size:.9rem}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:none}
+.tl .d{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tl .d small{display:block;color:var(--muted);font-weight:400}
+.tl .t{font-size:.9rem}
+.saved{display:flex;flex-direction:column;gap:6px}
+.srow{display:flex;justify-content:space-between;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:6px;font-size:.9rem}
+.srow .meta{color:var(--muted);font-size:.8rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toast{font-size:.85rem;color:var(--accent);font-weight:700}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{border:none;border-bottom:3px solid transparent;border-radius:0;background:transparent;padding:8px 16px;font-family:var(--f-display);font-weight:700;font-size:1rem;color:var(--muted);white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+.chk input{width:auto;accent-color:var(--accent)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;max-height:260px;overflow:auto;margin:0}
+.hint{font-size:.78rem;color:var(--muted)}
+.eqh{color:var(--muted);font-weight:400;font-size:.8em;font-family:var(--f-body)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1 id="pTitle">Arrossos secs</h1>
+      <p class="lede" id="pLede">Arròs de carn, mixt, de peix i marisc, negre i de conill i caragols, per comensals. Calcula l'arròs, el brou i la paella que et cal, amb l'ordre de la cocció i la salmorreta per si la vols.</p>
+    </div>
+    <div class="btnrow"><button type="button" class="primary" id="pdfBtn">Exportar fitxa PDF</button><span class="toast" id="pdfMsg" role="status"></span></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Receptes" id="tabs"></nav>
+
+  <div class="grid">
+    <div class="col">
+      <section class="panel" aria-labelledby="h-lot">
+        <h2 id="h-lot">La pastada</h2>
+        <label class="f"><span id="mLabel">Quantitat</span>
+          <div class="stepper">
+            <button type="button" id="mMinus" aria-label="Menys">−</button>
+            <input type="number" id="mVal" inputmode="decimal">
+            <span class="u" id="mUnit"></span>
+            <button type="button" id="mPlus" aria-label="Més">+</button>
+          </div>
+        </label>
+        <p class="hint" id="mHint"></p>
+        <div class="params" id="params"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-prof">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <h2 id="h-prof">Perfil</h2><span class="custom-tag" id="customTag" hidden>Personalitzat</span>
+        </div>
+        <div class="profiles" id="profiles"></div>
+        <div class="recbox" id="recBox" hidden></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-calc">
+        <h2 id="h-calc">Càlculs</h2>
+        <dl class="out" id="calc"></dl>
+        <p class="note" id="calcNote"></p>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel" aria-labelledby="h-mix">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+          <h2 id="h-mix">Ingredients</h2>
+          <span class="note num" id="loadNote"></span>
+        </div>
+        <div class="mix" id="mix"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-flav">
+          <h2 id="h-flav">Perfil de sabor</h2>
+          <div class="flav" id="flav"></div>
+          <p class="note" id="flavNote">Estimació relativa a partir de la dosi de cada ingredient respecte a la seva dosi típica.</p>
+        </section>
+        <section class="panel" aria-labelledby="h-warn">
+          <h2 id="h-warn">Compatibilitats i avisos</h2>
+          <ul class="warns" id="warns"></ul>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-cat">
+        <h2 id="h-cat">Afegir ingredients</h2>
+        <div class="cat" id="catalog"></div>
+      </section>
+
+      <div class="split">
+        <section class="panel" aria-labelledby="h-shop">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h2 id="h-shop">Llista de la compra</h2>
+            <button type="button" id="copyShop">Copiar</button>
+          </div>
+          <div class="shop" id="shop"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-tl">
+          <h2 id="h-tl">Cronologia</h2>
+          <label class="f"><span id="startLbl">Comences</span><input type="datetime-local" id="startDate"></label>
+          <div class="params" id="paramsTl"></div>
+          <ol class="tl" id="timeline"></ol>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="h-how" id="howPanel" hidden>
+        <h2 id="h-how">Com fer-ho</h2>
+        <ol class="steps" id="how"></ol>
+      </section>
+
+      <section class="panel" aria-labelledby="h-save">
+        <h2 id="h-save">Les meves receptes</h2>
+        <div class="row2">
+          <label class="f">Nom<input type="text" id="saveName" placeholder="p. ex. Prova diumenge"></label>
+          <label class="f">Notes de tast<textarea id="saveNotes" placeholder="Com ha quedat? Què canviaries?"></textarea></label>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="primary" id="saveBtn">Guardar recepta</button>
+          <button type="button" id="copyRecipe">Copiar recepta en text</button>
+          <span class="toast" id="toast" role="status"></span>
+        </div>
+        <p class="note">Es guarden només en aquest navegador.</p>
+        <div class="saved" id="saved"></div>
+        <pre class="txt" id="recipeTxt" hidden></pre>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ===== Arrossos secs =====
+(function(){
+const nf=(n,d)=>(isFinite(n)?n:0).toLocaleString("ca-ES",{maximumFractionDigits:d,minimumFractionDigits:0});
+// id, fam, ca, es, sci, taste, unit, min, max, step, typ, where, v, scaling
+const ING=[
+ ["arros","ar","Arròs bomba o sènia","","Oryza sativa","Gra rodó que xucla el brou sense passar-se","g",70,130,5,100,"S",{}],
+ ["brou","ar","Brou o fumet","","","Es calcula sol segons l'arròs i el foc","ml",0,600,10,300,"C",{}],
+ ["salsitxa","ca","Salsitxa de porc","","","Greix i gust de carn; a trossos d'un dit","g",0,200,10,100,"K",{car:3}],
+ ["costella","ca","Costella de porc a trossets","","","La que fa el brou: ben daurada","g",0,200,10,100,"K",{car:3}],
+ ["pollastre","ca","Pollastre a trossos","","","Cuixa i contracuixa, amb os","g",0,200,10,70,"K",{car:2}],
+ ["conill","ca","Conill a trossos","","","Carn magra i fina; molt daurat","g",0,250,10,120,"K",{car:2,ter:1}],
+ ["botinegra","ca","Botifarra negra","","","Especiada; s'afegeix al final perquè no es desfaci","g",0,100,10,40,"K",{car:2,esp:1}],
+ ["cansalada","ca","Cansalada viada","","","Greix saborós per començar el sofregit","g",0,60,5,25,"K",{car:2}],
+ ["caragols","ca","Caragols serrans o bovers","","","Nets i escaldats; el gust de muntanya","caragol",0,20,1,10,"M",{ter:2,car:1}],
+ ["sipia","ma","Sípia","","Sepia officinalis","La base mariner de quasi tots: daurada a l'oli","g",0,200,10,70,"P",{mar:3}],
+ ["calamar","ma","Calamar o calamarsó","","Loligo vulgaris","Més tendre que la sípia; el calamarsó, sencer","g",0,200,10,60,"P",{mar:3}],
+ ["gamba","ma","Gamba vermella","","Aristeus antennatus","Els caps fan el fumet; marcar i treure","gamba",0,6,1,2,"P",{mar:3}],
+ ["escamarla","ma","Escamarlà","","Nephrops norvegicus","Per sobre els últims minuts","escamarla",0,2,1,1,"P",{mar:3}],
+ ["musclo","ma","Musclo","","Mytilus galloprovincialis","Obrir-los a part i aprofitar l'aigua","musclo",0,8,1,4,"P",{mar:2}],
+ ["rap","ma","Rap a daus","","Lophius piscatorius","Carn ferma; el cap per al fumet","g",0,120,10,50,"P",{mar:2}],
+ ["tinta","ma","Tinta de sípia","","Sepia officinalis","Color negre i gust de mar intens","g",0,8,.5,4,"P",{mar:2}],
+ ["ceba","so","Ceba","","Allium cepa","Dolçor del sofregit; ben pochada","g",0,80,5,40,"M",{dol:2}],
+ ["tomaquet","so","Tomàquet madur ratllat","","Solanum lycopersicum","El cor del sofregit: fins que perdi l'aigua","g",30,120,5,60,"M",{dol:2}],
+ ["pebrot","so","Pebrot verd o vermell","","Capsicum annuum","Fregit amb la carn o al sofregit","g",0,60,5,30,"M",{dol:1,ter:1}],
+ ["all","so","All","","Allium sativum","Fregit al principi per perfumar l'oli","gra",0,3,.5,1,"M",{esp:1}],
+ ["alltendre","so","All tendre","","Allium sativum","Suau i verd; molt d'arròs de peix","g",0,40,5,15,"M",{ter:1}],
+ ["pesols","so","Pèsols","","Pisum sativum","Dolços; a mitja cocció","g",0,40,5,20,"M",{ter:1}],
+ ["carxofa","so","Carxofa","","Cynara cardunculus","Amargor elegant; de tardor a primavera","g",0,80,5,40,"M",{ter:2}],
+ ["mongeta","so","Bajoqueta","","Phaseolus vulgaris","Verda i cruixent; amb la carn","g",0,60,5,30,"M",{ter:1}],
+ ["bolets","bo","Bolets de temporada","","","Rovellons, camagrocs o ceps; nets en sec","g",0,120,10,60,"M",{ter:3}],
+ ["xampinyo","bo","Xampinyons","","Agaricus bisporus","Tot l'any; menys gust que els de bosc","g",0,100,10,50,"S",{ter:2}],
+ ["oli","co","Oli d'oliva verge extra","","Olea europaea","Per fregir els alls, la carn i el sofregit","ml",10,40,1,20,"S",{}],
+ ["sal","co","Sal","","","Al brou, abans de l'arròs: tastar-lo","g",1.5,5,.25,3,"C",{},"sub"],
+ ["pimento","co","Pebre vermell dolç","","Capsicum annuum","Color i gust; uns segons, que no es cremi","g",0,3,.25,1,"S",{esp:1,dol:1},"sub"],
+ ["safra","co","Safrà","","Crocus sativus","Torrat i esmicolat al brou","g",0,.06,.005,.025,"S",{esp:2},"sub"],
+ ["romani","co","Romaní","","Salvia rosmarinus","Una branca els últims minuts i fora","branca",0,2,1,1,"C",{ter:1,esp:1},"fix"],
+ ["salmorreta","co","Salmorreta","","","Nyora, all i tomàquet: el toc alacantí","g",0,30,1,15,"C",{dol:2,esp:2}]
+];
+const FAM={ar:"Arròs i brou",ca:"Carn",ma:"Peix i marisc",so:"Sofregit i verdura",bo:"Bolets",co:"Oli i condiments"};
+const FAMORD=["ar","ca","ma","so","bo","co"];
+const DIMS=[["car","Carnós"],["mar","Mariner"],["ter","Terrós"],["dol","Sofregit"],["esp","Especiat"]];
+const RT={bomba:[3.0,18,"Bomba"],senia:[2.4,16,"Sènia"],albufera:[2.7,17,"Albufera"]};
+const FOC={cuina:[1,"Fogó de cuina"],gas:[1.06,"Paellero de gas"],llenya:[1.15,"Llenya"]};
+const PSIZES=[26,30,34,38,40,42,46,50,55,60,65,70,80,90];
+const P0=(id,s)=>s.doses[id]||0;
+const has=(id,s)=>P0(id,s)>0;
+const MARI=["sipia","calamar","gamba","escamarla","musclo","rap","tinta"];
+const CARN=["salsitxa","costella","pollastre","conill","botinegra","cansalada","caragols"];
+
+function idealDia(s){const area=s.n*P0("arros",s)/32;return 2*Math.sqrt(area/Math.PI)*10;}
+function recDia(s){const d=idealDia(s);return PSIZES.find(x=>x>=d-2)||90;}
+function salmo(g){const k=g/80;return {ny:Math.max(1,Math.ceil(3*k)),all:15*k,oli:50*k,tom:170*k};}
+const sea=s=>MARI.some(id=>has(id,s));
+const meat=s=>CARN.some(id=>has(id,s));
+
+function base(tab){return {
+  measure:{label:"Comensals",unit:"pers.",min:1,max:30,step:1,def:4,k:1,base:4,
+    hint:(s,C)=>`Paella recomanada: <b class="num">Ø ${C.rec} cm</b> · brou <b class="num">${nf(C.brou/1000,2)} L</b>`},
+  lotTitle:"La paella",calcTitle:"Arròs, brou i paella",mixTitle:"Ingredients",
+  perLabel:"Per comensal",totLabel:"Total",
+  fam:FAM,famOrd:FAMORD,derived:["brou"],noLevel:["ar"],famMax:{ca:3,ma:5,so:5,bo:2,co:5},
+  derive:s=>{const kb=(tab==="carn"||tab==="conill")?1.2:1;s.doses.brou=Math.round(P0("arros",s)*RT[s.p.tipus][0]*FOC[s.p.foc][0]*kb/5)*5;},
+  fmtTot:(x,a)=>{if(x.unit==="g"||x.unit==="ml"){if(x.id==="brou")return nf(a/1000,2)+" L";return (a<1?nf(a,2):a<10?nf(a,1):nf(Math.round(a),0))+" "+x.unit;}
+    const v=Math.max(1,Math.round(a));const U={gamba:["gamba","gambes"],escamarla:["escamarlà","escamarlans"],musclo:["musclo","musclos"],caragol:["caragol","caragols"],gra:["gra","grans"],branca:["branca","branques"]}[x.unit]||[x.unit,x.unit];return v+" "+(v===1?U[0]:U[1]);},
+  params:[
+    {id:"tipus",label:"Varietat d'arròs",type:"select",def:"bomba",opts:[["bomba","Bomba (perdona; xucla molt brou)"],["senia","Sènia o bahia (més gust; es passa abans)"],["albufera","Albufera (entre els dos)"]],sec:"Arròs i foc",noCustom:true},
+    {id:"foc",label:"Foc",type:"select",def:"gas",opts:[["cuina","Fogó de cuina o vitro"],["gas","Paellero de gas"],["llenya","Llenya"]],noCustom:true},
+    {id:"paella",label:"Paella que tens",type:"select",def:"auto",opts:[["auto","La recomanada"],...PSIZES.map(d=>[d,`Ø ${d} cm`])],noCustom:true},
+  ],
+  calc:s=>calc(s,tab),
+  warn:(s,C)=>warn(s,C,tab),
+  tl:{mode:"h",startLabel:"Comences a cuinar (dia i hora)",defTime:"12:45"},
+  timeline:(s,C)=>tline(s,C,tab),
+  shopSkip:["brou","salmorreta"],
+  shopExtra:(s,C)=>{const it=[];const L=nf(C.brou/1000,2)+" L";
+    if(tab==="carn"||tab==="conill")it.push(["Aigua (el brou es fa a la paella)",L]);else it.push(["Fumet de peix casolà o de rap i galeres",L]);
+    if(has("salmorreta",s)){const m=salmo(C.salm);it.push(["Nyores per a la salmorreta",m.ny+" "+(m.ny===1?"nyora":"nyores")],["Tomàquet per a la salmorreta",nf(Math.round(m.tom),0)+" g"],["All per a la salmorreta",nf(Math.round(m.all),0)+" g"]);}
+    return [{h:"Brou i salmorreta",items:it}];},
+  dims:DIMS,dimMax:10,
+  flavExtra:(s,C,F)=>{F.car+=0;},
+  loadNote:(s,C)=>`${nf(C.arros,0)} g d'arròs · ${nf(C.brou/1000,2)} L de brou`,
+  pdfTaste:["Punt de l'arròs","Socarrat","Gust","Sal"],
+};}
+
+function calc(s,tab){
+  const n=s.n,rt=RT[s.p.tipus],foc=FOC[s.p.foc];
+  const arros=P0("arros",s)*n,brou=P0("brou",s)*n,rec=recDia(s),dia=s.p.paella==="auto"?rec:+s.p.paella;
+  const area=Math.PI*Math.pow(dia/20,2);const dens=arros/area;
+  const salm=P0("salmorreta",s)*n;
+  const C={arros,brou,rec,dia,dens,salm,cook:rt[1]};
+  const rows=[["§","Arròs i brou"],["Arròs",nf(arros,0)+" g",true],[tab==="carn"||tab==="conill"?"Aigua per al brou":"Fumet calent",nf(brou/1000,2)+" L",true],
+    ["Proporció brou : arròs",nf(brou/arros,1)+" : 1"+(tab==="carn"||tab==="conill"?" (abans del bull)":"")],["Cocció de l'arròs",`${rt[1]}–${rt[1]+2} min + 5 de repòs`],
+    ["§","Paella"],["Recomanada per a "+n,"Ø "+rec+" cm"],["La teva","Ø "+dia+" cm",dens>44||dens<24],["Arròs per dm²",nf(dens,0)+" g (ideal 28–38)"],["Foc",foc[1]]];
+  if(salm>0){const m=salmo(salm);rows.push(["§","Salmorreta"],["Salmorreta",nf(salm,0)+" g",true],["Nyores (salmorreta)",String(m.ny)],["All (salmorreta)",nf(m.all,0)+" g"],["Oli (salmorreta)",nf(m.oli,0)+" ml"],["Tomàquet (salmorreta)",nf(m.tom,0)+" g"]);}
+  C.rows=rows;
+  C.note=`El brou ha d'arribar just als reblons de les nanses. ${tab==="carn"||tab==="conill"?"Hi ha un 20% més d'aigua perquè bull 15–20 min amb la carn abans de l'arròs. ":""}${s.p.foc==="llenya"?"A la llenya s'evapora més: ja hi he afegit un 15% de brou.":s.p.foc==="cuina"&&dia>40?"En un fogó de cuina, una paella tan gran no escalfa igual: gira-la sovint.":""}`;
+  C.summary=`${n} comensals · ${nf(arros,0)} g d'arròs ${rt[2].toLowerCase()} · ${nf(brou/1000,2)} L de brou · paella Ø ${dia} cm · ${foc[1].toLowerCase()}`;
+  return C;
+}
+
+function warn(s,C,tab){
+  const w=[];const a=P0("arros",s);
+  if(C.dens>44)w.push(["warn",`Massa arròs per a una paella de Ø ${C.dia} cm (${nf(C.dens,0)} g/dm²): la capa queda gruixuda, crua per dalt i passada per baix. Fes-la de Ø ${C.rec} cm.`]);
+  if(C.dens<24)w.push(["warn",`Paella massa gran per a tan poc arròs (${nf(C.dens,0)} g/dm²): el brou s'evapora abans que l'arròs es faci. Fes-la de Ø ${C.rec} cm o afegeix-hi un 10% de brou.`]);
+  if(s.p.foc==="cuina"&&C.dia>42)w.push(["warn",`Una paella de Ø ${C.dia} cm no escalfa bé en un fogó de cuina: el centre bull i les vores no. Millor un paellero o dues paelles.`]);
+  if(a>120)w.push(["info","Més de 120 g d'arròs per comensal: per a un arròs sec en paella, 100 g és la mesura de referència."]);
+  const carn=CARN.reduce((t,id)=>t+P0(id,s),0),mar=MARI.filter(i=>i!=="tinta").reduce((t,id)=>t+(id==="gamba"?P0(id,s)*15:id==="escamarla"?P0(id,s)*60:id==="musclo"?P0(id,s)*12:P0(id,s)),0);
+  if(carn+mar>320)w.push(["warn","Molt de tropell: amb més de 300 g de carn o peix per comensal l'arròs queda ofegat i no fa socarrat."]);
+  if(tab==="carn"&&!has("costella",s)&&!has("pollastre",s))w.push(["info","Sense costella ni pollastre el brou queda fluix: l'os és el que fa gust."]);
+  if(has("tinta",s)&&!has("sipia",s)&&!has("calamar",s))w.push(["warn","Tinta sense sípia ni calamar: el negre queda sense cos."]);
+  if(tab==="negre"&&!has("tinta",s))w.push(["bad","Un arròs negre sense tinta no és negre."]);
+  if(has("botinegra",s))w.push(["info","La botifarra negra, a rodanxes, els últims 5 minuts: si bull tota l'estona es desfà."]);
+  if(has("musclo",s))w.push(["info","Obre els musclos a part amb un raig d'aigua i afegeix aquest suc filtrat al brou."]);
+  if(has("gamba",s)||has("escamarla",s))w.push(["info","Marca les gambes i els escamarlans a l'oli i treu-los; tornen a la paella els últims 5 minuts."]);
+  if(has("salmorreta",s))w.push(["info","La salmorreta va després del sofregit i abans del brou: si la poses al brou es dilueix i no es nota."]);
+  if(has("salmorreta",s)&&P0("salmorreta",s)>22)w.push(["warn","Molta salmorreta: la nyora tapa el gust del marisc o de la carn. Amb 12–18 g per comensal n'hi ha prou."]);
+  if(has("safra",s)&&has("pimento",s)&&P0("pimento",s)>2)w.push(["info","Molt pebre vermell amb safrà: el pebre tapa el safrà."]);
+  if(has("pimento",s))w.push(["info","El pebre vermell, uns segons i de seguida el tomàquet o el brou: si es crema, amarga."]);
+  if(has("bolets",s)&&sea(s)&&tab!=="mixt")w.push(["info","Bolets amb marisc és mar i muntanya: bé, però baixa una mica el marisc perquè no es tapin."]);
+  if(has("romani",s))w.push(["info","El romaní, una branca els últims 3–4 minuts i fora: si hi és tota l'estona amarga."]);
+  if(has("caragols",s))w.push(["info","Els caragols, ja purgats, nets i escaldats 10 min amb una fulla de llorer abans d'afegir-los."]);
+  if(s.p.tipus==="senia")w.push(["info","La sènia es passa abans: retalla 1–2 minuts de cocció i no remenis gens."]);
+  if(sea(s))w.push(["info","Al·lèrgens: crustacis i mol·luscs. Si hi ha rap o fumet de peix, també peix."]);
+  if(tab==="negre"||tab==="peix")w.push(["info","Serveix-lo amb allioli a part."]);
+  w.push(["info","Un cop sembrat l'arròs, no el remenis: només sacsejar la paella. Els últims 1–2 minuts, foc fort per fer el socarrat (s'ha de sentir cruixir)."]);
+  return w;
+}
+
+function tline(s,C,tab){
+  const ev=[];let t=0;const fish=tab!=="carn"&&tab!=="conill";
+  if(fish){ev.push([0,`Fumet: caps de gamba, espines de rap i galeres sofregits amb una ceba i un tomàquet, aigua i 25 min de bull. Cola'l: ${nf(C.brou/1000,2)} L.`]);t=.5;}
+  if(has("salmorreta",s))ev.push([0,`Salmorreta (o treu-la del congelador): remulla ${salmo(C.salm).ny} nyores 30 min, fregeix l'all, la carn de la nyora i el tomàquet 30 min a foc lent i tritura-ho.`]);
+  if(has("musclo",s))ev.push([t,"Obre els musclos a part i guarda'n l'aigua filtrada."]);
+  ev.push([t,`Fregeix ${P0("all",s)?"els alls sencers en ":""}l'oli${P0("all",s)?" i retira'ls quan siguin rossos":""}.`]);t+=.05;
+  if(meat(s)){ev.push([t,`Dora la carn${has("caragols",s)?"":""} en aquell oli, a foc mitjà, fins que estigui ben rossa (no et quedis curt: aquí hi ha el gust).`]);t+=.25;}
+  if(has("sipia",s)||has("calamar",s)){ev.push([t,"Dora la sípia o el calamar fins que deixi anar l'aigua i es torri."]);t+=.12;}
+  if(has("gamba",s)||has("escamarla",s))ev.push([t,"Marca les gambes i els escamarlans 1 min per banda i retira'ls."]);
+  if(has("bolets",s)||has("xampinyo",s)){ev.push([t,"Saltetja els bolets."]);t+=.08;}
+  if(has("mongeta",s)||has("carxofa",s)){ev.push([t,"Ofega la bajoqueta i la carxofa."]);t+=.08;}
+  ev.push([t,`Sofregit amb l'oli que queda: ${["ceba","pebrot","tomaquet"].filter(i=>has(i,s)).map(i=>({ceba:"ceba",pebrot:"pebrot",tomaquet:"tomàquet"}[i])).join(", ")}, fins que el tomàquet perdi l'aigua i torni l'oli.`]);t+=.25;
+  ev.push([t,`Pebre vermell uns segons${has("salmorreta",s)?" i la salmorreta":""}${has("tinta",s)?" i la tinta":""}.`]);t+=.03;
+  if(fish){ev.push([t,`Afegeix l'arròs (${nf(C.arros,0)} g), nacra'l 1 min i aboca el fumet calent${has("safra",s)?" amb el safrà":""}. Tasta de sal.`]);}
+  else{ev.push([t,`Aboca l'aigua (${nf(C.brou/1000,2)} L)${has("safra",s)?" i el safrà":""}, sala i deixa-la bullir 15 min amb la carn perquè faci brou.`]);t+=.25;
+    ev.push([t,`Torna a ajustar el nivell als reblons, tasta de sal i sembra l'arròs (${nf(C.arros,0)} g) en creu. Reparteix-lo i no el toquis més.`]);}
+  t+=.02;
+  ev.push([t,"Foc fort 8 minuts."]);t+=8/60;
+  ev.push([t,`Foc mitjà ${C.cook-10} minuts.${has("gamba",s)||has("escamarla",s)?" Posa-hi el marisc per sobre.":""}${has("botinegra",s)?" Posa-hi la botifarra negra.":""}${has("romani",s)?" Branca de romaní.":""}`]);t+=(C.cook-10)/60;
+  ev.push([t,"Foc fort 1–2 minuts per fer el socarrat."]);t+=1.5/60;
+  ev.push([t,"Apaga, tapa-la amb un drap o paper de diari i deixa-la reposar 5 minuts."]);t+=5/60;
+  ev.push([t,"A taula."]);
+  return {ev,tail:[["Sobres","A la nevera, tapat, 1 dia. Escalfa-ho a la paella amb un raig d'aigua."]]};
+}
+
+const REC={
+  carn:{title:"Arròs recomanat",main:"Bomba o sènia D.O. Arròs de València o del Delta",why:"Amb la carn, el brou es fa a la mateixa paella: per això tot depèn de daurar bé la costella i la salsitxa."},
+  mixt:{title:"Arròs recomanat",main:"Sènia o bomba, i un brou meitat de carn i meitat de peix",why:"El mixt funciona quan cap dels dos mons domina: poca carn amb os i marisc que es marca i es retira."},
+  peix:{title:"Brou recomanat",main:"Fumet casolà de rap, galeres i caps de gamba",why:"Tot el gust d'aquest arròs és al fumet: un fumet de brik fa un arròs pla."},
+  negre:{title:"Matèria primera",main:"Sípia fresca amb la seva bossa de tinta",why:"Si la tinta és de sobre, compta 4 g per comensal. Serveix-lo amb allioli."},
+  conill:{title:"Matèria primera",main:"Conill de granja, caragols serrans i llenya de sarment",why:"És l'arròs de l'interior d'Alacant: a la llenya, amb romaní al final i, si pot ser, salmorreta."}
+};
+const HOW={
+  carn:["Fregeix els alls sencers en l'oli i retira'ls quan siguin rossos: l'oli queda perfumat.","Dora la salsitxa i la costella en aquell oli, sense pressa, fins que siguin ben rosses.","Fes el sofregit de ceba, pebrot i tomàquet amb l'oli que ha quedat de la carn.","Pebre vermell (i salmorreta, si en poses), aigua, i 15 minuts de bull perquè la carn faci brou.","Sembra l'arròs en creu, reparteix-lo amb la cullera i ja no el toquis.","Si hi poses bolets, saltetja'ls després de la carn perquè deixin anar l'aigua."],
+  mixt:["Dora el pollastre i la costella; després la sípia. Marca les gambes i retira-les.","Sofregit amb l'oli de tot plegat.","Salmorreta (opcional) i pebre vermell, l'arròs i el brou calent.","Els musclos oberts i les gambes, els últims 5 minuts."],
+  peix:["Fes el fumet abans: és el que dona el gust.","Dora la sípia i el rap; marca el marisc i retira'l.","Sofregit de tomàquet (i ceba si vols) i salmorreta.","Nacra l'arròs, aboca el fumet calent i ja no el remenis.","Del senyoret: tot pelat, per menjar sense mans.","A banda: el peix del fumet se serveix a part, amb allioli."],
+  negre:["Dora la sípia a trossets fins que es torri.","Sofregit de ceba, pebrot i tomàquet.","Tinta i pebre vermell, l'arròs i el fumet calent.","Allioli a part."],
+  conill:["Dora el conill a foc mitjà fins que estigui molt ros: és el que fa el brou.","Pebrot vermell a tires, tomàquet i salmorreta.","Aigua i caragols, 20 minuts de bull.","Arròs, i als últims minuts una branca de romaní que es treu abans de servir.","A la llenya de sarment i a l'aire lliure és com ha de ser."]
+};
+
+const SALM="<b>Salmorreta (opcional, per a tots):</b> per 80 g, remulla 3 nyores 30 min i rasca'n la carn; fregeix 15 g d'all a làmines en 50 ml d'oli, afegeix la nyora 30 s i 170 g de tomàquet a trossos amb un pessic de sal; 30–40 min a foc lent, tritura i passa pel colador. <b>Com fer-la servir:</b> 12–18 g per comensal, just després del sofregit i l'arròs nacrat (o abans de l'aigua, si el brou es fa a la paella), mai dins el brou. Es congela bé en porcions.";
+for(const k in HOW)HOW[k].push(SALM);
+function make(tab,name,ing,req,profiles,def){
+  return Object.assign(base(tab),{name,ing,req,profiles,def,rec:()=>REC[tab],how:HOW[tab]});
+}
+const DCOM={ceba:40,tomaquet:60,pebrot:30,all:1,oli:20,sal:3,pimento:1};
+const recipes={
+  carn:make("carn","De carn",["arros","brou","salsitxa","costella","pollastre","conill","botinegra","cansalada","ceba","tomaquet","pebrot","all","pesols","carxofa","mongeta","bolets","xampinyo","oli","sal","pimento","safra","romani","salmorreta"],["arros","brou","tomaquet","oli"],{
+    casa:{name:"El de casa",desc:"Salsitxa, costella i un bon sofregit",d:{arros:100,salsitxa:100,costella:100,...DCOM}},
+    bolets:{name:"Amb bolets",desc:"El de casa amb bolets de temporada",d:{arros:100,salsitxa:100,costella:100,bolets:60,...DCOM}},
+    muntanya:{name:"De muntanya",desc:"Costella, botifarra negra, bolets i carxofa",d:{arros:100,salsitxa:60,costella:80,botinegra:40,bolets:50,carxofa:30,...DCOM}}
+  },"casa"),
+  mixt:make("mixt","Mixt",["arros","brou","pollastre","costella","conill","salsitxa","sipia","calamar","gamba","escamarla","musclo","ceba","tomaquet","pebrot","all","pesols","carxofa","mongeta","oli","sal","pimento","safra","salmorreta"],["arros","brou","tomaquet","oli"],{
+    classic:{name:"Mixt clàssic",desc:"Pollastre, costella, sípia, gambes, musclos i pèsols",d:{arros:100,pollastre:60,costella:40,sipia:50,gamba:2,musclo:3,pesols:20,ceba:30,tomaquet:60,pebrot:30,all:1,oli:20,sal:3,pimento:1,safra:.025}},
+    carxofa:{name:"Amb carxofa",desc:"Pollastre, sípia i carxofa, sense pèsols",d:{arros:100,pollastre:70,sipia:60,gamba:2,carxofa:40,ceba:30,tomaquet:60,pebrot:20,all:1,oli:20,sal:3,pimento:1,safra:.025}},
+    salmo:{name:"Amb salmorreta",desc:"El clàssic amb el toc alacantí de nyora",d:{arros:100,pollastre:60,costella:40,sipia:50,gamba:2,musclo:3,tomaquet:50,pebrot:20,all:1,oli:20,sal:3,pimento:.5,salmorreta:15}}
+  },"classic"),
+  peix:make("peix","Peix i marisc",["arros","brou","sipia","calamar","gamba","escamarla","musclo","rap","ceba","tomaquet","pebrot","all","alltendre","carxofa","oli","sal","pimento","safra","salmorreta"],["arros","brou","tomaquet","oli"],{
+    senyoret:{name:"Del senyoret",desc:"Tot pelat: sípia, calamar, gamba i rap",d:{arros:100,sipia:60,calamar:40,gamba:3,rap:50,tomaquet:50,all:1,oli:20,sal:3,pimento:.5,safra:.025,salmorreta:15}},
+    marisc:{name:"De marisc",desc:"Sípia, gambes, escamarlans i musclos",d:{arros:100,sipia:60,gamba:2,escamarla:1,musclo:4,ceba:20,tomaquet:60,pebrot:20,all:1,oli:20,sal:3,pimento:1,safra:.025,salmorreta:15}},
+    banda:{name:"A banda",desc:"Només arròs i sípia; el peix del fumet, a part",d:{arros:110,sipia:40,tomaquet:50,all:1.5,oli:20,sal:3,pimento:1,salmorreta:15}},
+    alls:{name:"Sípia i alls tendres",desc:"Suau i verd, de temporada",d:{arros:100,sipia:90,alltendre:25,carxofa:30,tomaquet:40,all:1,oli:20,sal:3,pimento:.5}}
+  },"senyoret"),
+  negre:make("negre","Negre",["arros","brou","sipia","calamar","gamba","musclo","tinta","ceba","tomaquet","pebrot","all","alltendre","oli","sal","pimento","salmorreta"],["arros","brou","tinta","oli"],{
+    classic:{name:"De sípia",desc:"El clàssic: sípia, sofregit i tinta",d:{arros:100,sipia:120,tinta:4,ceba:40,tomaquet:40,pebrot:20,all:1,oli:25,sal:3,pimento:.5}},
+    calamarsons:{name:"Amb calamarsons",desc:"Calamarsons sencers, més tendres",d:{arros:100,calamar:120,tinta:4,ceba:40,tomaquet:40,all:1,oli:25,sal:3,pimento:.5}},
+    gambes:{name:"Sípia, gambes i salmorreta",desc:"Més mariner, amb nyora",d:{arros:100,sipia:100,gamba:2,tinta:4,ceba:30,tomaquet:30,all:1,oli:25,sal:3,salmorreta:12}}
+  },"classic"),
+  conill:make("conill","Conill i caragols",["arros","brou","conill","caragols","pollastre","costella","pebrot","tomaquet","all","ceba","bolets","carxofa","mongeta","oli","sal","pimento","safra","romani","salmorreta"],["arros","brou","tomaquet","oli"],{
+    alacant:{name:"Alacantí",desc:"Conill, caragols, pebrot vermell, romaní i salmorreta",d:{arros:100,conill:120,caragols:10,pebrot:30,tomaquet:60,all:1,oli:20,sal:3,pimento:1,safra:.025,romani:1,salmorreta:10}},
+    horta:{name:"Amb bajoqueta i carxofa",desc:"Més verd, sense caragols",d:{arros:100,conill:120,mongeta:30,carxofa:30,pebrot:20,tomaquet:60,all:1,oli:20,sal:3,pimento:1,safra:.025,romani:1}},
+    bolets:{name:"Conill i bolets",desc:"De tardor: conill, pollastre i rovellons",d:{arros:100,conill:80,pollastre:50,bolets:60,tomaquet:60,all:1,oli:20,sal:3,pimento:1,romani:1}}
+  },"alacant")
+};
+window.PAGE={key:"arrossos-secs",title:"Arrossos secs",titleShort:"ARROSSOS SECS",
+  where:{K:"Carnisseria",P:"Peixateria",M:"Mercat (verdura i bolets)",S:"Súper",C:"De casa"},
+  units:{gamba:["gamba","gambes"],escamarla:["escamarlà","escamarlans"],musclo:["musclo","musclos"],caragol:["caragol","caragols"]},
+  ing:ING,tabOrd:["carn","mixt","peix","negre","conill"],recipes,
+  pdf:{INK:[34,31,28],MUT:[100,94,86],ACC:[176,82,12],LN:[214,208,198],BAR:[214,150,30],RED:[176,40,28]}};
+})();
+
+// ===== Motor comú del receptari (basat en la calculadora de vermut) =====
+(function(){
+const P=window.PAGE;
+const $=id=>document.getElementById(id);
+const I=P.ing.map(a=>({id:a[0],fam:a[1],ca:a[2],es:a[3],sci:a[4],taste:a[5],unit:a[6],min:a[7],max:a[8],step:a[9],typ:a[10],where:a[11],v:a[12]||{},scaling:a[13]||"lin",eq:a[14]||null}));
+const BY=Object.fromEntries(I.map(x=>[x.id,x]));
+P.BY=BY;
+const LVL={low:["Baixa",.7],mid:["Mitja",1],high:["Alta",1.3]};
+const nf=(n,d)=>(isFinite(n)?n:0).toLocaleString("ca-ES",{maximumFractionDigits:d,minimumFractionDigits:0});
+P.nf=nf;
+const UNITS=Object.assign({g:["g","g"],ml:["ml","ml"],ou:["ou","ous"],unitat:["unitat","unitats"],fulla:["fulla","fulles"],beina:["beina","beines"],gra:["gra","grans"],branca:["branca","branques"],llimona:["llimona","llimones"],taronja:["taronja","taronges"]},P.units||{});
+const CONT=new Set(["g","ml"]);
+const INTU=new Set(["gra","unitat"]);
+const unitLbl=(u,n)=>{const p=UNITS[u]||[u,u];return Math.abs(n-1)<1e-9?p[0]:p[1];};
+function fmtAmt(x,a,plain){
+  if(CONT.has(x.unit)){const d=a<.1?3:a<1?2:a<10?1:0;let s=nf(a>=200?Math.round(a/5)*5:a,d)+" "+x.unit;
+    if(x.eq&&!plain){const n=a/x.eq[2];const r=Math.max(.5,Math.round(n*2)/2);s+=` <span class="eqh">(≈${nf(r,1)} ${r===1?x.eq[0]:x.eq[1]})</span>`;}
+    return s;}
+  let v=INTU.has(x.unit)?Math.max(1,Math.round(a)):Math.max(.5,Math.round(a*2)/2);
+  return nf(v,1)+" "+unitLbl(x.unit,v);
+}
+P.fmtAmt=fmtAmt;
+const strip=s=>String(s).replace(/<[^>]+>/g,"");
+
+// ---------- estat ----------
+const S={tab:P.tabOrd[0],tabs:{}};
+const R=()=>P.recipes[S.tab];
+const st=()=>S.tabs[S.tab];
+function freshState(k){
+  const r=P.recipes[k];const s={n:r.measure.def,p:{},doses:{},profile:r.def,custom:false,lvl:{},start:null};
+  for(const q of (r.params||[]))s.p[q.id]=q.def;
+  return s;
+}
+function loadProfile(k){
+  const r=R(),s=st(),pr=r.profiles[k];
+  s.profile=k;s.custom=false;s.doses={...pr.d};s.lvl={};
+  for(const q of (r.params||[]))s.p[q.id]=q.def;
+  Object.assign(s.p,pr.p||{});
+  if(pr.n!=null)s.n=pr.n;
+  render();
+}
+function setLevel(f,l){
+  const s=st(),r=R();
+  const items=I.filter(x=>x.fam===f&&x.id in s.doses&&!(r.derived||[]).includes(x.id));const n=items.length;if(!n)return;
+  const k=n>2?Math.sqrt(2/n):1;
+  for(const x of items){let v=x.typ*LVL[l][1]*k;v=Math.min(x.max,Math.max(x.min,Math.round(v/x.step)*x.step));s.doses[x.id]=+v.toFixed(4);}
+  s.lvl[f]=l;
+}
+function derive(){const r=R();if(r.derive)r.derive(st());}
+
+// ---------- quantitats ----------
+function K(x){const r=R(),s=st(),m=r.measure;
+  if(x.scaling==="fix")return 1;
+  if(x.scaling==="sub"){const b=m.base||m.def;return b*m.k*Math.pow(s.n/b,.8);}
+  return s.n*m.k;}
+function amount(x,v){const r=R();return r.amount?r.amount(x,v,st(),K(x)):v*K(x);}
+P.amount=(id)=>{const s=st();return id in s.doses?amount(BY[id],s.doses[id]):0;};
+function perStr(x,v){const r=R();if(r.per)return r.per(x,v,st());
+  if(r.pct)return nf(v,v<1?2:v<10?1:0)+" %";
+  return fmtAmt(x,v,true)+(r.perSuffix||"");}
+function totStr(x,v){const r=R();const a=amount(x,v);return r.fmtTot?r.fmtTot(x,a,st()):fmtAmt(x,a);}
+
+// ---------- sabor ----------
+function flavour(C){
+  const r=R(),s=st();const F=Object.fromEntries(r.dims.map(d=>[d[0],0]));
+  for(const [id,val] of Object.entries(s.doses)){const x=BY[id];if(!x)continue;const q=x.typ?val/x.typ:0;for(const k in x.v)if(k in F)F[k]+=x.v[k]*q;}
+  if(r.flavExtra)r.flavExtra(s,C,F);
+  return F;
+}
+
+// ---------- avisos ----------
+function warnings(C,F){
+  const r=R(),s=st();const w=r.warn?r.warn(s,C,F):[];
+  const famCount={};for(const id in s.doses){const f=BY[id].fam;famCount[f]=(famCount[f]||0)+1;}
+  const lim=r.famMax||{};
+  for(const f of r.famOrd){const L=lim[f]||4;if((famCount[f]||0)>L)w.push(["warn",`Tens ${famCount[f]} ingredients de ${r.fam[f].toLowerCase()}: el perfil es difumina.`]);}
+  return w;
+}
+
+// ---------- renders ----------
+function renderTabs(){
+  const nav=$("tabs");if(P.tabOrd.length<2){nav.hidden=true;return;}
+  nav.innerHTML=P.tabOrd.map(k=>`<button type="button" class="tab" role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${P.recipes[k].name}</button>`).join("");
+}
+function paramHTML(q,s){
+  if(q.show&&!q.show(s))return "";
+  const v=s.p[q.id];let h=q.sec?`<div class="sub">${q.sec}</div>`:"";
+  if(q.type==="range")h+=`<label class="f">${q.label}: <span class="num" id="pl-${q.id}">${q.fmt?q.fmt(v,s):v}</span><input type="range" id="p-${q.id}" data-p="${q.id}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}"></label>`;
+  else if(q.type==="select")h+=`<label class="f">${q.label}<select id="p-${q.id}" data-p="${q.id}">${q.opts.map(([k,n])=>`<option value="${k}"${String(k)===String(v)?" selected":""}>${n}</option>`).join("")}</select></label>`;
+  else if(q.type==="check")h+=`<label class="f chk"><input type="checkbox" id="p-${q.id}" data-p="${q.id}"${v?" checked":""}> ${q.label}</label>`;
+  else if(q.type==="number")h+=`<label class="f">${q.label}<input type="number" id="p-${q.id}" data-p="${q.id}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}"></label>`;
+  if(q.hint)h+=`<p class="hint">${typeof q.hint==="function"?q.hint(s):q.hint}</p>`;
+  return h;
+}
+function renderParams(){
+  const r=R(),s=st();const ps=r.params||[];
+  const acts=g=>(r.actions||[]).filter(a=>(a.group||"main")===g&&(!a.show||a.show(s))).map(a=>`<button type="button" data-act="${a.id}">${a.label}</button>`).join("");
+  $("params").innerHTML=ps.filter(q=>q.group!=="tl").map(q=>paramHTML(q,s)).join("")+(acts("main")?`<div class="btnrow">${acts("main")}</div>`:"");
+  $("paramsTl").innerHTML=ps.filter(q=>q.group==="tl").map(q=>paramHTML(q,s)).join("")+(acts("tl")?`<div class="btnrow">${acts("tl")}</div>`:"");
+}
+function renderMeasure(){
+  const r=R(),s=st(),m=r.measure;
+  $("h-lot").textContent=r.lotTitle||"La pastada";$("mLabel").textContent=m.label;$("mUnit").textContent=m.unit||"";
+  const inp=$("mVal");inp.min=m.min;inp.max=m.max;inp.step=m.step;inp.value=s.n;
+}
+function renderProfiles(){
+  const r=R(),s=st();
+  $("profiles").innerHTML=Object.entries(r.profiles).map(([k,p])=>`<button type="button" class="prof" data-prof="${k}" aria-pressed="${s.profile===k}"><b>${p.name}</b><span>${p.desc}</span></button>`).join("");
+  $("customTag").hidden=!s.custom;
+}
+function renderRec(C){
+  const r=R(),s=st();const rec=r.rec?r.rec(s,C):null;const b=$("recBox");
+  if(!rec){b.hidden=true;return;}b.hidden=false;
+  b.innerHTML=`<h3>${rec.title}</h3><b>${rec.main}</b>${rec.sub?`<span class="num" style="font-size:.82rem">${rec.sub}</span>`:""}<span class="why">${rec.why}</span>`;
+}
+function renderMix(){
+  const r=R(),s=st();const der=r.derived||[];
+  $("h-mix").textContent=r.mixTitle||"Ingredients";
+  let h=`<div class="mrow head"><span>Ingredient</span><span>Dosi</span><span style="text-align:right">${r.perLabel}</span><span style="text-align:right">${r.totLabel||"Total"}</span><span></span></div>`;
+  for(const f of r.famOrd){
+    const items=I.filter(x=>x.fam===f&&x.id in s.doses);if(!items.length)continue;
+    const lvlable=items.some(x=>!der.includes(x.id)&&!(r.noLevel||[]).includes(f));
+    h+=`<div class="famhead"><span class="fn">${r.fam[f]}</span>${lvlable?`<span class="lvl" role="group" aria-label="Intensitat de ${r.fam[f].toLowerCase()}">${Object.entries(LVL).map(([k,[n]])=>`<button type="button" data-lvl="${f}:${k}" aria-pressed="${s.lvl&&s.lvl[f]===k}">${n}</button>`).join("")}</span>`:""}</div>`;
+    for(const x of items){const v=s.doses[x.id];const req=r.req.includes(x.id);const dv=der.includes(x.id);
+      h+=`<div class="mrow"><div class="nm"><b>${x.ca}</b>${req?'<span class="req">obligatori</span>':''}${dv?'<span class="calc">calculat</span>':''}${x.sci?` <span class="sci">${x.sci}</span>`:""}<span class="taste">${x.taste}</span></div>
+      <div class="sl"><input type="range" id="r-${x.id}" data-dose="${x.id}" min="${x.min}" max="${x.max}" step="${x.step}" value="${v}" aria-label="Dosi de ${x.ca}"${dv?" disabled":""}></div>
+      <div class="val pb" data-l="${r.perLabel}">${perStr(x,v)}</div>
+      <div class="val tot">${totStr(x,v)}</div>
+      <div class="rm"><button type="button" class="ghost" data-rm="${x.id}" ${req?"disabled":""} aria-label="Treure ${x.ca}" title="${req?"Obligatori":"Treure"}">✕</button></div></div>`;}
+  }
+  $("mix").innerHTML=h;
+}
+function updateRowValues(){
+  const s=st();
+  document.querySelectorAll(".mix .mrow:not(.head)").forEach(row=>{const inp=row.querySelector("[data-dose]");const x=BY[inp.dataset.dose];const v=s.doses[x.id];
+    if(inp.disabled||document.activeElement!==inp)inp.value=v;
+    row.querySelector(".pb").innerHTML=perStr(x,v);row.querySelector(".tot").innerHTML=totStr(x,v);});
+}
+function renderCatalog(){
+  const r=R(),s=st();let h="";
+  for(const f of r.famOrd){const items=I.filter(x=>x.fam===f&&r.ing.includes(x.id)&&!(x.id in s.doses));if(!items.length)continue;
+    h+=`<div><h3>${r.fam[f]}</h3><div class="chips" style="margin-top:6px">${items.map(x=>`<button type="button" class="chip" data-add="${x.id}" title="${x.taste}${x.sci?" · "+x.sci:""}"><span class="plus">+</span>${x.ca}</button>`).join("")}</div></div>`;}
+  $("catalog").innerHTML=h||'<p class="ok">Ja hi són tots.</p>';
+}
+function renderCalc(C){
+  $("h-calc").textContent=R().calcTitle||"Càlculs";
+  $("calc").innerHTML=C.rows.map(r=>r[0]==="§"?`<dt class="sec">${r[1]}</dt>`:`<dt>${r[0]}</dt><dd${r[2]?' class="hl"':""}>${r[1]}</dd>`).join("");
+  $("calcNote").innerHTML=C.note||"";
+}
+function renderFlavour(F){
+  const r=R();const max=r.dimMax||10;
+  $("flav").innerHTML=r.dims.map(([k,n])=>`<span>${n}</span><div class="track"><div class="fill" style="width:${Math.max(0,Math.min(100,F[k]/max*100))}%"></div></div><span class="num" style="text-align:right">${nf(Math.max(0,F[k]),0)}</span>`).join("");
+}
+function renderWarnings(w){
+  const lbl={bad:"Conflicte",warn:"Avís",info:"Consell"};const ord={bad:0,warn:1,info:2};w.sort((a,b)=>ord[a[0]]-ord[b[0]]);
+  $("warns").innerHTML=w.length?w.map(([s,t])=>`<li class="w ${s}"><span class="tag">${lbl[s]}</span><span>${t}</span></li>`).join(""):'<li class="ok">Cap conflicte. La recepta està equilibrada.</li>';
+}
+function shopGroups(C){
+  const r=R(),s=st();const g={};
+  for(const id in s.doses){const x=BY[id];if(r.shopSkip&&r.shopSkip.includes(id))continue;const a=amount(x,s.doses[id]);if(a<=0)continue;(g[x.where]=g[x.where]||[]).push([x,a]);}
+  const out=[];
+  for(const k of Object.keys(P.where))if(g[k])out.push({h:P.where[k],items:g[k].map(([x,a])=>[x.ca,r.fmtTot?r.fmtTot(x,a,s):fmtAmt(x,a)])});
+  if(r.shopExtra)out.push(...r.shopExtra(s,C));
+  return out;
+}
+function renderShop(C){
+  $("shop").innerHTML=shopGroups(C).map(gr=>`<div><h3>${gr.h}</h3><ul>${gr.items.map(([n,a])=>`<li>${n}${a?`: <span class="num">${a}</span>`:""}</li>`).join("")}</ul></div>`).join("");
+}
+function shopText(C){return shopGroups(C).map(gr=>gr.h+"\n"+gr.items.map(([n,a])=>"- "+n+(a?": "+strip(a):"")).join("\n")).join("\n\n");}
+
+// ---------- cronologia ----------
+const mode=()=>R().tl.mode;
+function startDate(){const s=st();
+  if(mode()==="d")return s.start?new Date(s.start.slice(0,10)+"T12:00:00"):new Date();
+  return s.start?new Date(s.start):new Date();}
+function addOff(d,o){const r=new Date(d);if(mode()==="d")r.setDate(r.getDate()+o);else r.setTime(r.getTime()+o*3600000);return r;}
+const fdD=d=>d.toLocaleDateString("ca-ES",{weekday:"short",day:"numeric",month:"short"});
+const fdT=d=>d.toLocaleTimeString("ca-ES",{hour:"2-digit",minute:"2-digit"});
+function offLbl(o){if(mode()==="d")return "dia "+Math.round(o);const h=Math.floor(o+1e-6),m=Math.round((o-h)*60);return `+${h} h${m?" "+String(m).padStart(2,"0"):""}`;}
+function evDate(o){const d=addOff(startDate(),o);return mode()==="d"?fdD(d):`${fdD(d)} ${fdT(d)}`;}
+function events(C){const T=R().timeline(st(),C);T.ev.sort((a,b)=>a[0]-b[0]);return T;}
+function renderTimeline(C){
+  $("startLbl").textContent=R().tl.startLabel||"Comences";
+  const T=events(C);
+  $("timeline").innerHTML=T.ev.map(([o,t])=>`<li><span class="d">${evDate(o)}<small>${offLbl(o)}</small></span><span class="t">${t}</span></li>`).join("")+
+    (T.tail||[]).map(([a,b])=>`<li><span class="d" style="color:var(--muted)">${a}</span><span class="t">${b}</span></li>`).join("");
+}
+function renderHow(){const r=R();const h=typeof r.how==="function"?r.how(st()):r.how;$("howPanel").hidden=!h;if(h)$("how").innerHTML=h.map(t=>`<li>${t}</li>`).join("");}
+
+// ---------- muntatge ----------
+let lastC=null;
+function computeAll(){derive();const C=R().calc(st());lastC=C;return C;}
+function render(){
+  const s=st();
+  renderTabs();renderMeasure();renderParams();renderProfiles();
+  const C=computeAll();renderMix();renderCatalog();renderComputedWith(C);
+  const sd=$("startDate");sd.type=mode()==="d"?"date":"datetime-local";sd.value=mode()==="d"?(s.start||"").slice(0,10):(s.start||"");
+  renderHow();
+}
+function renderComputed(){const C=computeAll();updateRowValues();renderComputedWith(C);}
+function renderComputedWith(C){
+  const F=flavour(C);
+  renderCalc(C);renderRec(C);renderFlavour(F);renderWarnings(warnings(C,F));renderShop(C);renderTimeline(C);
+  const r=R(),s=st();if(r.measure.hint)$("mHint").innerHTML=r.measure.hint(s,C);else $("mHint").textContent="";
+  $("loadNote").textContent=r.loadNote?r.loadNote(s,C):`${Object.keys(s.doses).length} ingredients`;
+  for(const q of (r.params||[]))if(q.type==="range"&&q.fmt){const l=$("pl-"+q.id);if(l)l.textContent=q.fmt(s.p[q.id],s);}
+  document.querySelectorAll(".prof").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.prof===s.profile)));
+}
+function markCustom(){const s=st();if(!s.custom){s.custom=true;$("customTag").hidden=false;}}
+
+// ---------- esdeveniments ----------
+document.addEventListener("click",e=>{
+  const s=st(),r=R();
+  const tb=e.target.closest("[data-tab]");if(tb){showTab(tb.dataset.tab);return;}
+  const p=e.target.closest("[data-prof]");if(p){loadProfile(p.dataset.prof);return;}
+  const ac=e.target.closest("[data-act]");if(ac){const a=(r.actions||[]).find(z=>z.id===ac.dataset.act);if(a){const m=a.run(s,lastC);markCustom();render();if(m)flash(m);}return;}
+  const lv=e.target.closest("[data-lvl]");if(lv){const [f,l]=lv.dataset.lvl.split(":");setLevel(f,l);markCustom();render();return;}
+  const a=e.target.closest("[data-add]");if(a){const x=BY[a.dataset.add];s.doses[x.id]=x.typ;if(s.lvl[x.fam])setLevel(x.fam,s.lvl[x.fam]);markCustom();render();return;}
+  const rm=e.target.closest("[data-rm]");if(rm&&!rm.disabled){const f=BY[rm.dataset.rm].fam;delete s.doses[rm.dataset.rm];if(s.lvl[f])setLevel(f,s.lvl[f]);markCustom();render();return;}
+});
+document.addEventListener("input",e=>{
+  const t=e.target,s=st(),r=R();
+  if(t.dataset.dose){s.doses[t.dataset.dose]=parseFloat(t.value);const f=BY[t.dataset.dose].fam;if(s.lvl[f]){delete s.lvl[f];document.querySelectorAll(`[data-lvl^="${f}:"]`).forEach(b=>b.setAttribute("aria-pressed","false"));}markCustom();renderComputed();return;}
+  if(t.dataset.p){const q=r.params.find(z=>z.id===t.dataset.p);
+    let v=q.type==="check"?t.checked:q.type==="select"?(isNaN(+t.value)?t.value:+t.value):parseFloat(t.value);
+    if(q.type==="number"){if(isNaN(v))return;v=Math.min(q.max,Math.max(q.min,v));}
+    s.p[q.id]=v;if(!q.noCustom)markCustom();
+    if(q.type==="select"||q.type==="check"||q.rerender){if(q.onSet)q.onSet(s,v);render();}else{if(q.onSet)q.onSet(s,v);renderComputed();}
+    return;}
+  if(t.id==="mVal"){const m=r.measure;const n=parseFloat(t.value);if(isNaN(n))return;s.n=Math.min(m.max,Math.max(m.min,n));renderComputed();return;}
+  if(t.id==="startDate"){s.start=t.value;renderComputed();return;}
+});
+$("mMinus").onclick=()=>{const m=R().measure,s=st();s.n=Math.max(m.min,+(s.n-m.step).toFixed(3));$("mVal").value=s.n;renderComputed();};
+$("mPlus").onclick=()=>{const m=R().measure,s=st();s.n=Math.min(m.max,+(s.n+m.step).toFixed(3));$("mVal").value=s.n;renderComputed();};
+function showTab(k){S.tab=k;try{localStorage.setItem(P.key+"-tab",k);}catch(_){}render();}
+
+// ---------- text ----------
+function recipeText(C){
+  const r=R(),s=st(),pr=r.profiles[s.profile];
+  let t=`${P.titleShort||P.title} — ${r.name} · ${pr.name}${s.custom?" (personalitzat)":""}\n${r.measure.label}: ${nf(s.n,2)} ${r.measure.unit||""}\n`;
+  if(C.summary)t+=C.summary+"\n";
+  t+="\n";
+  for(const row of C.rows)t+=row[0]==="§"?`\n${row[1]}\n`:`- ${strip(row[0])}: ${strip(row[1])}\n`;
+  t+=`\nIngredients (${r.perLabel.toLowerCase()} · ${(r.totLabel||"total").toLowerCase()}):\n`;
+  for(const f of r.famOrd)for(const x of I.filter(x=>x.fam===f&&x.id in s.doses))t+=`- ${x.ca}${x.sci?" ("+x.sci+")":""}: ${strip(perStr(x,s.doses[x.id]))} · ${strip(totStr(x,s.doses[x.id]))}\n`;
+  const T=events(C);t+="\nCronologia:\n";
+  for(const [o,tx] of T.ev)t+=`- ${evDate(o)} (${offLbl(o)}): ${strip(tx)}\n`;
+  for(const [a,b] of (T.tail||[]))t+=`- ${a}: ${strip(b)}\n`;
+  return t;
+}
+function flash(m){$("toast").textContent=m;clearTimeout(flash.t);flash.t=setTimeout(()=>$("toast").textContent="",2500);}
+function copy(text,ok){
+  const show=()=>{const pre=$("recipeTxt");pre.textContent=text;pre.hidden=false;const rg=document.createRange();rg.selectNodeContents(pre);const sl=getSelection();sl.removeAllRanges();sl.addRange(rg);flash("Text seleccionat: copia'l amb Ctrl+C");};
+  try{navigator.clipboard.writeText(text).then(()=>flash(ok),show);}catch(_){show();}
+}
+$("copyShop").onclick=()=>copy(shopText(lastC),"Llista copiada");
+$("copyRecipe").onclick=()=>copy(recipeText(lastC),"Recepta copiada");
+
+// ---------- PDF ----------
+const PS=s=>strip(s).replace(/≈/g,"~").replace(/[—–]/g,"-").replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/…/g,"...").replace(/→/g,"->").replace(/×/g,"x").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/·/g,"·").replace(/[½]/g,"1/2").replace(/[⅓]/g,"1/3").replace(/[¼]/g,"1/4").replace(/ | /g," ");
+const dmy=d=>d.toLocaleDateString("ca-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
+function buildPDF(){
+  const {jsPDF}=window.jspdf;const d=new jsPDF({unit:"mm",format:"a4"});
+  const r=R(),s=st(),C=computeAll(),F=flavour(C),pr=r.profiles[s.profile];const K0=P.pdf;
+  const col=a=>d.setTextColor(...a);const font=(z,y)=>{d.setFont("helvetica",z);d.setFontSize(y);};
+  const T=(t,x,y,o)=>d.text(PS(t),x,y,o);
+  const fit=(t,w)=>{t=PS(t);if(d.getTextWidth(t)<=w)return t;while(t.length>1&&d.getTextWidth(t+".")>w)t=t.slice(0,-1);return t+".";};
+  const H=(t,x,y)=>{font("bold",7.5);col(K0.ACC);d.text(PS(t.toUpperCase()),x,y,{charSpace:.35});};
+  const line=(x1,y,x2)=>{d.setDrawColor(...K0.LN);d.setLineWidth(.2);d.line(x1,y,x2,y);};
+  const M=12,RR=198,BOT=285;let y=17;
+  font("bold",16);col(K0.INK);T(fit(`${r.name} · ${pr.name}${s.custom?" (personalitzat)":""}`,125),M,y);
+  font("normal",8.5);col(K0.MUT);T("Lot",142,y-1);line(149,y-.6,RR);
+  const lot=$("saveName").value.trim();if(lot){font("bold",9);col(K0.INK);T(fit(lot,48),150,y-1.6);}
+  y+=6;font("normal",8.6);col(K0.MUT);
+  const sumL=d.splitTextToSize(PS(`${r.measure.label}: ${nf(s.n,2)} ${r.measure.unit||""}${C.summary?" · "+C.summary:""}`),RR-M).slice(0,2);
+  sumL.forEach(l=>{d.text(l,M,y);y+=4.2;});
+  y-=.7;d.setDrawColor(...K0.ACC);d.setLineWidth(.7);d.line(M,y,RR,y);y+=6;
+  // càlculs i sabor
+  H(r.calcTitle||"Càlculs",M,y);H("Perfil de sabor",112,y);
+  const rows=C.rows.filter(x=>x[0]!=="§");const crh=Math.min(4.4,58/Math.max(1,rows.length));const cfs=Math.min(8.6,crh*2);
+  let ly=y+5;for(const [k,v] of rows){font("normal",cfs);col(K0.MUT);T(fit(k,62),M,ly);font("bold",cfs);col(K0.INK);T(fit(v,34),102,ly,{align:"right"});line(M,ly+1.1,102);ly+=crh;}
+  let fy=y+5;for(const [k,n] of r.dims){const val=Math.max(0,F[k]),mx=r.dimMax||10;
+    font("normal",8);col(K0.MUT);T(n,112,fy);d.setFillColor(...K0.LN);d.rect(136,fy-2.4,52,2.8,"F");
+    d.setFillColor(...K0.BAR);d.rect(136,fy-2.4,Math.max(.3,Math.min(52,val/mx*52)),2.8,"F");
+    font("bold",8);col(K0.INK);T(nf(val,0),RR,fy,{align:"right"});fy+=4.2;}
+  y=Math.max(ly,fy)+1.5;
+  const ws=warnings(C,F).filter(w=>w[0]!=="info").slice(0,3);
+  for(const [sv,t] of ws){font("bold",7.6);col(sv==="bad"?K0.RED:K0.ACC);const l=d.splitTextToSize(PS((sv==="bad"?"Conflicte: ":"Avís: ")+t),RR-M)[0];d.text(l,M,y);y+=3.8;}
+  y+=2.5;
+  // taula
+  const tr=[];for(const f of r.famOrd){const it=I.filter(x=>x.fam===f&&x.id in s.doses);if(!it.length)continue;tr.push({fam:r.fam[f]});it.forEach(x=>tr.push({x}));}
+  const T2=events(C);const bottomH=Math.max(78,Math.min(110,30+T2.ev.length*8.4));const avail=BOT-bottomH-y;
+  const rh=Math.max(3.1,Math.min(4.8,avail/(tr.length+1)));const fs=Math.max(6.1,Math.min(8.8,rh*1.9));
+  H("Ingredients",M,y);y+=1.5;font("bold",fs-.6);col(K0.MUT);y+=rh;
+  T("Ingredient",M,y);T("Nom científic",80,y);T(r.perLabel,163,y,{align:"right"});T(r.totLabel||"Total",RR,y,{align:"right"});line(M,y+1.2,RR);
+  for(const z of tr){y+=rh;if(z.fam){font("bold",fs-1);col(K0.ACC);T(z.fam.toUpperCase(),M,y);continue;}
+    const x=z.x,v=s.doses[x.id];font("bold",fs);col(K0.INK);T(fit(x.ca,64),M,y);font("italic",fs);col(K0.MUT);T(fit(x.sci||"",48),80,y);font("normal",fs);col(K0.MUT);T(fit(perStr(x,v),24),163,y,{align:"right"});
+    font("bold",fs);col(K0.INK);T(fit(totStr(x,v),32),RR,y,{align:"right"});line(M,y+rh*.32,RR);}
+  y+=7;
+  // procés
+  H("Procés",M,y);
+  let py=y+5.5;const pstep=Math.min(8.6,Math.max(6.6,(BOT-y-30)/Math.max(1,T2.ev.length)));
+  for(const [o,t] of T2.ev){if(py>BOT-6)break;font("bold",7.8);col(K0.INK);T(fit(t.replace(/\.$/,""),94),M,py);font("normal",7.2);col(K0.MUT);
+    const dd=addOff(startDate(),o);T(`previst ${mode()==="d"?dmy(dd):dmy(dd)+" "+fdT(dd)} (${offLbl(o)})`,M,py+3.3);T("real",70,py+3.3);line(76,py+3.6,104);py+=pstep;}
+  // nota de tast o registre de pes
+  let ty=y;
+  if(r.pdfLog){H("Registre de pes",112,ty);ty+=5.5;font("bold",7.4);col(K0.MUT);T("Data",112,ty);T("Pes (g)",140,ty);T("% pèrdua",164,ty);T("HR / °C",RR,ty,{align:"right"});ty+=2;line(112,ty,RR);
+    const tgt=C.target?`Objectiu: ${C.target}`:"";for(let i=0;i<9;i++){ty+=6.2;line(112,ty,RR);}ty+=4.6;font("bold",7.6);col(K0.ACC);if(tgt)T(fit(tgt,86),112,ty);ty+=2;}
+  else{H("Nota de tast",112,ty);ty+=5.5;font("normal",8.2);col(K0.MUT);T("Data del tast",112,ty);line(133,ty+.4,RR);ty+=6.6;
+    T("Valoració",112,ty);d.setDrawColor(...K0.MUT);d.setLineWidth(.25);for(let i=0;i<5;i++)d.circle(133+i*6.5,ty-1.1,2,"S");ty+=6.6;
+    for(const t of (r.pdfTaste||["Aspecte","Aroma","Textura","Gust"])){font("normal",8.2);col(K0.MUT);T(t,112,ty);line(133,ty+.4,RR);ty+=6.6;}}
+  y=Math.max(py,ty)+2;
+  if(y<BOT-8){H("Notes i canvis per a la propera vegada",M,y);for(let ny=y+7;ny<=BOT-1;ny+=7)line(M,ny,RR);}
+  font("normal",6.8);col(K0.MUT);T(`${P.title} · generat el ${dmy(new Date())}`,M,BOT+6);
+  return d;
+}
+$("pdfBtn").onclick=async()=>{
+  const msg=m=>{$("pdfMsg").textContent=m;clearTimeout(msg.t);msg.t=setTimeout(()=>$("pdfMsg").textContent="",4000);};
+  if(!window.jspdf){msg("No s'ha pogut carregar el generador de PDF. Torna a carregar la pàgina.");return;}
+  const s=st();const fname=`${P.key}-${S.tab}-${s.profile}-${new Date().toISOString().slice(0,10)}.pdf`;
+  if(!window.claude){try{buildPDF().save(fname);msg("PDF desat");}catch(e){console.error(e);msg("No s'ha pogut generar el PDF");}return;}
+  let dl=null;try{dl=window.claude.use?await window.claude.use("downloads"):null;}catch(_){dl=null;}
+  if(!dl){msg("La descàrrega no està disponible en aquesta vista. Copia la recepta en text.");return;}
+  try{await dl.save({filename:fname,data:buildPDF().output("blob")});msg("PDF desat");}
+  catch(e){const c=e&&e.code;msg(c==="declined"?"Descàrrega cancel·lada":c==="rate_limited"?"Ja hi ha una descàrrega pendent":"No s'ha pogut desar el PDF");}
+};
+
+// ---------- receptes guardades ----------
+const KEY=P.key+"-receptes-v1";
+function getSaved(){try{return JSON.parse(localStorage.getItem(KEY)||"[]");}catch(_){return[];}}
+function setSaved(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true;}catch(_){return false;}}
+function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function renderSaved(){
+  const a=getSaved();
+  $("saved").innerHTML=a.length?a.map((z,i)=>{const rr=P.recipes[z.tab];return `<div class="srow"><div style="min-width:0"><b>${esc(z.name)}</b> <span class="meta">${rr?rr.name:""} · ${rr&&rr.profiles[z.st.profile]?rr.profiles[z.st.profile].name:""} · ${new Date(z.when).toLocaleDateString("ca-ES")}</span>${z.notes?`<div class="meta">${esc(z.notes)}</div>`:""}</div><div class="btnrow" style="flex:none"><button type="button" data-load="${i}">Carregar</button><button type="button" class="ghost" data-del="${i}" aria-label="Esborrar ${esc(z.name)}">✕</button></div></div>`;}).join(""):'<p class="ok">Encara no n\'has guardat cap.</p>';
+}
+$("saveBtn").onclick=()=>{
+  const r=R(),s=st();const name=$("saveName").value.trim()||`${r.name} · ${r.profiles[s.profile].name} · ${new Date().toLocaleDateString("ca-ES")}`;
+  const a=getSaved();a.unshift({name,notes:$("saveNotes").value.trim(),when:Date.now(),tab:S.tab,st:JSON.parse(JSON.stringify(s))});
+  if(setSaved(a)){flash("Recepta guardada");$("saveName").value="";$("saveNotes").value="";renderSaved();}else flash("Aquest navegador no permet guardar");
+};
+$("saved").addEventListener("click",e=>{
+  const l=e.target.closest("[data-load]"),dl=e.target.closest("[data-del]");const a=getSaved();
+  if(l){const z=a[+l.dataset.load];if(!P.recipes[z.tab])return;S.tab=z.tab;S.tabs[z.tab]=Object.assign(freshState(z.tab),JSON.parse(JSON.stringify(z.st)));render();flash("Recepta carregada");window.scrollTo({top:0,behavior:"smooth"});}
+  if(dl){a.splice(+dl.dataset.del,1);setSaved(a);renderSaved();}
+});
+
+// ---------- inici ----------
+const pad=n=>String(n).padStart(2,"0");
+const now=new Date();const local=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+for(const k of P.tabOrd){S.tabs[k]=freshState(k);const s=S.tabs[k];const pr=P.recipes[k].profiles[s.profile];s.doses={...pr.d};Object.assign(s.p,pr.p||{});if(pr.n!=null)s.n=pr.n;
+  s.start=P.recipes[k].tl.mode==="d"?local:`${local}T${P.recipes[k].tl.defTime||"09:00"}`;}
+let t0=null;try{t0=localStorage.getItem(P.key+"-tab");}catch(_){}
+if(t0&&P.recipes[t0])S.tab=t0;
+const hs=(location.hash||"").slice(1);if(P.recipes[hs])S.tab=hs;
+render();renderSaved();
+})();
+
+</script>
+</body>
+</html>
