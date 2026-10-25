@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Calculadora de vermut blanc</title>
+<title>Laboratori de vermut</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
@@ -25,6 +25,7 @@
   --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#7fbad6; --info-soft:#17303b;
   --bar:#8fb27c; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
 .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
@@ -151,7 +152,7 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
 <div class="wrap">
   <header>
     <div>
-      <h1>Calculadora de vermut blanc</h1>
+      <h1>Laboratori de vermut</h1>
       <p class="lede">Tria quantes ampolles de vi faràs i un perfil. Afegeix o treu botànics i ajusta'n les dosis: tot es recalcula i et diu si alguna combinació grinyola.</p>
     </div>
     <div class="btnrow"><button type="button" class="primary" id="pdfBtn">Exportar fitxa PDF</button><button type="button" id="lblBtn">PDF etiqueta resum</button><span class="toast" id="pdfMsg" role="status"></span></div>
@@ -190,9 +191,14 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
             <input type="number" id="target" min="14" max="20" step="0.5" value="17">
           </label>
         </div>
-        <label class="f">Sucre per ampolla de 0,75 L: <span class="num" id="sugarLbl">100 g</span>
+        <label class="f">Dolçor per ampolla de 0,75 L (sucre equivalent): <span class="num" id="sugarLbl">100 g</span>
           <input type="range" id="sugar" min="0" max="160" step="5" value="100">
         </label>
+        <div class="row2">
+          <label class="f">Part en caramel: <span class="num" id="carLbl">0 %</span><input type="range" id="swCar" min="0" max="100" step="5" value="0"></label>
+          <label class="f">Part en mel: <span class="num" id="melLbl">0 %</span><input type="range" id="swMel" min="0" max="100" step="5" value="0"></label>
+        </div>
+        <p class="note" id="swNote"></p>
         <label class="f">Macerats per separat
           <select id="macRatio">
             <option value="off">No mostrar</option>
@@ -275,7 +281,8 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
           <button type="button" id="copyRecipe">Copiar recepta en text</button>
           <span class="toast" id="toast" role="status"></span>
         </div>
-        <p class="note">Es guarden només en aquest navegador.</p>
+        <div class="btnrow"><button type="button" id="expBtn">Exportar receptes</button><label class="f" style="flex-direction:row;align-items:center;gap:6px"><span>Importar</span><input type="file" id="impFile" accept=".json,application/json" style="width:auto"></label></div>
+        <p class="note">Es guarden en aquest navegador. Exporta-les a un fitxer per passar-les a un altre dispositiu o web.</p>
         <div class="saved" id="saved"></div>
         <pre class="txt" id="recipeTxt" hidden></pre>
       </section>
@@ -320,6 +327,11 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
         </ol>
       </section>
     </div>
+    <section class="panel" aria-labelledby="h-msch">
+      <h2 id="h-msch">Calendari dels macerats</h2>
+      <p class="note">Cada pot necessita un temps diferent. Comences els més lents el dia d'inici de la calculadora i els altres més tard, perquè tots estiguin a punt el mateix dia.</p>
+      <ol class="tl" id="macSched"></ol>
+    </section>
   </div>
 </div>
 
@@ -345,10 +357,10 @@ const I=[
  ["taronjad","ci","Pell de taronja dolça","Piel de naranja dulce","Citrus × sinensis","Cítric dolç, més rodó","g",1,4,.1,2.5,"F",1,{ci:3,ca:1}],
  ["marialluisa","ci","Marialluïsa","Hierbaluisa","Aloysia citrodora","Llimona intensa, molt fresca","g",.2,.8,.05,.5,"H",1,{ci:4,he:1}],
  ["melissa","ci","Melissa","Melisa","Melissa officinalis","Llimona suau, herbal","g",.3,1,.1,.6,"H",1,{ci:2,he:2}],
- ["lemongrass","ci","Herba llimona","Lemongrass","Cymbopogon citratus","Cítric verd, exòtic","g",.2,.5,.05,.35,"H",1,{ci:3,he:1}],
- ["camamilla","fl","Camamilla","Manzanilla dulce","Matricaria chamomilla","Floral, mel, poma","g",.5,2.5,.1,1.5,"H",1,{fl:3,ca:2}],
- ["sauc","fl","Flor de saüc","Saúco flor","Sambucus nigra","Floral afruitat, moscat i litxi","g",.3,1,.1,.6,"H",1,{fl:4,ci:1}],
- ["rosa","fl","Pètals de rosa","Rosa pétalos","Rosa × damascena","Perfumat, delicat","g",.3,1,.1,.6,"H",1,{fl:4}],
+ ["lemongrass","ci","Herba llimona","Hierba limón","Cymbopogon citratus","Cítric verd, exòtic","g",.2,.5,.05,.35,"H",1,{ci:3,he:1}],
+ ["camamilla","fl","Camamilla","Manzanilla","Matricaria chamomilla","Floral, mel, poma","g",.5,2.5,.1,1.5,"H",1,{fl:3,ca:2}],
+ ["sauc","fl","Flor de saüc","Flor de saúco","Sambucus nigra","Floral afruitat, moscat i litxi","g",.3,1,.1,.6,"H",1,{fl:4,ci:1}],
+ ["rosa","fl","Pètals de rosa","Pétalos de rosa","Rosa × damascena","Perfumat, delicat","g",.3,1,.1,.6,"H",1,{fl:4}],
  ["espigol","fl","Espígol","Lavanda","Lavandula angustifolia","Floral intens; en excés, sabó","g",.03,.2,.01,.1,"H",1,{fl:4,he:1}],
  ["calendula","fl","Calèndula","Caléndula","Calendula officinalis","Poc sabor, color daurat","g",.2,.6,.1,.5,"H",1,{fl:.5}],
  ["salvia","he","Sàlvia","Salvia","Salvia officinalis","Balsàmic, càlid, una mica camforat","g",.2,.6,.05,.4,"H",1,{he:3,re:1}],
@@ -357,7 +369,7 @@ const I=[
  ["llorer","he","Llorer","Laurel","Laurus nobilis","Balsàmic, una mica eucaliptat","fulla",.5,2,.5,1,"S",.2,{he:2,re:2}],
  ["menta","he","Menta / herba-sana","Menta / hierbabuena","Mentha spicata","Frescor","g",.1,.3,.05,.2,"H",1,{he:3}],
  ["estrago","he","Estragó","Estragón","Artemisia dracunculus","Anisat suau, herbaci","g",.1,.3,.05,.2,"H",1,{an:2,he:2}],
- ["coriandre","es","Coriandre (llavor)","Cilantro grano","Coriandrum sativum","Cítric especiat, sec","g",.5,2.5,.1,1.5,"S",1,{ci:2,es:2}],
+ ["coriandre","es","Coriandre (llavor)","Semillas de cilantro","Coriandrum sativum","Cítric especiat, sec","g",.5,2.5,.1,1.5,"S",1,{ci:2,es:2}],
  ["cardamom","es","Cardamom","Cardamomo verde","Elettaria cardamomum","Fresc, eucaliptat, elegant","beina",1,3,1,2,"S",.15,{es:2,re:1,ci:1}],
  ["canyella","es","Canyella en branca","Canela en rama","Cinnamomum verum","Càlid, dolç","g",.3,1.2,.1,.7,"S",1,{es:2,ca:3}],
  ["clau","es","Clau","Clavo de olor","Syzygium aromaticum","Càlid, intens; domina fàcilment","unitat",1,2,1,1,"S",.1,{es:4}],
@@ -367,34 +379,34 @@ const I=[
  ["pebrenegre","es","Pebre negre","Pimienta negra","Piper nigrum","Picor seca","gra",1,5,1,3,"S",.05,{es:3}],
  ["pebrerosa","es","Pebre rosa","Pimienta rosa","Schinus terebinthifolia","Afruitat, resinós suau","gra",2,8,1,4,"S",.03,{es:1,re:2,ci:1}],
  ["jamaica","es","Pebre de Jamaica","Pimienta de Jamaica","Pimenta dioica","Clau i canyella alhora","gra",1,3,1,2,"S",.15,{es:3,ca:2}],
- ["gingebre","es","Gingebre sec","Jengibre raíz","Zingiber officinale","Picant, calidesa","g",.2,1,.1,.5,"H",1,{es:3,ca:1}],
+ ["gingebre","es","Gingebre sec","Jengibre seco","Zingiber officinale","Picant, calidesa","g",.2,1,.1,.5,"H",1,{es:3,ca:1}],
  ["anisest","es","Anís estrellat","Anís estrellado","Illicium verum","Anís intens i dolç","estrella",.1,.5,.05,.25,"S",1.2,{an:4,ca:1}],
- ["fonoll","es","Fonoll (llavor)","Hinojo semillas","Foeniculum vulgare","Anís suau, fresc","g",.2,.5,.05,.35,"H",1,{an:3,he:1}],
+ ["fonoll","es","Fonoll (llavor)","Semillas de hinojo","Foeniculum vulgare","Anís suau, fresc","g",.2,.5,.05,.35,"H",1,{an:3,he:1}],
  ["anisverd","es","Anís verd","Anís verde","Pimpinella anisum","Anís dolç, net","g",.2,.4,.05,.3,"H",1,{an:3,ca:1}],
- ["regalessia","ar","Regalèssia","Regaliz raíz","Glycyrrhiza glabra","Dolçor natural, allarga el final","g",.3,1,.1,.6,"H",1,{ca:3,an:1}],
+ ["regalessia","ar","Regalèssia","Raíz de regaliz","Glycyrrhiza glabra","Dolçor natural, allarga el final","g",.3,1,.1,.6,"H",1,{ca:3,an:1}],
  ["gavarrera","ar","Gavarrera","Escaramujo","Rosa canina","Acidesa afruitada","g",.5,2,.1,1.2,"H",1,{ci:2,fl:1}],
  ["abrotan","am","Abròtan","Abrótano","Artemisia abrotanum","Amarg suau amb notes cítriques i camforades","g",.2,.8,.05,.4,"H",1,{am:2,ci:2,he:1}],
  ["llupol","am","Llúpol (cons)","Lúpulo","Humulus lupulus","Amarg floral i resinós, record de cervesa","g",.1,.5,.05,.25,"H",1,{am:3,fl:1,re:2}],
  ["xicoira","am","Xicoira","Achicoria","Cichorium intybus","Amarg vegetal i terrós","g",.2,.8,.05,.4,"H",1,{am:3,he:1}],
  ["dentlleo","am","Dent de lleó","Diente de león","Taraxacum officinale","Amarg suau i verd","g",.3,1,.1,.5,"H",1,{am:2,he:2}],
  ["camromana","fl","Camamilla amarga (romana)","Manzanilla amarga","Chamaemelum nobile","Floral i de poma, amb un amarg elegant","g",.2,1,.1,.5,"H",1,{fl:3,am:2}],
- ["tila","fl","Til·la","Tila (flor y hojas)","Tilia spp.","Floral suau, de mel","g",.3,1.2,.1,.6,"H",1,{fl:3,ca:1}],
+ ["tila","fl","Til·la","Tila","Tilia spp.","Floral suau, de mel","g",.3,1.2,.1,.6,"H",1,{fl:3,ca:1}],
  ["ulmaria","fl","Ulmària (reina dels prats)","Ulmaria","Filipendula ulmaria","Floral, mel i ametlla","g",.2,.6,.05,.3,"H",1,{fl:3,ca:2}],
  ["tomani","fl","Tomaní","Cantueso","Lavandula stoechas","Floral camforat, més resinós que l'espígol","g",.05,.25,.01,.1,"H",1,{fl:3,re:2,he:1}],
  ["alfabrega","he","Alfàbrega","Albahaca","Ocimum basilicum","Herbaci dolç, anisat, punt de clau","g",.1,.4,.05,.2,"H",1,{he:2,an:2}],
  ["majorana","he","Majorana","Mejorana","Origanum majorana","Herbaci dolç i lleugerament floral","g",.1,.4,.05,.2,"H",1,{he:3,fl:1}],
  ["comiprat","es","Comí de prat (llavor)","Alcaravea","Carum carvi","Anisat terrós, de kümmel","g",.1,.4,.05,.2,"H",1,{an:3,es:1}],
- ["sumac","ar","Sumac","Sumac (zumaque)","Rhus coriaria","Acidesa afruitada, de llimona","g",.2,1,.1,.5,"H",1,{ci:3}]
+ ["sumac","ar","Sumac","Zumaque","Rhus coriaria","Acidesa afruitada, de llimona","g",.2,1,.1,.5,"H",1,{ci:3}]
 ].map(a=>({id:a[0],fam:a[1],ca:a[2],es:a[3],sci:a[4],taste:a[5],unit:a[6],min:a[7],max:a[8],step:a[9],typ:a[10],where:a[11],gpu:a[12],v:a[13]}));
 const BY=Object.fromEntries(I.map(x=>[x.id,x]));
 
 const PROFILES={
  classic:{name:"Clàssic",desc:"La recepta base: equilibrat, estil Torí/Reus",sugar:100,mac:7,d:{donzell:1.5,genciana:.4,angelica:.4,taronjaam:2.2,llimona:.33,camamilla:1.5,coriandre:1.5,cardamom:2,canyella:.7,clau:1,nou:.05,ginebre:2,vainilla:.2,salvia:.4,farigola:.4,romani:.2}},
- sec:{name:"Sec i amarg",desc:"Estil Reus: més amargor, menys sucre",sugar:70,mac:8,d:{donzell:2,genciana:.5,centaura:.5,angelica:.4,taronjaam:2.5,llimona:.33,camamilla:1,coriandre:1.5,cardamom:1,canyella:.5,clau:1,ginebre:2,salvia:.4,farigola:.5,romani:.2,nou:.05}},
+ sec:{name:"Sec i amarg",desc:"Estil Reus: més amargor, menys sucre",sugar:70,mac:8,d:{donzell:2,genciana:.35,centaura:.3,taronjaam:2.5,llimona:.33,camamilla:1,coriandre:1.5,cardamom:1,clau:1,ginebre:2,salvia:.4,farigola:.5,romani:.2}},
  floral:{name:"Floral",desc:"Estil Torí bianco: flors, vainilla, dolç",sugar:120,mac:6,d:{donzell:1.5,genciana:.2,angelica:.3,camamilla:2,sauc:.8,rosa:.5,taronjaam:1.5,llimona:.33,coriandre:1,cardamom:1,vainilla:.33,canyella:.5}},
  citric:{name:"Cítric i fresc",desc:"Marialluïsa, melissa i doble de llimona",sugar:90,mac:6,d:{donzell:1.5,genciana:.3,marialluisa:.6,melissa:.5,llimona:.66,taronjaam:2,coriandre:2,cardamom:2,camamilla:1,ginebre:2}},
- especiat:{name:"Especiat d'hivern",desc:"Jamaica, gingebre, anís i regalèssia",sugar:110,mac:8,d:{donzell:1.5,genciana:.4,angelica:.4,taronjad:3,jamaica:2,gingebre:.6,anisest:.25,regalessia:.6,canyella:1,clau:1,cardamom:1,nou:.05,vainilla:.2}},
- garriga:{name:"Garriga",desc:"Mediterrani: tomaní, farigola, abròtan, ginebre",sugar:90,mac:7,d:{donzell:1.5,genciana:.3,abrotan:.4,taronjaam:1.5,llimona:.33,tomani:.08,camromana:.4,farigola:.5,romani:.25,majorana:.2,coriandre:1,ginebre:3}}
+ especiat:{name:"Especiat d'hivern",desc:"Jamaica, gingebre, anís i regalèssia",sugar:110,mac:8,d:{donzell:1.5,genciana:.4,angelica:.4,taronjad:3,jamaica:2,gingebre:.6,anisest:.25,regalessia:.6,canyella:1,cardamom:1,vainilla:.2},sw:{car:30,mel:30}},
+ garriga:{name:"Garriga",desc:"Mediterrani: tomaní, farigola, abròtan, ginebre",sugar:90,mac:7,d:{donzell:1.5,genciana:.3,abrotan:.4,taronjaam:1.5,llimona:.33,tomani:.08,camromana:.4,farigola:.5,romani:.25,majorana:.2,coriandre:1,ginebre:3},sw:{car:0,mel:30}}
 };
 
 const WINE={
@@ -405,8 +417,11 @@ const WINE={
  especiat:{vi:"Garnatxa blanca de la Terra Alta, sense bóta",grau:"12,5–13%",why:"Té més cos i rodonesa per aguantar les espècies. Amb aquest grau, l'alcohol a afegir ja baixa sol."},
  garriga:{vi:"Macabeu o garnatxa blanca jove de l'Empordà o la Terra Alta",grau:"12–12,5%",why:"Vins mediterranis amb notes de fonoll i herba seca que acompanyen les aromàtiques de garriga."}
 };
+const DELICATE=["sauc","rosa","espigol","tila","ulmaria","tomani","camromana"];
+const delNames=()=>DELICATE.filter(i=>i in st.doses).map(i=>BY[i].ca.replace(/ \(.*\)/,"").toLowerCase()).join(", ");
 const $=id=>document.getElementById(id);
-const st={bottles:2,bsize:750,wineAbv:12,spirit:96,target:17,sugar:100,profile:"classic",custom:false,doses:{},mac:7,rest:3,start:null,lvl:{}};
+const HONEY={classic:"de romaní",sec:"de farigola",floral:"de taronger (azahar)",citric:"de taronger (azahar)",especiat:"de castanyer o de bruc",garriga:"de farigola o de romaní"};
+const st={sw:{car:0,mel:0},bottles:2,bsize:750,wineAbv:12,spirit:96,target:17,sugar:100,profile:"classic",custom:false,doses:{},mac:7,rest:3,start:null,lvl:{}};
 const LVL={low:["Baixa",.7],mid:["Mitja",1],high:["Alta",1.3]};
 function setLevel(f,l){
   const items=I.filter(x=>x.fam===f&&x.id in st.doses);const n=items.length;if(!n)return;
@@ -415,7 +430,7 @@ function setLevel(f,l){
   for(const x of items){let v=x.typ*LVL[l][1]*k;v=Math.min(x.max,Math.max(x.min,Math.round(v/x.step)*x.step));st.doses[x.id]=+v.toFixed(3);}
   st.lvl[f]=l;
 }
-function loadProfile(p){const P=PROFILES[p];st.profile=p;st.custom=false;st.doses={...P.d};st.lvl={};st.sugar=P.sugar;st.mac=P.mac;syncInputs();render();}
+function loadProfile(p){const P=PROFILES[p];st.profile=p;st.custom=false;st.doses={...P.d};st.lvl={};st.sw=P.sw?{...P.sw}:{car:0,mel:0};st.sugar=P.sugar;st.mac=P.mac;syncInputs();render();}
 
 const nf=(n,d)=>n.toLocaleString("ca-ES",{maximumFractionDigits:d,minimumFractionDigits:0});
 function unitLbl(u,n){const p=UNITS[u];return Math.abs(n-1)<1e-9?p[0]:p[1];}
@@ -429,12 +444,17 @@ function fmtDose(x,val,total){
 const scale=()=>st.bottles*st.bsize/750;
 const sizeF=()=>st.bsize/750;
 
+function sweet(){const S=st.sugar*scale(),sw=st.sw||{car:0,mel:0},c=(sw.car||0)/100,m=(sw.mel||0)/100;
+  const sug=S*Math.max(0,1-c-m),car=S*c*1.1,mel=S*m*.9;return {S,sug,car,mel,sol:sug+car*.95+mel*.82,wx:car*.4+mel*.18,carW:car*.4};}
+function sweetParts(L){const SW=L.SW,r=Math.round,o=[];if(SW.sug>=.5)o.push(["Sucre blanc",r(SW.sug)+" g"]);if(SW.car>=.5)o.push(["Sucre per a caramel",`${r(SW.car)} g + ${r(SW.carW)} ml aigua`]);if(SW.mel>=.5)o.push([`Mel ${HONEY[st.profile]}`,r(SW.mel)+" g"]);return o.length?o:[["Sucre","0 g"]];}
+const sweetStr=L=>{const S=L.SW,r=Math.round,o=[];if(S.sug>=.5)o.push(r(S.sug)+" g sucre");if(S.car>=.5)o.push(r(S.car)+" g caramel");if(S.mel>=.5)o.push(r(S.mel)+" g mel");return o.join(" + ")||"sense sucre";};
 function liquids(){
-  const W=st.bottles*st.bsize,aw=st.wineAbv/100,A=st.spirit/100,t=st.target/100,S=st.sugar*scale(),m=.58;
-  const hc=A>m?A/m-1:0;const rhs=t*(W+.63*S)-W*aw;const den=A-t*(1+hc);
+  const W=st.bottles*st.bsize,aw=st.wineAbv/100,A=st.spirit/100,t=st.target/100,SW=sweet(),S=SW.S,m=.58;
+  const base=W+.63*SW.sol+SW.wx;
+  const hc=A>m?A/m-1:0;const rhs=t*base-W*aw;const den=A-t*(1+hc);
   let x=0,ok=true; if(den<=0)ok=false; else x=Math.max(0,rhs/den);
-  const h=x*hc,V=W+x+h+.63*S,abv=ok?(W*aw+x*A)/V*100:NaN,gL=S/V*1000;
-  return {W,x,h,S,V,abv,gL,ok,macAbv:A/(1+hc)*100,warm:Math.min(W,150*scale())};
+  const h=x*hc,V=base+x+h,abv=ok?(W*aw+x*A)/V*100:NaN,gL=S/V*1000;
+  return {W,x,h,S,SW,V,abv,gL,ok,macAbv:A/(1+hc)*100,warm:Math.min(W,Math.round((SW.sug+SW.mel)*1.5))};
 }
 
 function flavour(){
@@ -455,12 +475,12 @@ function warnings(L,F){
   const load=botLoad();
   if(load>16)w.push(["bad",`Massa càrrega botànica (${nf(load,1)} g per ampolla). Queda astringent i confús; treu algun ingredient o baixa dosis.`]);
   else if(load<7)w.push(["warn",`Poca càrrega botànica (${nf(load,1)} g per ampolla). Pot quedar pla.`]);
-  if(F.am>17)w.push(["bad","Amargor molt alta. Baixa genciana o centaura, o puja el sucre."]);
+  if(F.am>19)w.push(["bad","Amargor molt alta. Baixa genciana o centaura, o puja el sucre."]);
   if(has("genciana")&&has("centaura")&&d("genciana")>=.4&&d("centaura")>=.4)w.push(["warn","Genciana i centaura a dosi alta alhora: dos amargs secs que competeixen. Redueix-ne un."]);
   if(d("genciana")>.5)w.push(["warn","La genciana satura molt ràpid: per sobre de 0,5 g per ampolla domina el final."]);
   if(F.am>12&&st.sugar<70)w.push(["warn","Molt amarg i poc sucre: queda dur. Puja el sucre a 80 g o més."]);
   const anis=["anisest","anisverd","fonoll","estrago","comiprat"].filter(has);
-  if(anis.length>=2)w.push(["warn",`${anis.map(i=>BY[i].ca).join(" + ")}: anisats junts s'emmascaren i l'anís acaba dominant. Quedat amb un.`]);
+  if(anis.length>=2)w.push(["warn",`${anis.map(i=>BY[i].ca).join(" + ")}: anisats junts s'emmascaren i l'anís acaba dominant. Queda't amb un.`]);
   if(d("anisest")>.35)w.push(["warn","Més de ⅓ d'estrella d'anís per ampolla tapa la resta de botànics."]);
   if(d("espigol")>.12)w.push(["bad","L'espígol per sobre de 0,12 g per ampolla dona gust de sabó."]);
   if(d("tomani")>.15)w.push(["bad","El tomaní per sobre de 0,15 g per ampolla queda camforat i de sabó."]);
@@ -478,16 +498,24 @@ function warnings(L,F){
   if(has("pebrenegre")&&has("gingebre")&&d("pebrenegre")>3)w.push(["info","Pebre negre i gingebre sumen picor. Vigila que no cremi."]);
   if(F.fl>9&&F.am>13)w.push(["warn","Molt floral i molt amarg alhora: l'amargor tapa les flors. Tria una direcció."]);
   if(has("calendula")&&famCount.fl===1)w.push(["info","La calèndula sola gairebé no aporta gust, només color."]);
-  for(const f of FAMORD){if((famCount[f]||0)>(f==="es"?5:3))w.push(["warn",`Tens ${famCount[f]} ingredients de la família ${FAM[f].toLowerCase()}: el perfil es difumina.`]);}
-  if(["sauc","rosa","espigol"].some(has))w.push(["info","Les flors delicades (saüc, rosa, espígol) pots afegir-les els últims 3 dies de maceració perquè no s'enterbolin."]);
-  if(has("llimona")||has("taronjaam")||has("taronjad"))w.push(["info","Pells fresques: només la part de color. El blanc amarga."]);
+  const FLIM={am:3,ci:4,fl:3,he:4,es:7,ar:2};
+  for(const f of FAMORD){if((famCount[f]||0)>FLIM[f])w.push(["warn",`Tens ${famCount[f]} ingredients de la família ${FAM[f].toLowerCase()}: el perfil es difumina.`]);}
+  if(DELICATE.some(has))w.push(["info",`Les flors delicades (${delNames()}) pots afegir-les els últims 3 dies de maceració perquè no s'enterbolin.`]);
+  const sw=st.sw||{car:0,mel:0};
+  if(sw.car>50)w.push(["warn","Amb més de la meitat de caramel el vermut s'enfosqueix i deixa de ser blanc."]);
+  if(sw.car>0&&["floral","citric"].includes(st.profile))w.push(["info","El caramel tapa la frescor dels perfils floral i cítric. Aquí millor mel suau o només sucre."]);
+  if(sw.mel>50)w.push(["warn","Amb més de la meitat de mel, la mel mana per sobre de les herbes."]);
+  if(sw.mel>0)w.push(["info","La mel pot enterbolir una mica: deixa-ho reposar uns dies i trasbalsa-ho."]);
   if(L.gL>165)w.push(["warn","Més de 165 g/L de sucre: queda licorós."]);
   if(L.gL<40)w.push(["info","Menys de 40 g/L de sucre: molt sec, allunyat del vermut blanc tradicional."]);
   if(st.wineAbv>12.5)w.push(["info","Vi de més de 12,5%: ja està calculat, però el vi lleuger deixa lluir més les herbes."]);
   return w;
 }
 
-function syncInputs(){
+function syncSw(){if(!st.sw)st.sw={car:0,mel:0};$("swCar").value=st.sw.car;$("swMel").value=st.sw.mel;$("carLbl").textContent=st.sw.car+" %";$("melLbl").textContent=st.sw.mel+" %";
+  const n=[];if(st.sw.car>0)n.push("Caramel: fes-lo ros clar (165–170 °C) i desglaça'l amb l'aigua indicada, ben calenta i lluny de la cara.");if(st.sw.mel>0)n.push(`Mel recomanada: ${HONEY[st.profile]}. Dissol-la en el vi tebi sense passar de 45 °C.`);
+  $("swNote").textContent=n.length?n.join(" "):"Reparteix la dolçor entre sucre, caramel i mel. Els càlculs d'alcohol i volum ja ho tenen en compte.";}
+function syncInputs(){syncSw();
   $("bottles").value=st.bottles;$("bsize").value=st.bsize;$("wineAbv").value=st.wineAbv;$("spirit").value=st.spirit;$("target").value=st.target;
   $("sugar").value=st.sugar;$("sugarLbl").textContent=st.sugar+" g";$("macDays").value=st.mac;$("macLbl").textContent=st.mac;$("restWeeks").value=st.rest;$("restLbl").textContent=st.rest;
 }
@@ -526,11 +554,11 @@ function renderLiquids(L){
   <dt>Vi blanc</dt><dd>${nf(L.W/1000,2)} L</dd>
   <dt>${st.spirit==96?"Alcohol 96°":"Vodka 40°"}</dt><dd class="hl">${L.ok?r(L.x)+" ml":"—"}</dd>
   <dt>Aigua (maceració)</dt><dd class="hl">${L.ok?r(L.h)+" ml":"—"}</dd>
-  <dt>Sucre</dt><dd class="hl">${r(L.S)} g</dd>
-  <dt>Vi per dissoldre el sucre</dt><dd>${r(L.warm)} ml</dd>
+  ${sweetParts(L).map(([k,v])=>`<dt>${k}</dt><dd class="hl">${v}</dd>`).join("")}
+  ${L.warm>0?`<dt>Vi tebi per dissoldre el sucre</dt><dd>${r(L.warm)} ml</dd>`:""}
   <dt>Volum final</dt><dd>${nf(L.V/1000,2)} L</dd>
   <dt>Graduació final</dt><dd>${L.ok?nf(L.abv,1)+" %":"—"}</dd>
-  <dt>Sucre final</dt><dd>${r(L.gL)} g/L</dd>
+  <dt>Dolçor final (sucre equivalent)</dt><dd>${r(L.gL)} g/L</dd>
   <dt>Ampolles de 0,75 L per embotellar</dt><dd>${Math.ceil(L.V/750)}</dd>`;
   $("liqNote").textContent=L.ok?`La maceració es fa a ≈${nf(L.macAbv,0)}% vol. Volums aproximats: no té en compte la contracció de la barreja alcohol-aigua.`:"";
 }
@@ -548,13 +576,13 @@ function renderWarnings(w){
 function shopText(L){
   const groups={H:[],S:[],F:[]};
   for(const id in st.doses){const x=BY[id];groups[x.where].push(`${x.ca} (${x.es}): ${fmtDose(x,st.doses[id]*scale(),true)}`);}
-  let t=`Líquids\n- ${st.bottles} ampolles de vi blanc de ${nf(st.bsize/1000,2)} L (${st.wineAbv}%)\n- ${L.ok?Math.round(L.x):"—"} ml de ${st.spirit==96?"alcohol 96°":"vodka"}\n- ${Math.round(L.S)} g de sucre\n`;
+  let t=`Líquids\n- ${st.bottles} ampolles de vi blanc de ${nf(st.bsize/1000,2)} L (${st.wineAbv}%)\n- ${L.ok?Math.round(L.x):"—"} ml ${st.spirit==96?"d'alcohol 96°":"de vodka"}\n${sweetParts(L).map(([k,v])=>`- ${k}: ${v}`).join("\n")}\n`;
   for(const k of ["H","S","F"])if(groups[k].length)t+=`\n${WHERE[k]}\n`+groups[k].map(s=>"- "+s).join("\n")+"\n";
   return t;
 }
 function renderShop(L){
   const groups={H:[],S:[],F:[]};for(const id in st.doses){const x=BY[id];groups[x.where].push(x);}
-  let h=`<div><h3>Líquids</h3><ul><li>${st.bottles} × vi blanc ${nf(st.bsize/1000,2)} L</li><li>${L.ok?Math.round(L.x):"—"} ml ${st.spirit==96?"alcohol 96°":"vodka 40°"}</li><li>${Math.round(L.S)} g sucre</li></ul></div>`;
+  let h=`<div><h3>Líquids</h3><ul><li>${st.bottles} × vi blanc ${nf(st.bsize/1000,2)} L</li><li>${L.ok?Math.round(L.x):"—"} ml ${st.spirit==96?"alcohol 96°":"vodka 40°"}</li>${sweetParts(L).map(([k,v])=>`<li>${k}: ${v}</li>`).join("")}</ul></div>`;
   for(const k of ["H","S","F"])if(groups[k].length)h+=`<div><h3>${WHERE[k]}</h3><ul>${groups[k].map(x=>`<li>${x.ca} <span style="color:var(--muted)">(${x.es})</span>: <span class="num">${fmtDose(x,st.doses[x.id]*scale(),true)}</span></li>`).join("")}</ul></div>`;
   $("shop").innerHTML=h;
 }
@@ -562,9 +590,9 @@ function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
 const fd=d=>d.toLocaleDateString("ca-ES",{weekday:"short",day:"numeric",month:"short"});
 function renderTimeline(){
   const s=st.start?new Date(st.start+"T12:00:00"):new Date();
-  const hasDelicate=["sauc","rosa","espigol"].some(i=>i in st.doses);
-  const ev=[[0,"Posa totes les herbes en un pot amb l'alcohol i l'aigua. Remena cada dia."]];
-  if(hasDelicate&&st.mac>4)ev.push([st.mac-3,"Afegeix les flors delicades (saüc, rosa, espígol)."]);
+  const hasDelicate=DELICATE.some(i=>i in st.doses);
+  const ev=[[0,"Posa totes les herbes en un pot amb l'alcohol i l'aigua. Remena cada dia."+((("llimona" in st.doses)||("taronjad" in st.doses))?" De les pells fresques, només la part de color: el blanc amarga.":"")]];
+  if(hasDelicate&&st.mac>4)ev.push([st.mac-3,`Afegeix les flors delicades (${delNames()}).`]);
   ev.push([Math.min(5,st.mac-1),"Tasta la tintura. Si ja és massa amarga, filtra abans."]);
   ev.push([st.mac,"Filtra (colador + filtre de cafè). Dissol el sucre en vi tebi, barreja-ho tot i embotella."]);
   ev.push([st.mac+st.rest*7,"Ja es pot beure. Guanya encara amb unes setmanes més."]);
@@ -576,8 +604,8 @@ function recipeText(L){
   const P=PROFILES[st.profile];
   let t=`VERMUT BLANC — ${P.name}${st.custom?" (personalitzat)":""}\n${st.bottles} × ${nf(st.bsize/1000,2)} L de vi a ${st.wineAbv}% → ${L.ok?nf(L.abv,1):"—"}% vol, ${Math.round(L.gL)} g/L de sucre, ≈${nf(L.V/1000,2)} L\n\n`;
   t+=`Vi recomanat: ${WINE[st.profile].vi} (${WINE[st.profile].grau})\n`;
-  t+=`Tintura: ${L.ok?Math.round(L.x):"—"} ml ${st.spirit==96?"alcohol 96°":"vodka 40°"} + ${L.ok?Math.round(L.h):"—"} ml aigua\nSucre: ${Math.round(L.S)} g\n\nBotànics (total del lot · per ampolla):\n`;
-  for(const f of FAMORD)for(const x of I.filter(x=>x.fam===f&&x.id in st.doses))t+=`- ${x.ca} / ${x.es} (${x.sci}): ${fmtDose(x,st.doses[x.id]*scale(),true)} · ${fmtDose(x,st.doses[x.id]*sizeF(),false)}\n`;
+  t+=`Tintura: ${L.ok?Math.round(L.x):"—"} ml ${st.spirit==96?"alcohol 96°":"vodka 40°"} + ${L.ok?Math.round(L.h):"—"} ml aigua\nEndolcidor: ${sweetParts(L).map(([k,v])=>`${k} ${v}`).join(", ")}\n\nBotànics (total del lot · per ampolla):\n`;
+  for(const f of FAMORD)for(const x of I.filter(x=>x.fam===f&&x.id in st.doses))t+=`- ${x.ca} / ${x.es} (${x.sci}): ${fmtDose(x,st.doses[x.id]*scale(),true)} · ${fmtDose(x,st.doses[x.id]*sizeF(),false)}${macOn()?` · macerat 1:${ratioOf(x)}: ${mlf(mlDose(x,st.doses[x.id],scale()))} ml`:""}\n`;
   t+=`\nMaceració ${st.mac} dies, repòs ${st.rest} setmanes.\n`;
   return t;
 }
@@ -613,6 +641,8 @@ document.addEventListener("input",e=>{
     case"spirit":st.spirit=+t.value;break;
     case"target":st.target=num(t.value,14,20,17);break;
     case"sugar":st.sugar=+t.value;markCustom();break;
+    case"swCar":st.sw.car=+t.value;if(st.sw.car+st.sw.mel>100)st.sw.mel=100-st.sw.car;markCustom();syncSw();break;
+    case"swMel":st.sw.mel=+t.value;if(st.sw.car+st.sw.mel>100)st.sw.car=100-st.sw.mel;markCustom();syncSw();break;
     case"macDays":st.mac=+t.value;$("macLbl").textContent=st.mac;break;
     case"restWeeks":st.rest=+t.value;$("restLbl").textContent=st.rest;break;
     case"startDate":st.start=t.value;break;
@@ -655,8 +685,8 @@ function macAssembly(){
   const L=liquids(),a=tA();let T=0;
   for(const id in st.doses)T+=mlDose(BY[id],st.doses[id],scale());
   const A=st.spirit/100,t=st.target/100,aw=st.wineAbv/100;
-  const y0=(t*(L.W+T+.63*L.S)-L.W*aw-T*a)/(A-t);
-  const y=Math.max(0,y0),V=L.W+T+y+.63*L.S,abv=(L.W*aw+T*a+y*A)/V*100;
+  const y0=(t*(L.W+T+.63*L.SW.sol+L.SW.wx)-L.W*aw-T*a)/(A-t);
+  const y=Math.max(0,y0),V=L.W+T+y+.63*L.SW.sol+L.SW.wx,abv=(L.W*aw+T*a+y*A)/V*100;
   return {L,T,y,y0,V,abv,a};
 }
 function macOn(){return !!(st.tinct&&st.tinct.show);}
@@ -684,22 +714,32 @@ function renderMac(){
         <div class="cellv"><span><b class="num">${nf(j.g,j.g<10?1:0)} g</b>${x.unit==="g"?"":` <span class="mut">(${unitHint(x,j.g)})</span>`}</span><span class="mut num">${st.spirit==96?`${Math.round(j.alc)} ml alcohol 96° + ${Math.round(j.aig)} ml aigua`:`${Math.round(j.alc)} ml vodka`}</span><span class="mut">Recuperaràs ≈${Math.round(j.rec)} ml${yb}</span></div>
         <div class="cellv">${eq}</div>
         <div class="mut">${macTime(x)}</div></div>`;}}
+  renderMacSched();
   $("macList").innerHTML=h||'<p class="ok">La mescla és buida.</p>';
   const M=macAssembly(),sp=st.spirit==96?"Alcohol 96°":"Vodka 40°";
   $("macAsm").innerHTML=`
     <dt>Vi blanc</dt><dd>${nf(M.L.W/1000,2)} L</dd>
-    <dt>Macerats (${Object.keys(st.doses).length} pots)</dt><dd class="hl">${Math.round(M.T)} ml</dd>
+    <dt>Macerats (${Object.keys(st.doses).length} ${Object.keys(st.doses).length===1?"pot":"pots"})</dt><dd class="hl">${Math.round(M.T)} ml</dd>
     <dt>Alcohol pur que aporten</dt><dd>${Math.round(M.T*M.a)} ml</dd>
     <dt>${sp} a afegir</dt><dd class="hl">${Math.round(M.y)} ml</dd>
-    <dt>Sucre</dt><dd class="hl">${Math.round(M.L.S)} g</dd>
+    ${sweetParts(M.L).map(([k,v])=>`<dt>${k}</dt><dd class="hl">${v}</dd>`).join("")}
     <dt>Volum final</dt><dd>${nf(M.V/1000,2)} L</dd>
     <dt>Graduació final</dt><dd>${nf(M.abv,1)} %</dd>`;
-  $("macAsmNote").innerHTML=M.y0<0?`<span style="color:var(--bad);font-weight:700">Els macerats ja porten més alcohol del necessari: el vermut quedarà a ${nf(M.abv,1)}%. Fes servir proporcions més concentrades (1:5) o baixa la graduació dels macerats.</span>`:`Amb una sola maceració conjunta hi posaries ${M.L.ok?Math.round(M.L.x):"—"} ml de ${sp.toLowerCase()}. Aquí no cal aigua a part: ja va dins dels macerats.`;
+  $("macAsmNote").innerHTML=M.y0<0?`<span style="color:var(--bad);font-weight:700">Els macerats ja porten més alcohol del necessari: el vermut quedarà a ${nf(M.abv,1)}%. Fes servir proporcions més concentrades (1:5) o baixa la graduació dels macerats.</span>`:`Amb una sola maceració conjunta hi posaries ${M.L.ok?Math.round(M.L.x):"—"} ml ${st.spirit==96?"d'":"de "}${sp.toLowerCase()}. Aquí no cal aigua a part: ja va dins dels macerats.`;
 }
+function macDaysMax(x){const t=macTime(x);const m=t.match(/(\d+)\D+(\d+)\s*(dies|setmanes)/);if(!m)return 10;return +m[2]*(m[3]==="setmanes"?7:1);}
+function renderMacSched(){const el=$("macSched");if(!el)return;
+  const s0=st.start?new Date(st.start+"T12:00:00"):new Date();
+  const items=Object.keys(st.doses).map(id=>BY[id]).map(x=>({x,dd:macDaysMax(x)})).sort((a,b)=>b.dd-a.dd);
+  if(!items.length){el.innerHTML='<li><span class="t">La mescla és buida.</span></li>';return;}
+  const env=addDays(s0,items[0].dd);
+  const groups={};for(const it of items){(groups[it.dd]=groups[it.dd]||[]).push(it.x.ca);}
+  el.innerHTML=Object.keys(groups).map(Number).sort((a,b)=>b-a).map(dd=>`<li><span class="d">${fd(addDays(env,-dd))}<br><span style="color:var(--muted);font-weight:400">${dd} dies de maceració</span></span><span class="t">Comença: ${groups[dd].join(", ")}</span></li>`).join("")+
+   `<li><span class="d">${fd(env)}</span><span class="t">Filtra tots els pots, munta el lot i embotella.</span></li>`;}
 function macText(){const M=macAssembly();let t=`MACERATS — ${PROFILES[st.profile].name}, ${st.bottles} × ${nf(st.bsize/1000,2)} L\nGraduació dels macerats: ${Math.round(M.a*100)}% · pots de ${st.tinct.jar} ml\n\n`;
   for(const f of FAMORD)for(const x of I.filter(x=>x.fam===f&&x.id in st.doses)){const j=jar(x),lot=mlDose(x,st.doses[x.id],scale());
     t+=`- ${x.ca} (${x.es}) 1:${ratioOf(x)} · pot: ${nf(j.g,1)} g + ${st.spirit==96?`${Math.round(j.alc)} ml 96° + ${Math.round(j.aig)} ml aigua`:`${Math.round(j.alc)} ml vodka`} · ${macTime(x)} · al lot: ${mlf(lot)} ml\n`;}
-  t+=`\nMuntatge: ${nf(M.L.W/1000,2)} L vi + ${Math.round(M.T)} ml macerats + ${Math.round(M.y)} ml ${st.spirit==96?"alcohol 96°":"vodka"} + ${Math.round(M.L.S)} g sucre → ${nf(M.abv,1)}% vol\n`;return t;}
+  t+=`\nMuntatge: ${nf(M.L.W/1000,2)} L vi + ${Math.round(M.T)} ml macerats + ${Math.round(M.y)} ml ${st.spirit==96?"alcohol 96°":"vodka"} + ${sweetStr(M.L)} → ${nf(M.abv,1)}% vol\n`;return t;}
 $("tab-mac").addEventListener("input",e=>{const t=e.target;
   if(t.dataset.ratio)st.tinct.r[t.dataset.ratio]=+t.value;
   else if(t.id==="tAbv")st.tinct.abv=+t.value;
@@ -715,7 +755,8 @@ $("copyMac").onclick=()=>{const text=macText();const fl=m=>{$("macToast").textCo
   const show=()=>{const pre=$("macTxt");pre.textContent=text;pre.hidden=false;const rg=document.createRange();rg.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(rg);fl("Text seleccionat: copia'l amb Ctrl+C");};
   try{navigator.clipboard.writeText(text).then(()=>fl("Pla copiat"),show);}catch(_){show();}};
 function showTab(m){const mac=m==="mac";$("tab-calc").hidden=mac;$("tab-mac").hidden=!mac;$("t-calc").setAttribute("aria-selected",String(!mac));$("t-mac").setAttribute("aria-selected",String(mac));try{localStorage.setItem("vermut-tab",m);}catch(_){}}
-$("t-calc").onclick=()=>showTab("calc");$("t-mac").onclick=()=>showTab("mac");
+$("t-calc").onclick=()=>showTab("calc");
+document.querySelector(".tabs").addEventListener("keydown",e=>{if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;const mac=$("t-calc").getAttribute("aria-selected")==="true";showTab(mac?"mac":"calc");$(mac?"t-mac":"t-calc").focus();e.preventDefault();});$("t-mac").onclick=()=>showTab("mac");
 try{if(localStorage.getItem("vermut-tab")==="mac")showTab("mac");}catch(_){}
 
 // ---------- PDF ----------
@@ -743,7 +784,7 @@ function buildPDF(){
   // líquids i sabor
   H("Líquids",M,y);H("Perfil de sabor",110,y);
   const sp=st.spirit==96?"Alcohol 96°":"Vodka 40°";
-  const liq=[["Vi blanc",nf(L.W/1000,2)+" L"],[sp,L.ok?Math.round(L.x)+" ml":"-"],["Aigua de maceració",L.ok?Math.round(L.h)+" ml":"-"],["Sucre",Math.round(L.S)+" g"],["Vi tebi per dissoldre el sucre",Math.round(L.warm)+" ml"],["Volum final aprox.",nf(L.V/1000,2)+" L"],["Graduació final",L.ok?nf(L.abv,1)+" %":"-"],["Ampolles de 0,75 L",String(Math.ceil(L.V/750))]];
+  const liq=[["Vi blanc",nf(L.W/1000,2)+" L"],[sp,L.ok?Math.round(L.x)+" ml":"-"],["Aigua de maceració",L.ok?Math.round(L.h)+" ml":"-"],...sweetParts(L),["Vi tebi per dissoldre el sucre",Math.round(L.warm)+" ml"],["Volum final aprox.",nf(L.V/1000,2)+" L"],["Graduació final",L.ok?nf(L.abv,1)+" %":"-"],["Ampolles de 0,75 L",String(Math.ceil(L.V/750))]];
   let ly=y+5;for(const [k,v] of liq){font("normal",8.8);col(MUT);T(k,M,ly);font("bold",8.8);col(INK);T(v,100,ly,{align:"right"});line(M,ly+1.3,100);ly+=4.7;}
   let fy=y+5;const dims=[...DIMS,["dol","Dolçor"]];
   for(const [k,n] of dims){const val=k==="dol"?L.gL/10:F[k];const max=k==="dol"?17:18;
@@ -754,30 +795,48 @@ function buildPDF(){
   y=Math.max(ly,fy)+1.5;
   // avisos
   const ws=warnings(L,F).filter(w=>w[0]!=="info").slice(0,3);
-  for(const [s,t] of ws){font("bold",7.8);col(s==="bad"?RED:ACC);const l=d.splitTextToSize(PS((s==="bad"?"Conflicte: ":"Avís: ")+t),R-M)[0];d.text(l,M,y);y+=3.8;}
+  for(const [s,t] of ws){font("bold",7.8);col(s==="bad"?RED:ACC);d.text(fit((s==="bad"?"Conflicte: ":"Avís: ")+t,R-M),M,y);y+=3.8;}
   y+=2.5;
   // taula de botànics
   const rows=[];for(const f of FAMORD){const it=I.filter(x=>x.fam===f&&x.id in st.doses);if(!it.length)continue;rows.push({fam:FAM[f]});it.forEach(x=>rows.push({x}));}
-  const bottomH=104,avail=BOT-bottomH-y;const rh=Math.max(3.1,Math.min(4.8,avail/(rows.length+1)));const fs=Math.max(6.2,Math.min(8.8,rh*1.9));
+  let bottomH=104,avail=BOT-bottomH-y;
+  if(avail/(rows.length+1)>=3.1){
+const rh=Math.max(3.1,Math.min(4.8,avail/(rows.length+1)));const fs=Math.max(6.2,Math.min(8.8,rh*1.9));
   H("Botànics",M,y);y+=1.5;
-  font("bold",fs-.6);col(MUT);y+=rh;T("Botànic",M,y);T("Castellà",64,y);T("Nom científic",104,y);T("Per ampolla",168,y,{align:"right"});T("Total lot",R,y,{align:"right"});
+  font("bold",fs-.6);col(MUT);y+=rh;T("Botànic",M,y);T("Castellà",64,y);T("Nom científic",104,y);T("Per ampolla",168,y,{align:"right"});T(macOn()?"Total lot (g · ml mac.)":"Total lot",R,y,{align:"right"});
   line(M,y+1.2,R);
   for(const r of rows){y+=rh;
     if(r.fam){font("bold",fs-1);col(ACC);T(r.fam.toUpperCase(),M,y);continue;}
     const x=r.x,v=st.doses[x.id];
     font("bold",fs);col(INK);T(fit(x.ca,50),M,y);
     font("normal",fs);col(MUT);T(fit(x.es,38),64,y);
-    font("italic",fs);T(fit(x.sci,40),104,y);
+    font("italic",fs);T(fit(x.sci,macOn()?30:40),104,y);
     font("normal",fs);col(MUT);T(fmtDose(x,v*sizeF(),false),168,y,{align:"right"});
-    font("bold",fs);col(INK);T(fmtDose(x,v*scale(),true),R,y,{align:"right"});
+    font("bold",fs);col(INK);T(fmtDose(x,v*scale(),true)+(macOn()?` · ${mlf(mlDose(x,v,scale()))} ml`:""),R,y,{align:"right"});
     line(M,y+rh*.32,R);
+  }
+  }else{
+    bottomH=80;avail=BOT-bottomH-y;
+    const half=Math.ceil(rows.length/2),cols=[rows.slice(0,half),rows.slice(half)],CW=(R-M-6)/2;
+    const rh=Math.max(2.6,Math.min(4.2,avail/(half+1))),fs=Math.max(5.2,Math.min(8,rh*1.9));
+    H("Botànics",M,y);y+=1.5;const y0=y;let yEnd=y;
+    cols.forEach((cr,ci)=>{const cx=M+ci*(CW+6);let yy=y0+rh;
+      font("bold",fs-.6);col(MUT);T("Botànic",cx,yy);T(macOn()?"Total (g · ml mac.)":"Total lot",cx+CW,yy,{align:"right"});line(cx,yy+1.2,cx+CW);
+      for(const r of cr){yy+=rh;
+        if(r.fam){font("bold",fs-1);col(ACC);T(r.fam.toUpperCase(),cx,yy);continue;}
+        const x=r.x,v=st.doses[x.id];
+        font("bold",fs);col(INK);T(fit(x.ca,CW-30),cx,yy);
+        font("normal",fs);col(INK);T(fmtDose(x,v*scale(),true)+(macOn()?` · ${mlf(mlDose(x,v,scale()))} ml`:""),cx+CW,yy,{align:"right"});
+        line(cx,yy+rh*.32,cx+CW);}
+      yEnd=Math.max(yEnd,yy);});
+    y=yEnd;
   }
   y+=7;
   // procés i nota de tast
   H("Procés",M,y);H("Nota de tast",110,y);
   const s0=st.start?new Date(st.start+"T12:00:00"):new Date();
   const ev=[[0,"Inici de la maceració"],[Math.min(5,st.mac-1),"Tast de la tintura"]];
-  if(["sauc","rosa","espigol"].some(i=>i in st.doses)&&st.mac>4)ev.push([st.mac-3,"Afegir flors delicades"]);
+  if(DELICATE.some(i=>i in st.doses)&&st.mac>4)ev.push([st.mac-3,"Afegir flors delicades"]);
   ev.push([st.mac,"Filtrat, mescla i envasat"],[st.mac+st.rest*7,"A punt per beure"]);ev.sort((a,b)=>a[0]-b[0]);
   let py=y+5.5;
   for(const [n,t] of ev){font("bold",8.6);col(INK);T(t,M,py);font("normal",7.8);col(MUT);T(`previst ${dmy(addDays(s0,n))} (dia ${n})`,M,py+3.6);T("real",66,py+3.6);line(73,py+3.9,100);py+=8.6;}
@@ -790,7 +849,7 @@ function buildPDF(){
   y=Math.max(py,ty)+2;
   H("Notes i canvis per al proper lot",M,y);
   for(let ny=y+7;ny<=BOT-1;ny+=7)line(M,ny,R);
-  font("normal",6.8);col(MUT);T(`Calculadora de vermut blanc · generat el ${dmy(new Date())}`,M,BOT+6);
+  font("normal",6.8);col(MUT);T(`Laboratori de vermut · generat el ${dmy(new Date())}`,M,BOT+6);
   return d;
 }
 $("pdfBtn").onclick=async()=>{
@@ -836,7 +895,8 @@ function buildLabels(){
     yy+=2.2;d.setDrawColor(...ACC);d.setLineWidth(.5);d.line(x+p,yy,x+W-p,yy);
     yy+=4.6;font("bold",9,INK);d.text(PS(`${L.ok?nf(L.abv,1):"-"}% vol · ${Math.round(L.gL)} g/L sucre · ${st.bottles}×${nf(st.bsize/1000,2)} L`),x+p,yy);
     yy+=3.9;font("normal",7.3,MUT);d.text(fit(`Vi: ${wr.vi}`,iw),x+p,yy);
-    yy+=3.4;d.text(fit(st.spirit==96?`Tintura: ${L.ok?Math.round(L.x):"-"} ml alcohol 96° + ${L.ok?Math.round(L.h):"-"} ml aigua · ${Math.round(L.S)} g sucre`:`Tintura: ${L.ok?Math.round(L.x):"-"} ml vodka · ${Math.round(L.S)} g sucre`,iw),x+p,yy);
+    yy+=3.4;d.text(fit(st.spirit==96?`Tintura: ${L.ok?Math.round(L.x):"-"} ml alcohol 96° + ${L.ok?Math.round(L.h):"-"} ml aigua`:`Tintura: ${L.ok?Math.round(L.x):"-"} ml vodka`,iw),x+p,yy);
+    yy+=3.4;d.text(fit(`Endolcidor: ${sweetStr(L)}`,iw),x+p,yy);
     const dTop=y+H-p-11.2;
     let by=yy+3.8;const avail=dTop-2-by+2.6;let fs=8.2,lines;
     for(;fs>=4.6;fs-=.2){d.setFontSize(fs);lines=d.splitTextToSize(PS(names),iw);if(lines.length*fs*.42<=avail)break;}
@@ -877,9 +937,24 @@ $("saveBtn").onclick=()=>{
 };
 $("saved").addEventListener("click",e=>{
   const l=e.target.closest("[data-load]"),d=e.target.closest("[data-del]");const a=getSaved();
-  if(l){Object.assign(st,a[+l.dataset.load].st);syncInputs();if(st.start)$("startDate").value=st.start;render();flash("Recepta carregada");window.scrollTo({top:0,behavior:"smooth"});}
-  if(d){a.splice(+d.dataset.del,1);setSaved(a);renderSaved();}
+  if(l){const rec=a[+l.dataset.load];Object.assign(st,{sw:{car:0,mel:0}},JSON.parse(JSON.stringify(rec.st)));$("saveName").value=rec.name||"";$("saveNotes").value=rec.notes||"";syncInputs();if(st.start)$("startDate").value=st.start;render();flash("Recepta carregada");window.scrollTo({top:0,behavior:"smooth"});}
+  if(d){if(d.dataset.sure!=="1"){d.dataset.sure="1";d.textContent="Esborrar?";d.style.color="var(--bad)";setTimeout(()=>{if(d.isConnected){d.dataset.sure="";d.textContent="✕";d.style.color="";}},3000);return;}
+    a.splice(+d.dataset.del,1);setSaved(a);renderSaved();}
 });
+
+$("expBtn").onclick=async()=>{const a=getSaved();if(!a.length){flash("No hi ha receptes per exportar");return;}
+  const data=JSON.stringify({app:"vermut-blanc",v:1,receptes:a},null,1),fname=`receptes-vermut-${new Date().toISOString().slice(0,10)}.json`;
+  if(!window.claude){const u=URL.createObjectURL(new Blob([data],{type:"application/json"}));const k=document.createElement("a");k.href=u;k.download=fname;k.click();setTimeout(()=>URL.revokeObjectURL(u),2000);flash("Receptes exportades");return;}
+  let dl=null;try{dl=await window.claude.use("downloads");}catch(_){}
+  if(!dl){flash("La descàrrega no està disponible en aquesta vista");return;}
+  try{await dl.save({filename:fname,data});flash("Receptes exportades");}catch(e){flash(e&&e.code==="declined"?"Descàrrega cancel·lada":"No s'han pogut exportar");}};
+$("impFile").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;
+  try{const j=JSON.parse(await f.text());const inc=Array.isArray(j)?j:j.receptes;if(!Array.isArray(inc))throw 0;
+    const a=getSaved();const key=r=>r.name+"|"+r.when;const have=new Set(a.map(key));let n=0;
+    for(const r of inc){if(r&&r.st&&r.st.doses&&!have.has(key(r))){a.push(r);n++;}}
+    a.sort((x,y)=>y.when-x.when);setSaved(a);renderSaved();flash(n?`${n} receptes importades`:"Ja les tenies totes");}
+  catch(_){flash("Aquest fitxer no conté receptes de vermut");}
+  e.target.value="";});
 
 // init
 const today=new Date();$("startDate").value=today.toISOString().slice(0,10);st.start=$("startDate").value;
