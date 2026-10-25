@@ -1,29 +1,14 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Receptari d'ensaïmades</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: obrador de forn mallorquí — columna de la fornada a l'esquerra, massa i diagnosi a la dreta; porcellana freda amb el daurat de la crosta */
-:root{
-  --bg:#edf0f3; --surface:#fafbfc; --ink:#1d2533; --muted:#5b6474; --line:#d3d9e1;
-  --accent:#a55d16; --accent-soft:#f4e4d0; --accent-ink:#ffffff;
-  --bad:#b3261e; --bad-soft:#f6dedb; --warn:#935800; --warn-soft:#f6e8cf; --info:#2c5f80; --info-soft:#dce8f0;
-  --bar:#c4964e; --sugar:#ffffff;
-  --f-display:"Young Serif", Georgia, "Times New Roman", serif;
-  --f-body:"Figtree", "Segoe UI", system-ui, sans-serif;
-  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#13161b; --surface:#1b1f26; --ink:#e6e9ee; --muted:#9aa3b2; --line:#2e343e;
-  --accent:#e5a35a; --accent-soft:#3a2a18; --accent-ink:#1a1206;
-  --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86bde0; --info-soft:#16303f;
-  --bar:#d8ad66; --sugar:#e6e9ee; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#13161b; --surface:#1b1f26; --ink:#e6e9ee; --muted:#9aa3b2; --line:#2e343e;
-  --accent:#e5a35a; --accent-soft:#3a2a18; --accent-ink:#1a1206;
-  --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86bde0; --info-soft:#16303f;
-  --bar:#d8ad66; --sugar:#e6e9ee; color-scheme:dark}
+
+
+
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
@@ -77,7 +62,7 @@ dl.out{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:0}
 dl.out dt{color:var(--muted);font-size:.88rem}
 dl.out dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
 dl.out .hl{color:var(--accent)}
-dl.out .sep{grid-column:1/3;border-top:1px solid var(--line);margin:4px 0}
+dl.out dd.sep{display:none}dl.out dt.sep{grid-column:1/3;border-top:1px solid var(--line);margin:4px 0}
 .note{font-size:.8rem;color:var(--muted);margin:0}
 .mix{display:flex;flex-direction:column}
 .mrow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(120px,1.1fr) 96px 112px 34px;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
@@ -163,8 +148,15 @@ details.pr{border-top:1px solid var(--line);padding:8px 0}
 details.pr summary{cursor:pointer;font-weight:700;font-size:.92rem}
 details.pr p{margin:6px 0 0;font-size:.88rem;color:var(--muted)}
 </style>
-
-<div class="wrap">
+<link rel="stylesheet" href="receptari.css">
+<style>
+:root{ --accent:#8a4a10; --accent-soft:#f4e3cf; --accent-ink:#ffffff; --bar:#c4964e; --accent2:#8a4a10; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#e9a862; --accent-soft:#3a2a18; --accent-ink:#1a1206; --bar:#d8ad66; --accent2:#e9a862; }}
+:root[data-theme="dark"]{ --accent:#e9a862; --accent-soft:#3a2a18; --accent-ink:#1a1206; --bar:#d8ad66; --accent2:#e9a862; }
+</style>
+</head>
+<body>
+<main class="wrap">
   <header>
     <div class="brand">
       <svg id="logo" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"></svg>
@@ -315,7 +307,7 @@ details.pr p{margin:6px 0 0;font-size:.88rem;color:var(--muted)}
       </section>
     </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -541,11 +533,11 @@ function renderCalc(S){
   <dt>Massa per peça</dt><dd>${st.mass} g</dd>
   <dt>Greix per untar</dt><dd class="hl">${nf(Math.round(S.greix),0)} g <span style="color:var(--muted);font-weight:400">(${gstr(S.greix/st.n)}/peça)</span></dd>
   ${S.fill?`<dt>Farcit</dt><dd class="hl">${nf(Math.round(S.fill),0)} g <span style="color:var(--muted);font-weight:400">(${gstr(S.fill/st.n)}/peça)</span></dd>`:""}
-  <span class="sep"></span>
+  <dt class="sep" aria-hidden="true"></dt><dd class="sep" aria-hidden="true"></dd>
   <dt>Hidratació</dt><dd>${nf(S.hyd,0)} %</dd>
   <dt>Sucre sobre farina</dt><dd>${nf(S.sug,0)} %</dd>
   <dt>Llevat (equivalent en fresc)</dt><dd>${nf(S.ye,1)} % <span style="color:var(--muted);font-weight:400">· cal ≈${nf(S.yr,1)}</span></dd>
-  <span class="sep"></span>
+  <dt class="sep" aria-hidden="true"></dt><dd class="sep" aria-hidden="true"></dd>
   <dt>Pes cuit aprox. per peça</dt><dd>${nf(Math.round(S.piece/5)*5,0)} g</dd>
   <dt>Diàmetre un cop cuita</dt><dd>${fm.diam}</dd>
   <dt>Forn (dalt i baix)</dt><dd>${S.temp} °C · ${S.cook[0]}–${S.cook[1]} min</dd>
@@ -809,4 +801,5 @@ try{if(localStorage.getItem("ensaimada-tab")==="pas")showTab("pas");}catch(_){}
 })();
 </script>
 
+<script>document.documentElement.lang="ca"</script>
 </body></html>

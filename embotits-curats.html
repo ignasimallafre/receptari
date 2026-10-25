@@ -6,14 +6,9 @@
 <title>Assecador d'embotits</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Libre+Franklin:wght@400;700&family=Red+Hat+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-[hidden]{display:none!important}body{margin:0}
-/* Layout: assecador: pissarra i sal grossa, accent de carn curada, barres de greix rosat */
-:root{ --bg:#e9e8e6; --surface:#f6f5f3; --ink:#24201f; --muted:#625a57; --line:#d2ccc8; --accent:#8c1c2b; --accent-soft:#f3d9dc; --accent-ink:#ffffff; --bad:#b0281c; --bad-soft:#f6dcd6; --warn:#8a5a00; --warn-soft:#f5e8cc; --info:#3b5f74; --info-soft:#dce7ee; --bar:#c27d7d;
-  --f-display:"Alfa Slab One", Rockwell, Georgia, serif; --f-body:"Libre Franklin", "Segoe UI", system-ui, sans-serif; --f-mono:"Red Hat Mono", ui-monospace, Menlo, monospace; }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --bg:#171415; --surface:#211c1d; --ink:#ece4e2; --muted:#a8999a; --line:#3a3133; --accent:#ef7d8c; --accent-soft:#3d1c22; --accent-ink:#22090d; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#8ab8d1; --info-soft:#18303c; --bar:#d79a9a; color-scheme:dark}}
-:root[data-theme="dark"]{ --bg:#171415; --surface:#211c1d; --ink:#ece4e2; --muted:#a8999a; --line:#3a3133; --accent:#ef7d8c; --accent-soft:#3d1c22; --accent-ink:#22090d; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#8ab8d1; --info-soft:#18303c; --bar:#d79a9a; color-scheme:dark}
+/* Disposició: assecador: pissarra i sal grossa, accent de carn curada, barres de greix rosat */
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
@@ -134,9 +129,15 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
 .hint{font-size:.78rem;color:var(--muted)}
 .eqh{color:var(--muted);font-weight:400;font-size:.8em;font-family:var(--f-body)}
 </style>
+<link rel="stylesheet" href="receptari.css">
+<style>
+:root{ --accent:#8c1c2b; --accent-soft:#f4dadd; --accent-ink:#ffffff; --bar:#c27d7d; --accent2:#8c1c2b; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#f08a98; --accent-soft:#3d1c22; --accent-ink:#22090d; --bar:#d79a9a; --accent2:#f08a98; }}
+:root[data-theme="dark"]{ --accent:#f08a98; --accent-soft:#3d1c22; --accent-ink:#22090d; --bar:#d79a9a; --accent2:#f08a98; }
+</style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap" id="main">
   <header>
     <div>
       <h1 id="pTitle">Assecador d'embotits</h1>
@@ -147,7 +148,7 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
 
   <nav class="tabs" role="tablist" aria-label="Receptes" id="tabs"></nav>
 
-  <div class="grid">
+  <div class="grid" id="panel">
     <div class="col">
       <section class="panel" aria-labelledby="h-lot">
         <h2 id="h-lot">La pastada</h2>
@@ -242,7 +243,7 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
       </section>
     </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -498,8 +499,13 @@ function warnings(C,F){
 // ---------- renders ----------
 function renderTabs(){
   const nav=$("tabs");if(P.tabOrd.length<2){nav.hidden=true;return;}
-  nav.innerHTML=P.tabOrd.map(k=>`<button type="button" class="tab" role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${P.recipes[k].name}</button>`).join("");
+  nav.innerHTML=P.tabOrd.map(k=>`<button type="button" class="tab" role="tab" id="tab-${k}" data-tab="${k}" aria-controls="panel" aria-selected="${S.tab===k}" tabindex="${S.tab===k?0:-1}">${P.recipes[k].name}</button>`).join("");
+  const pn=$("panel");if(pn){pn.setAttribute("role","tabpanel");pn.setAttribute("aria-labelledby","tab-"+S.tab);}
 }
+$("tabs").addEventListener("keydown",e=>{const i=P.tabOrd.indexOf(S.tab);let j=-1;
+  if(e.key==="ArrowRight")j=(i+1)%P.tabOrd.length;else if(e.key==="ArrowLeft")j=(i-1+P.tabOrd.length)%P.tabOrd.length;else if(e.key==="Home")j=0;else if(e.key==="End")j=P.tabOrd.length-1;else return;
+  e.preventDefault();showTab(P.tabOrd[j]);const t=$("tab-"+P.tabOrd[j]);if(t)t.focus();});
+document.documentElement.lang="ca";
 function paramHTML(q,s){
   if(q.show&&!q.show(s))return "";
   const v=s.p[q.id];let h=q.sec?`<div class="sub">${q.sec}</div>`:"";

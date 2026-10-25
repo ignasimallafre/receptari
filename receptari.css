@@ -1,0 +1,183 @@
+/* ==========================================================================
+   Receptari de casa · sistema de disseny compartit
+   Un sol fitxer per a totes les calculadores. Cada pàgina només redefineix
+   --accent, --accent-soft, --accent-ink, --bar (i, si cal, --accent2).
+   Es carrega DESPRÉS de l'estil propi de cada pàgina: aquí manen els colors,
+   la tipografia, els radis, l'espaiat dels components i l'accessibilitat.
+   La disposició (columnes de cada graella) és cosa de cada pàgina.
+   ========================================================================== */
+
+/* ---------- Tokens: tema clar ---------- */
+:root{
+  /* neutres (lleugerament verdosos, mai blanc ni negre purs) */
+  --bg:#eceeea; --surface:#f9faf7; --sunk:#f1f3ee; --ink:#1c201d; --muted:#4f5751;
+  --line:#d3d8d0; --field:#7d857f;
+  /* accent per defecte (cada pàgina el canvia) */
+  --accent:#2f5d46; --accent-soft:#e1ebe3; --accent-ink:#ffffff; --accent2:#7a5410; --bar:#6f8f5e;
+  /* semàntics */
+  --bad:#a8251b; --bad-soft:#f7dfdb; --warn:#7a4f00; --warn-soft:#f6ead2; --info:#245a7a; --info-soft:#dde9f0;
+  /* tipografia */
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --fs-xs:.75rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.25rem; --fs-xl:clamp(1.75rem,1.2rem + 2vw,2.5rem);
+  /* espaiat (regla dels 8 px) */
+  --s-1:4px; --s0:8px; --s1:16px; --s2:24px; --s3:32px; --s4:48px; --s5:64px;
+  /* radis i ombres */
+  --r-sm:6px; --r-md:8px; --r-lg:12px; --r-pill:999px;
+  --shadow-1:0 1px 2px rgb(20 24 21 / .05),0 2px 8px rgb(20 24 21 / .04);
+  --t-fast:.15s ease-in-out;
+  /* àlies per a pàgines antigues */
+  --panel:var(--surface); --fg:var(--ink); --soft:var(--accent-soft); --danger:var(--bad); --spice:var(--accent2);
+  --crust:var(--accent2); --crust-soft:var(--accent-soft); --sugar:var(--surface);
+}
+/* ---------- Tokens: tema fosc ---------- */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141715; --surface:#1c201d; --sunk:#181b19; --ink:#e7ebe6; --muted:#aab2ab;
+  --line:#343a35; --field:#7a837c;
+  --bad:#f39a90; --bad-soft:#3d201d; --warn:#f2bd60; --warn-soft:#3a2d15; --info:#8fc0dc; --info-soft:#17303d;
+  --shadow-1:0 1px 2px rgb(0 0 0 / .3);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141715; --surface:#1c201d; --sunk:#181b19; --ink:#e7ebe6; --muted:#aab2ab;
+  --line:#343a35; --field:#7a837c;
+  --bad:#f39a90; --bad-soft:#3d201d; --warn:#f2bd60; --warn-soft:#3a2d15; --info:#8fc0dc; --info-soft:#17303d;
+  --shadow-1:0 1px 2px rgb(0 0 0 / .3);
+  color-scheme:dark}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--fs-md);line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+h1,h2{text-transform:none}
+h1{font-family:var(--f-display);font-size:var(--fs-xl);font-weight:700;line-height:1.1;letter-spacing:-.015em}
+h2{font-family:var(--f-display);font-size:var(--fs-lg);font-weight:700;line-height:1.2;letter-spacing:-.005em}
+h3{font-family:var(--f-body);font-size:var(--fs-xs);font-weight:700;line-height:1.3;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+.lede{color:var(--muted);max-width:68ch;margin:var(--s0) 0 0;font-size:var(--fs-md)}
+.num,dl.out dd,.val{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.note,.hint{font-size:var(--fs-sm);color:var(--muted)}
+a{color:var(--accent);text-underline-offset:2px}
+
+/* ---------- Disposició general (només espais) ---------- */
+.wrap{gap:var(--s2)}
+.col{gap:var(--s2)}
+.grid,.split{gap:var(--s2)}
+.btnrow{gap:var(--s0)}
+
+/* ---------- Panells ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s1) var(--s1) var(--s2);gap:var(--s1);box-shadow:var(--shadow-1)}
+
+/* ---------- Formularis ---------- */
+label.f{font-size:var(--fs-sm);color:var(--muted);gap:var(--s-1)}
+input[type=number],input[type=text],input[type=search],input[type=date],input[type=datetime-local],select,textarea{
+  font:inherit;font-size:var(--fs-md);color:var(--ink);background:var(--sunk);border:1px solid var(--field);border-radius:var(--r-md);
+  padding:var(--s0) 12px;min-height:40px;transition:border-color var(--t-fast),box-shadow var(--t-fast)}
+input[type=range]{accent-color:var(--accent);min-height:24px}
+input[type=checkbox]{accent-color:var(--accent);width:20px;height:20px}
+input:disabled,select:disabled{opacity:.55}
+
+/* ---------- Botons ---------- */
+button{font:inherit;font-size:var(--fs-sm);cursor:pointer;color:var(--ink);background:var(--surface);border:1px solid var(--field);
+  border-radius:var(--r-md);padding:var(--s0) var(--s1);min-height:40px;
+  transition:background-color var(--t-fast),border-color var(--t-fast),color var(--t-fast),box-shadow var(--t-fast)}
+button:hover{border-color:var(--accent);background:var(--accent-soft)}
+button.primary,.btn:not(.ghost):not(.danger){background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.primary:hover,.btn:not(.ghost):not(.danger):hover{filter:brightness(1.08)}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted);min-width:40px;padding:var(--s0)}
+button.ghost:hover{color:var(--bad);background:var(--bad-soft)}
+button:disabled,button:disabled:hover{opacity:.45;cursor:not-allowed;background:var(--surface);border-color:var(--field);filter:none}
+button.ghost:disabled{background:transparent;border-color:transparent}
+.stepper button{min-width:40px;min-height:40px;font-size:1.25rem;padding:0}
+.st2 .stepper input{font-size:1rem}
+.stepper input{font-family:var(--f-mono);font-size:1.25rem;font-weight:600;min-height:44px}
+.btn{border-radius:var(--r-md);min-height:40px}
+
+/* ---------- Perfils, xips i nivells ---------- */
+.prof{border-radius:var(--r-md);padding:12px var(--s1);gap:2px}
+.prof b{font-family:var(--f-display);font-size:var(--fs-md);font-weight:700}
+.prof span{font-size:var(--fs-sm);color:var(--muted)}
+.prof[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.chip{border-radius:var(--r-pill);background:var(--sunk);font-size:var(--fs-sm);min-height:36px;padding:var(--s-1) 14px}
+.chip .plus{color:var(--accent);font-weight:700}
+.lvl{border:1px solid var(--field);border-radius:var(--r-md);overflow:hidden}
+.lvl button{border:none;border-radius:0;background:var(--sunk);color:var(--muted);font-size:var(--fs-xs);min-height:32px;padding:var(--s-1) 12px}
+.lvl button+button{border-left:1px solid var(--field)}
+.lvl button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.seg{border:1px solid var(--field);border-radius:var(--r-md)}
+.seg button{border:none;border-radius:0;min-height:36px;background:var(--sunk);color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.custom-tag,.req,.tagr,.calc{font-size:var(--fs-xs)}
+.custom-tag{color:var(--accent);font-weight:700}
+.req,.tagr{border:1px solid var(--accent);color:var(--accent);border-radius:var(--r-pill);padding:0 var(--s0)}
+.calc{border:1px dashed var(--muted);color:var(--muted);border-radius:var(--r-pill);padding:0 var(--s0)}
+
+/* ---------- Pestanyes ---------- */
+.tabs{border-bottom:1px solid var(--line);gap:var(--s-1)}
+.tab{border:none;border-bottom:3px solid transparent;border-radius:var(--r-md) var(--r-md) 0 0;background:transparent;color:var(--muted);
+  font-family:var(--f-display);font-weight:700;font-size:var(--fs-md);min-height:44px;padding:var(--s0) var(--s1);text-transform:none;letter-spacing:0}
+.tab:hover{color:var(--ink);background:var(--sunk)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* ---------- Taules de mescla ---------- */
+.mrow,.trow{border-top:1px solid var(--line)}
+.mrow.head,.trow.head{font-size:var(--fs-xs);color:var(--muted);letter-spacing:.07em;text-transform:uppercase}
+.famhead .fn{color:var(--accent);font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.nm b{font-weight:700}
+.nm .sci{font-style:italic;color:var(--muted);font-size:var(--fs-sm)}
+.nm .taste,.nm .es{color:var(--muted);font-size:var(--fs-sm)}
+.val{font-size:var(--fs-sm)}
+.val.tot{color:var(--ink);font-weight:600}
+.val .mac,.val small{color:var(--muted)}
+
+/* ---------- Resultats ---------- */
+dl.out dt{color:var(--muted);font-size:var(--fs-sm)}
+dl.out dd{font-weight:600}
+dl.out .hl,dl.out dd.hl{color:var(--accent)}
+dl.out .sec{color:var(--accent)}
+
+/* ---------- Barres de sabor ---------- */
+.track{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r-pill)}
+.fill{background:var(--bar);border-radius:var(--r-pill)}
+
+/* ---------- Avisos ---------- */
+.w{border-radius:var(--r-md);padding:var(--s0) 12px;font-size:var(--fs-sm);gap:var(--s0)}
+.w .tag{border-radius:var(--r-sm);font-size:var(--fs-xs);letter-spacing:.06em}
+.w.bad{background:var(--bad-soft)} .w.bad .tag{background:var(--bad);color:var(--surface)}
+.w.warn{background:var(--warn-soft)} .w.warn .tag{background:var(--warn);color:var(--surface)}
+.w.info{background:var(--info-soft)} .w.info .tag{background:var(--info);color:var(--surface)}
+.ok{color:var(--muted);font-size:var(--fs-sm)}
+
+/* ---------- Cronologia, compra, guardats ---------- */
+.tl li{border-top:1px solid var(--line)}
+.tl .d{color:var(--accent);font-family:var(--f-mono)}
+.tl .d small{color:var(--muted)}
+.shop li,.tl .t{font-size:var(--fs-sm)}
+.srow{border-top:1px solid var(--line)}
+.srow .meta{color:var(--muted);font-size:var(--fs-xs)}
+.toast{color:var(--accent);font-weight:700;font-size:var(--fs-sm)}
+pre.txt{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r-md)}
+.check{background:var(--accent-soft);border-radius:var(--r-md)}
+
+/* ---------- Índex ---------- */
+.brand h1,.sheet h2{font-family:var(--f-display);font-weight:700}
+.tile b{font-family:var(--f-display);font-weight:700}
+.tile,.item{border-radius:var(--r-md)}
+
+/* ---------- Accessibilitat ---------- */
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm)}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.skip{position:absolute;left:var(--s1);top:-100px;z-index:100;background:var(--accent);color:var(--accent-ink);padding:var(--s0) var(--s1);border-radius:var(--r-md);font-weight:700;text-decoration:none}
+.skip:focus{top:calc(var(--s0) + env(safe-area-inset-top,0px))}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media (pointer:coarse){
+  button,select,input[type=number],input[type=text],input[type=search],input[type=date],input[type=datetime-local]{min-height:44px}
+  button.ghost,.stepper button{min-width:44px}
+  .chip,.lvl button,.seg button{min-height:44px}
+  input[type=range]{min-height:36px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{body{background:#fff;color:#000}.panel{box-shadow:none}}

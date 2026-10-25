@@ -1,24 +1,14 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Receptari de casa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: índex de rebost — barra lateral amb etiquetes per categoria, fitxa de la recepta a la dreta; en mòbil, una sola columna */
-:root{
-  --bg:#F2F3EE; --panel:#FAFBF8; --fg:#1D2420; --muted:#5E6A62; --line:#D7DCD3;
-  --accent:#2F5D46; --accent-ink:#FFFFFF; --soft:#E3EBE4; --spice:#B5841A; --danger:#A23B2E;
-  --f-display:"Young Serif",Georgia,"Times New Roman",serif;
-  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#131714; --panel:#1A1F1B; --fg:#E5E9E3; --muted:#9AA69D; --line:#2C342E;
-  --accent:#86BE9B; --accent-ink:#0F1A13; --soft:#213027; --spice:#D9AE4E; --danger:#E07A6B; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#131714; --panel:#1A1F1B; --fg:#E5E9E3; --muted:#9AA69D; --line:#2C342E;
-  --accent:#86BE9B; --accent-ink:#0F1A13; --soft:#213027; --spice:#D9AE4E; --danger:#E07A6B; color-scheme:dark}
+
+
+
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
 .wrap{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
@@ -74,7 +64,14 @@ form.edit label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
-
+<link rel="stylesheet" href="receptari.css">
+<style>
+:root{ --accent:#2f5d46; --accent-soft:#e0ebe2; --accent-ink:#ffffff; --bar:#6f8f5e; --accent2:#7a5410; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#8cc4a1; --accent-soft:#20332a; --accent-ink:#0f1a13; --bar:#8fb27c; --accent2:#e0b45c; }}
+:root[data-theme="dark"]{ --accent:#8cc4a1; --accent-soft:#20332a; --accent-ink:#0f1a13; --bar:#8fb27c; --accent2:#e0b45c; }
+</style>
+</head>
+<body>
 <div class="wrap">
   <aside>
     <div class="brand">
@@ -197,4 +194,5 @@ S.list=[{"id": "arrossos-secs", "titol": "Arrossos secs", "url": "arrossos-secs.
 render();
 </script>
 
+<script>document.documentElement.lang="ca"</script>
 </body></html>

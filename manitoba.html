@@ -1,29 +1,14 @@
 <!doctype html>
-<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<html lang="ca"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Receptari Manitoba</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Public+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: obrador — índex de receptes a l'esquerra com un rètol de fleca, fornada i massa al mig, fórmula de forner a la dreta; marbre fred, blau d'esmalt i crosta daurada */
-:root{
-  --bg:#e7eaea; --surface:#f8f9f8; --sunk:#eef1f1; --ink:#1c2327; --muted:#59656b; --line:#cdd5d7;
-  --accent:#28567f; --accent-soft:#dae5ef; --accent-ink:#ffffff;
-  --crust:#b0711d; --crust-soft:#f3e4cc;
-  --bad:#b3261e; --bad-soft:#f6dedb; --warn:#8f5600; --warn-soft:#f5e7cf; --info:#2c6278; --info-soft:#dceaef;
-  --f-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
-  --f-body:"Public Sans","Segoe UI",system-ui,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#111618; --surface:#192024; --sunk:#141a1d; --ink:#e2e8ea; --muted:#97a4aa; --line:#2b353a;
-  --accent:#8ab8e2; --accent-soft:#1d2f40; --accent-ink:#0c1620;
-  --crust:#e3a750; --crust-soft:#3a2c17;
-  --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#7fbad6; --info-soft:#17303b; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#111618; --surface:#192024; --sunk:#141a1d; --ink:#e2e8ea; --muted:#97a4aa; --line:#2b353a;
-  --accent:#8ab8e2; --accent-soft:#1d2f40; --accent-ink:#0c1620;
-  --crust:#e3a750; --crust-soft:#3a2c17;
-  --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#7fbad6; --info-soft:#17303b; color-scheme:dark}
+
+
+
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
@@ -55,8 +40,8 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:0}
 .rail{position:sticky;top:max(12px, env(safe-area-inset-top, 0px));display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 10px;max-height:calc(100vh - 24px);overflow:auto}
 .rail .seg{display:none}
 .rgroup{display:flex;flex-direction:column;gap:2px}
-.rgroup h3{font-family:var(--f-display);font-size:1rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--crust);padding:4px 8px 2px;display:flex;justify-content:space-between}
-.rgroup h3 small{font-family:var(--f-mono);font-size:.7rem;color:var(--muted);font-weight:400}
+.rgroup .rh{font-family:var(--f-display);font-size:1rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--crust);padding:4px 8px 2px;display:flex;justify-content:space-between}
+.rgroup .rh small{font-family:var(--f-mono);font-size:.7rem;color:var(--muted);font-weight:400}
 .ritem{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:none;background:transparent;border-radius:6px;padding:5px 8px;border-left:3px solid transparent}
 .ritem b{font-weight:600;font-size:.92rem;line-height:1.25}
 .ritem span{font-size:.74rem;color:var(--muted)}
@@ -70,11 +55,11 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:0}
   .rail .seg{display:flex}
   .rgroup{display:none;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px;scrollbar-width:thin}
   .rgroup.on{display:flex}
-  .rgroup h3{display:none}
+  .rgroup .rh{display:none}
   .ritem{flex:none;border:1px solid var(--line);border-left-width:1px;background:var(--sunk);padding:6px 10px;max-width:220px}
   .ritem[aria-current="true"]{border-color:var(--accent)}
   .rail.searching .rgroup{display:flex;flex-wrap:wrap}
-  .rail.searching .rgroup h3{display:flex;width:100%}
+  .rail.searching .rgroup .rh{display:flex;width:100%}
   .rail.searching .seg{display:none}
 }
 .seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
@@ -230,8 +215,15 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.76rem;backgrou
 .ptab div span:last-child{font-family:var(--f-mono);font-weight:600;white-space:nowrap}
 .ptab div.sum{border-top:2px solid var(--ink);font-weight:700}
 </style>
-
-<div class="wrap">
+<link rel="stylesheet" href="receptari.css">
+<style>
+:root{ --accent:#265480; --accent-soft:#dbe6f0; --accent-ink:#ffffff; --bar:#b0711d; --accent2:#8a5512; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#8ebce6; --accent-soft:#1d2f40; --accent-ink:#0c1620; --bar:#e3a750; --accent2:#e8ad5a; }}
+:root[data-theme="dark"]{ --accent:#8ebce6; --accent-soft:#1d2f40; --accent-ink:#0c1620; --bar:#e3a750; --accent2:#e8ad5a; }
+</style>
+</head>
+<body>
+<main class="wrap">
   <header class="top">
     <div>
       <h1>Receptari Manitoba</h1>
@@ -418,7 +410,7 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.76rem;backgrou
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -768,7 +760,7 @@ function renderRail(){
   $("railList").innerHTML=Object.entries(CATS).map(([k,n])=>{
     const items=R.filter(r=>r.cat===k&&(!q||(r.ca+" "+r.es).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").includes(q)));
     if(!items.length)return "";
-    return `<div class="rgroup${segCat===k?" on":""}"><h3>${n}<small>${items.length}</small></h3>${items.map(r=>`<button type="button" class="ritem" data-rid="${r.id}" aria-current="${r.id===G.rid}"><b>${esc(r.ca)}</b><span>${r.n} ${r.n===1?r.u[0]:r.u[1]} de ${r.g} g</span></button>`).join("")}</div>`;
+    return `<div class="rgroup${segCat===k?" on":""}"><h2 class="rh">${n}<small>${items.length}</small></h2>${items.map(r=>`<button type="button" class="ritem" data-rid="${r.id}" aria-current="${r.id===G.rid}"><b>${esc(r.ca)}</b><span>${r.n} ${r.n===1?r.u[0]:r.u[1]} de ${r.g} g</span></button>`).join("")}</div>`;
   }).join("")||'<p class="ok">Cap recepta coincideix.</p>';
 }
 $("railList").addEventListener("click",e=>{const b=e.target.closest("[data-rid]");if(b)selectRecipe(b.dataset.rid,true);});
@@ -1214,4 +1206,5 @@ $("saved").addEventListener("click",e=>{
 })();
 </script>
 
+<script>document.documentElement.lang="ca"</script>
 </body></html>

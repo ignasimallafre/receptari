@@ -6,14 +6,9 @@
 <title>Arrossos secs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Karla:wght@400;700&family=Martian+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-[hidden]{display:none!important}body{margin:0}
-/* Layout: paella a la llenya: ferro negre, safrà i rajola blava; panells com a cassoles */
-:root{ --bg:#ebeae6; --surface:#f7f6f3; --ink:#221f1c; --muted:#645e56; --line:#d6d0c6; --accent:#b0520c; --accent-soft:#f5e0cc; --accent-ink:#ffffff; --bad:#b0281c; --bad-soft:#f6dcd6; --warn:#8a5a00; --warn-soft:#f5e8cc; --info:#2b5d8a; --info-soft:#dce7f2; --bar:#d6961e;
-  --f-display:"Yeseva One", Didot, Georgia, serif; --f-body:Karla, "Segoe UI", system-ui, sans-serif; --f-mono:"Martian Mono", ui-monospace, Menlo, monospace; }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --bg:#161514; --surface:#201e1c; --ink:#ece7df; --muted:#a59e93; --line:#38342f; --accent:#f08a3e; --accent-soft:#3c2614; --accent-ink:#1f1006; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86b4e0; --info-soft:#17293d; --bar:#e8b04a; color-scheme:dark}}
-:root[data-theme="dark"]{ --bg:#161514; --surface:#201e1c; --ink:#ece7df; --muted:#a59e93; --line:#38342f; --accent:#f08a3e; --accent-soft:#3c2614; --accent-ink:#1f1006; --bad:#f08a80; --bad-soft:#3d1f1c; --warn:#f0b452; --warn-soft:#3a2c14; --info:#86b4e0; --info-soft:#17293d; --bar:#e8b04a; color-scheme:dark}
+/* Disposició: paella a la llenya: ferro negre, safrà i rajola blava; panells com a cassoles */
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
@@ -134,9 +129,15 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
 .hint{font-size:.78rem;color:var(--muted)}
 .eqh{color:var(--muted);font-weight:400;font-size:.8em;font-family:var(--f-body)}
 </style>
+<link rel="stylesheet" href="receptari.css">
+<style>
+:root{ --accent:#994708; --accent-soft:#f5e0cc; --accent-ink:#ffffff; --bar:#d6961e; --accent2:#994708; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --accent:#f0904a; --accent-soft:#3c2614; --accent-ink:#1f1006; --bar:#e8b04a; --accent2:#f0904a; }}
+:root[data-theme="dark"]{ --accent:#f0904a; --accent-soft:#3c2614; --accent-ink:#1f1006; --bar:#e8b04a; --accent2:#f0904a; }
+</style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap" id="main">
   <header>
     <div>
       <h1 id="pTitle">Arrossos secs</h1>
@@ -147,7 +148,7 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
 
   <nav class="tabs" role="tablist" aria-label="Receptes" id="tabs"></nav>
 
-  <div class="grid">
+  <div class="grid" id="panel">
     <div class="col">
       <section class="panel" aria-labelledby="h-lot">
         <h2 id="h-lot">La pastada</h2>
@@ -242,7 +243,7 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;backgrou
       </section>
     </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -537,8 +538,13 @@ function warnings(C,F){
 // ---------- renders ----------
 function renderTabs(){
   const nav=$("tabs");if(P.tabOrd.length<2){nav.hidden=true;return;}
-  nav.innerHTML=P.tabOrd.map(k=>`<button type="button" class="tab" role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${P.recipes[k].name}</button>`).join("");
+  nav.innerHTML=P.tabOrd.map(k=>`<button type="button" class="tab" role="tab" id="tab-${k}" data-tab="${k}" aria-controls="panel" aria-selected="${S.tab===k}" tabindex="${S.tab===k?0:-1}">${P.recipes[k].name}</button>`).join("");
+  const pn=$("panel");if(pn){pn.setAttribute("role","tabpanel");pn.setAttribute("aria-labelledby","tab-"+S.tab);}
 }
+$("tabs").addEventListener("keydown",e=>{const i=P.tabOrd.indexOf(S.tab);let j=-1;
+  if(e.key==="ArrowRight")j=(i+1)%P.tabOrd.length;else if(e.key==="ArrowLeft")j=(i-1+P.tabOrd.length)%P.tabOrd.length;else if(e.key==="Home")j=0;else if(e.key==="End")j=P.tabOrd.length-1;else return;
+  e.preventDefault();showTab(P.tabOrd[j]);const t=$("tab-"+P.tabOrd[j]);if(t)t.focus();});
+document.documentElement.lang="ca";
 function paramHTML(q,s){
   if(q.show&&!q.show(s))return "";
   const v=s.p[q.id];let h=q.sec?`<div class="sub">${q.sec}</div>`:"";
