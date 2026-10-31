@@ -63,9 +63,12 @@ function solve(s){
   s.doses.llevat=Math.round(y*10)/10;return m;
 }
 
+// la safata mana: en canviar safata, gruix o nombre de coques, la farina s'ajusta perquè hi càpiga
+function fitFlour(s){const [w,l]=TRAY[s.p.tray];const dens={f:.55,m:.75,g:.95}[s.p.thick];const sum=doughSum(s);
+  const f=w*l*dens*s.p.pcs/(sum/100);s.n=Math.min(3000,Math.max(200,Math.round(f/10)*10));}
 const R={
   name:"Coca de brioix",lotTitle:"La pastada",calcTitle:"Massa, safata i temps",mixTitle:"Fórmula (% forner)",
-  measure:{label:"Farina",unit:"g",min:200,max:3000,step:50,def:500,k:.01,base:500,
+  measure:{label:"Farina",unit:"g",min:200,max:3000,step:50,def:600,k:.01,base:500,
     hint:(s,C)=>`Massa ≈ <b class="num">${nf(C.dough,0)} g</b> · ${s.p.pcs} ${s.p.pcs>1?"coques":"coca"} de ≈ <b class="num">${nf(C.dough/s.p.pcs,0)} g</b>`},
   pct:true,perLabel:"% forner",totLabel:"Grams",
   fam:FAM,famOrd:FAMORD,ing:ING.map(a=>a[0]),req:["farina","sal","llevat","mantega","sucre"],derived:["farina"],derive:s=>{s.doses.farina=100;},noLevel:["fa","li"],famMax:{ar:3,co:4},
@@ -73,9 +76,9 @@ const R={
   fmtTot:(x,a,s)=>{if(x.id==="llevat")return `${nf(a,1)} g <span class="eqh">${YT[s.p.yt][1]}</span>`;let t=a<10?nf(a,1)+" g":nf(Math.round(a),0)+" g";if(x.eq){const n=Math.max(.5,Math.round(a/x.eq[2]*2)/2);t+=` <span class="eqh">(≈${nf(n,1)} ${n===1?x.eq[0]:x.eq[1]})</span>`;}return t;},
   per:(x,v)=>x.id==="llevat"?`${nf(v,1)} % fresc`:nf(v,v<1?2:v<10?1:0)+" %",
   params:[
-    {id:"pcs",label:"Nombre de coques",type:"number",min:1,max:8,step:1,def:2,noCustom:true},
-    {id:"tray",label:"Safata",type:"select",def:"b",opts:[["a","30 × 20 cm"],["b","35 × 25 cm"],["c","40 × 30 cm (de forn)"],["d","45 × 35 cm"]],noCustom:true},
-    {id:"thick",label:"Gruix de la coca",type:"select",def:"m",opts:[["f","Fina (cruixent)"],["m","Mitjana"],["g","Gruixuda (molt flonja)"]]},
+    {id:"pcs",label:"Nombre de coques",type:"number",min:1,max:8,step:1,def:2,noCustom:true,rerender:true,onSet:fitFlour},
+    {id:"tray",label:"Safata",type:"select",def:"b",opts:[["a","30 × 20 cm"],["b","35 × 25 cm"],["c","40 × 30 cm (de forn)"],["d","45 × 35 cm"]],noCustom:true,onSet:fitFlour,hint:"La safata, el gruix i el nombre de coques fixen la farina: es recalcula tota la recepta."},
+    {id:"thick",label:"Gruix de la coca",type:"select",def:"m",opts:[["f","Fina (cruixent)"],["m","Mitjana"],["g","Gruixuda (molt flonja)"]],onSet:fitFlour},
     {id:"tz",label:"Tangzhong amb llet (més flonja i dura més tendra)",type:"check",def:true,sec:"Flonjor"},
     {id:"tzPct",label:"Farina al tangzhong",type:"range",min:3,max:8,step:.5,def:5,fmt:v=>nf(v,1)+" %",show:s=>s.p.tz,hint:"Es cou amb 5 vegades el seu pes de llet fins a 65 °C."},
     {id:"yt",label:"Tipus de llevat",type:"select",def:"fresc",opts:[["fresc","Fresc (pastilla)"],["instant","Sec instantani (÷3)"],["actiu","Sec actiu (÷2)"]],noCustom:true},
@@ -88,7 +91,7 @@ const R={
     {id:"tgt",label:"Vull que la fermentació duri",type:"range",min:2,max:10,step:.5,def:4,fmt:hf,show:s=>!s.p.cold,group:"tl",noCustom:true}
   ],
   actions:[{id:"solve",label:"Ajusta el llevat a aquest horari",group:"tl",run:s=>solve(s)},
-    {id:"fit",label:"Ajusta la farina a la safata",run:(s,C)=>{const f=C.ideal*s.p.pcs/(C.sum/100);s.n=Math.max(200,Math.round(f/10)*10);return "Farina ajustada a "+s.n+" g";}}],
+    {id:"fit",label:"Torna a ajustar la farina a la safata",run:s=>{fitFlour(s);return "Farina ajustada a "+s.n+" g";}}],
   dims:[["mant","Mantegós"],["dol","Dolç"],["ou","Ou"],["arom","Aromàtic"],["esp","Especiat"],["cru","Cruixent"]],dimMax:10,
   flavExtra:(s,C,F)=>{if(s.p.tz)F.mant+=1;},
   calc:s=>{
