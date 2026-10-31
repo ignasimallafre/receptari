@@ -80,3 +80,11 @@ label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
 .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
 pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;padding:10px;max-height:260px;overflow:auto;margin:0}
 .eqh{color:var(--muted);font-weight:400;font-size:.8em;font-family:var(--f-body)}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.fase{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px}
+.fase h3{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-size:1rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--ink);margin:0 0 4px}
+.fase h3 .fn{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.8rem;flex:none}
+.fase ul{list-style:none;margin:6px 0 0;padding:0}
+.fase li{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-top:1px solid var(--line);font-size:.9rem}
+.fase li:first-child{border-top:none}
+.fase li b{white-space:nowrap}

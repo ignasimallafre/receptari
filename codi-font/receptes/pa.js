@@ -82,6 +82,28 @@ function solveYeast(s,tab){
   s.doses.llevat=Math.round(y*20)/20;return m;
 }
 function yeastG(s,pctFresh,flour){return pctFresh*flour/100/YT[s.p.yt][0];}
+function phasesPa(s,C,tab){
+  const isM=tab==="motlle",F=s.n,g=id=>P0(id,s)*F/100,yt=YT[s.p.yt],NOM=Object.fromEntries(ING.map(a=>[a[0],a[2]]));
+  const fq=v=>(v<10?nf(v,1):nf(Math.round(v),0))+" g",out=[];
+  const fl={};for(const a of ING)if(a[1]==="fa"&&P0(a[0],s)>0)fl[a[0]]=g(a[0]);
+  let aigua=g("aigua"),llet=g("llet"),sal=g("sal");
+  if(C.pf){const p=C.pf,it=[[NOM.farina,fq(p.f)],["Aigua",fq(p.w)]];if(p.s)it.push(["Sal",fq(p.s)]);it.push([`Llevat ${yt[1]}`,(C.pfYg<.3?nf(C.pfYg,2):nf(C.pfYg,1))+" g"]);
+    out.push({t:PF[s.p.pf].split(" (")[0],quan:`Abans: ${s.p.pfH} h a ${s.p.pfT} °C`,items:it});fl.farina=(fl.farina||0)-p.f;aigua-=p.w;sal-=p.s||0;}
+  if(isM&&C.tz){const [tf,tl]=C.tz,ll=Math.min(llet,tl),ai=tl-ll,it=[[NOM.farina,fq(tf)]];if(ll>0)it.push(["Llet",fq(ll)]);if(ai>0)it.push(["Aigua",fq(ai)]);
+    out.push({t:"Tangzhong",quan:"Cou-ho remenant fins a 65 °C i deixa-ho refredar tapat",items:it});fl.farina=(fl.farina||0)-tf;llet-=ll;aigua-=ai;}
+  if(out.length<1)return [];
+  const m=[];out.forEach((f,i)=>m.push([`${f.t} (tot el de la fase ${i+1})`,"✓"]));
+  for(const id in fl)if(fl[id]>.5)m.push([NOM[id],fq(fl[id])]);
+  if(aigua>.5)m.push(["Aigua",fq(aigua)]);if(llet>.5)m.push(["Llet",fq(llet)]);
+  for(const id of ["ou","sucre","mel","lletpols","oli"])if(P0(id,s)>0)m.push([NOM[id],fq(g(id))]);
+  m.push(["Sal",fq(Math.max(0,sal))]);m.push([`Llevat ${yt[1]}`,fq(yeastG(s,C.m.y,F))]);
+  out.push({t:"Massa",quan:isM&&P0("mantega",s)>0?"Pasta-ho tot menys la mantega":"Pasta-ho tot",items:m});
+  if(P0("mantega",s)>0)out.push({t:"Mantega",quan:"Quan la massa faci vel, a daus",items:[[NOM.mantega,fq(g("mantega"))]]});
+  const ex=ING.filter(a=>a[1]==="ex"&&P0(a[0],s)>0).map(a=>[a[2],fq(g(a[0]))]);
+  if(ex.length)out.push({t:"Extres",quan:"Al final del pastat",items:ex});
+  return out;
+}
+
 
 function makeRecipe(tab){
   const isM=tab==="motlle";
@@ -127,6 +149,7 @@ function makeRecipe(tab){
     rec:(s,C)=>recPa(s,C,tab),
     tl:{mode:"h",startLabel:"Comences (dia i hora)",defTime:"09:00"},
     timeline:(s,C)=>tlPa(s,C,tab),
+    phases:(s,C)=>phasesPa(s,C,tab),
     shopSkip:[],
     shopExtra:(s,C)=>{const o=C.m;const it=[];if(s.p.pf!=="none")it.push([`Llevat per al prefermet (${YT[s.p.yt][1]})`,nf(C.pfYg,2)+" g"]);
       return it.length?[{h:"Prefermet",items:it}]:[];},
@@ -168,11 +191,7 @@ function calcPa(s,tab){
     rows.push(["Llevat sobre la farina del prefermet",nf(o.pfY*(s.p.yt==="fresc"?1:1/YT[s.p.yt][0]),2)+" %"]);
     rows.push(["Maduració",`${s.p.pfH} h a ${s.p.pfT} °C`]);
     const wTot=isM?g("aigua"):g("aigua");
-    rows.push(["§","Massa final"]);
     rows.push(["Prefermet sencer",nf(pff+pfw+pfs+pfYg,0)+" g"]);
-    rows.push(["Farina restant",nf(F-pff,0)+" g"]);
-    rows.push(["Aigua restant",nf(Math.max(0,wTot-pfw),0)+" g",wTot<pfw]);
-    if(pfs)rows.push(["Sal restant",nf(g("sal")-pfs,1)+" g"]);
   }
   C.pfYg=pfYg;
   rows.push(["§","Temps (estimació)"]);

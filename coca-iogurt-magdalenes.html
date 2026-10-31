@@ -100,6 +100,14 @@ label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
 .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
 pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;padding:10px;max-height:260px;overflow:auto;margin:0}
 .eqh{color:var(--muted);font-weight:400;font-size:.8em;font-family:var(--f-body)}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.fase{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px}
+.fase h3{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-size:1rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--ink);margin:0 0 4px}
+.fase h3 .fn{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.8rem;flex:none}
+.fase ul{list-style:none;margin:6px 0 0;padding:0}
+.fase li{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-top:1px solid var(--line);font-size:.9rem}
+.fase li:first-child{border-top:none}
+.fase li b{white-space:nowrap}
 </style>
 <link rel="stylesheet" href="receptari.css">
 </head>
@@ -153,6 +161,12 @@ pre.txt{white-space:pre-wrap;font-family:var(--f-mono);font-size:.78rem;padding:
           <span class="note num" id="loadNote"></span>
         </div>
         <div class="mix" id="mix"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="h-fases" id="fasesPanel" hidden>
+        <h2 id="h-fases">Quantitats per fase</h2>
+        <p class="note">El que poses a cada pas, ja descomptat: el que va al prefermentat o al tangzhong no torna a sortir a la massa.</p>
+        <div class="fases" id="fases"></div>
       </section>
 
       <div class="split">
@@ -603,6 +617,9 @@ function renderTimeline(C){
   $("timeline").innerHTML=T.ev.map(([o,t])=>`<li><span class="d">${evDate(o)}<small>${offLbl(o)}</small></span><span class="t">${t}</span></li>`).join("")+
     (T.tail||[]).map(([a,b])=>`<li><span class="d" style="color:var(--muted)">${a}</span><span class="t">${b}</span></li>`).join("");
 }
+function phasesOf(C){const r=R();return r.phases?r.phases(st(),C)||[]:[];}
+function renderPhases(C){const F=phasesOf(C);$("fasesPanel").hidden=F.length<2;if(F.length<2)return;
+  $("fases").innerHTML=F.map((f,i)=>`<section class="fase"><h3><span class="fn">${i+1}</span>${f.t}</h3>${f.quan?`<p class="note">${f.quan}</p>`:""}<ul>${f.items.map(([n,q])=>`<li><span>${n}</span><b class="num">${q}</b></li>`).join("")}</ul></section>`).join("");}
 function renderHow(){const r=R();const h=typeof r.how==="function"?r.how(st()):r.how;$("howPanel").hidden=!h;if(h)$("how").innerHTML=h.map(t=>`<li>${t}</li>`).join("");}
 
 // ---------- muntatge ----------
@@ -618,7 +635,7 @@ function render(){
 function renderComputed(){const C=computeAll();updateRowValues();renderComputedWith(C);}
 function renderComputedWith(C){
   const F=flavour(C);
-  renderCalc(C);renderRec(C);renderFlavour(F);renderWarnings(warnings(C,F));renderShop(C);renderTimeline(C);
+  renderCalc(C);renderRec(C);renderFlavour(F);renderWarnings(warnings(C,F));renderShop(C);renderTimeline(C);renderPhases(C);
   const r=R(),s=st();if(r.measure.hint)$("mHint").innerHTML=r.measure.hint(s,C);else $("mHint").textContent="";
   $("loadNote").textContent=r.loadNote?r.loadNote(s,C):`${Object.keys(s.doses).length} ingredients`;
   for(const q of (r.params||[]))if(q.type==="range"&&q.fmt){const l=$("pl-"+q.id);if(l)l.textContent=q.fmt(s.p[q.id],s);}
@@ -777,7 +794,7 @@ render();renderSaved();
 window.RECEPTARI={
   titol(){const r=R(),s=st();return [P.title,r.name===P.title?null:r.name,r.profiles[s.profile].name+(s.custom?" (personalitzat)":"")].filter(Boolean).join(" · ");},
   mesura(){const r=R(),s=st();return `${nf(s.n,2)} ${r.measure.unit||r.measure.label.toLowerCase()}`;},
-  ingredients(){const r=R(),s=st(),out=[];
+  ingredients(){const r=R(),s=st(),out=[];const F=phasesOf(lastC||computeAll());if(F.length>=2)return F.map((f,i)=>({grup:`${i+1}. ${strip(f.t)}`,items:f.items.map(([n,q])=>({nom:strip(n),q:strip(q)}))}));
     for(const f of r.famOrd){const it=I.filter(x=>x.fam===f&&x.id in s.doses).map(x=>({nom:x.ca,q:strip(totStr(x,s.doses[x.id]))}));if(it.length)out.push({grup:r.fam[f],items:it});}
     return out;},
   passos(){const C=lastC||computeAll(),T=events(C),ev=T.ev,h=mode()!=="d";

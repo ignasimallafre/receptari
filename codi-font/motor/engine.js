@@ -190,6 +190,9 @@ function renderTimeline(C){
   $("timeline").innerHTML=T.ev.map(([o,t])=>`<li><span class="d">${evDate(o)}<small>${offLbl(o)}</small></span><span class="t">${t}</span></li>`).join("")+
     (T.tail||[]).map(([a,b])=>`<li><span class="d" style="color:var(--muted)">${a}</span><span class="t">${b}</span></li>`).join("");
 }
+function phasesOf(C){const r=R();return r.phases?r.phases(st(),C)||[]:[];}
+function renderPhases(C){const F=phasesOf(C);$("fasesPanel").hidden=F.length<2;if(F.length<2)return;
+  $("fases").innerHTML=F.map((f,i)=>`<section class="fase"><h3><span class="fn">${i+1}</span>${f.t}</h3>${f.quan?`<p class="note">${f.quan}</p>`:""}<ul>${f.items.map(([n,q])=>`<li><span>${n}</span><b class="num">${q}</b></li>`).join("")}</ul></section>`).join("");}
 function renderHow(){const r=R();const h=typeof r.how==="function"?r.how(st()):r.how;$("howPanel").hidden=!h;if(h)$("how").innerHTML=h.map(t=>`<li>${t}</li>`).join("");}
 
 // ---------- muntatge ----------
@@ -205,7 +208,7 @@ function render(){
 function renderComputed(){const C=computeAll();updateRowValues();renderComputedWith(C);}
 function renderComputedWith(C){
   const F=flavour(C);
-  renderCalc(C);renderRec(C);renderFlavour(F);renderWarnings(warnings(C,F));renderShop(C);renderTimeline(C);
+  renderCalc(C);renderRec(C);renderFlavour(F);renderWarnings(warnings(C,F));renderShop(C);renderTimeline(C);renderPhases(C);
   const r=R(),s=st();if(r.measure.hint)$("mHint").innerHTML=r.measure.hint(s,C);else $("mHint").textContent="";
   $("loadNote").textContent=r.loadNote?r.loadNote(s,C):`${Object.keys(s.doses).length} ingredients`;
   for(const q of (r.params||[]))if(q.type==="range"&&q.fmt){const l=$("pl-"+q.id);if(l)l.textContent=q.fmt(s.p[q.id],s);}
@@ -364,7 +367,7 @@ render();renderSaved();
 window.RECEPTARI={
   titol(){const r=R(),s=st();return [P.title,r.name===P.title?null:r.name,r.profiles[s.profile].name+(s.custom?" (personalitzat)":"")].filter(Boolean).join(" · ");},
   mesura(){const r=R(),s=st();return `${nf(s.n,2)} ${r.measure.unit||r.measure.label.toLowerCase()}`;},
-  ingredients(){const r=R(),s=st(),out=[];
+  ingredients(){const r=R(),s=st(),out=[];const F=phasesOf(lastC||computeAll());if(F.length>=2)return F.map((f,i)=>({grup:`${i+1}. ${strip(f.t)}`,items:f.items.map(([n,q])=>({nom:strip(n),q:strip(q)}))}));
     for(const f of r.famOrd){const it=I.filter(x=>x.fam===f&&x.id in s.doses).map(x=>({nom:x.ca,q:strip(totStr(x,s.doses[x.id]))}));if(it.length)out.push({grup:r.fam[f],items:it});}
     return out;},
   passos(){const C=lastC||computeAll(),T=events(C),ev=T.ev,h=mode()!=="d";

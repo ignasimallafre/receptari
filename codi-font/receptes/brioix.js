@@ -133,8 +133,7 @@ const R={
       if(ll>0)rows.push(["Llet (de la fórmula)",nf(ll,0)+" g"]);if(ai>0)rows.push(["Aigua (de la fórmula)",nf(ai,0)+" g"]);if(ou>0)rows.push(["Ou batut (de la fórmula)",nf(ou,0)+" g"]);
       if(esp)rows.push([`Tot el llevat ${YT[s.p.yt][1]} de la fórmula`,nf(C.pf.yAll,1)+" g",true]);
       else rows.push([`Llevat ${YT[s.p.yt][1]} (a més del de la massa)`,(yg<.3?nf(yg,2):nf(yg,1))+" g",true]);
-      rows.push(["Maduració",`${hf(s.p.pfH)} a ${s.p.pfT} °C`]);
-      rows.push(["Farina restant per a la massa",nf(F-pff-(C.tz?C.tz[0]:0),0)+" g"]);}
+      rows.push(["Maduració",`${hf(s.p.pfH)} a ${s.p.pfT} °C`]);}
     rows.push(["§","Temps (estimació)"]);
     if(!s.p.cold){rows.push(["Bloc a "+s.p.Ta+" °C",hf(o.bulk),true]);rows.push(["Aprest a "+s.p.Tp+" °C",hf(o.proof),true]);rows.push(["Total de pastar a forn",hf(o.total)]);}
     else{rows.push(["Bloc abans de la nevera",hf(o.pre)]);rows.push(["Nevera",`${s.p.fH} h a ${s.p.Tf} °C`]);rows.push(["Bloc fet en sortir",nf(Math.min(o.p/o.share,9)*100,0)+" %",o.over||o.under]);
@@ -198,6 +197,29 @@ const R={
     return {ev,tail:[["Conservació","2–3 dies tapada amb film. Es congela a trossos; descongelada, 3 min al forn."]]};
   },
   shopExtra:(s,C)=>C.pf&&C.pfYg>0?[{h:"Súper",items:[[`Llevat per al prefermentat (${YT[s.p.yt][1]})`,(C.pfYg<.3?nf(C.pfYg,2):nf(C.pfYg,1))+" g"]]}]:[],
+  phases:(s,C)=>{
+    const F=s.n,g=id=>F*P0(id,s)/100,yt=YT[s.p.yt],NOM=Object.fromEntries(ING.map(a=>[a[0],a[2]]));
+    const fq=v=>(v<10?nf(v,1):nf(Math.round(v),0))+" g",ous=v=>v>=25?` (≈${nf(Math.max(.5,Math.round(v/50*2)/2),1)} ${v<75?"ou":"ous"})`:"";
+    const yAll=P0("llevat",s)*F/100/yt[0],pf=C.pf,tz=C.tz,out=[];
+    let farina=F,llet=g("llet"),aigua=g("aigua"),ou=g("ou");
+    if(pf){const it=[["Farina de força",fq(pf.f)]];if(pf.ll>0)it.push(["Llet",fq(pf.ll)]);if(pf.ai>0)it.push(["Aigua",fq(pf.ai)]);if(pf.ou>0)it.push(["Ou batut",fq(pf.ou)]);
+      it.push([`Llevat ${yt[1]}`,pf.esp?fq(yAll):(C.pfYg<.3?nf(C.pfYg,2):nf(C.pfYg,1))+" g"]);
+      out.push({t:pfNom(s),quan:pf.esp?`${hf(s.p.pfH)} abans de pastar, a ${s.p.pfT} °C`:`La nit abans: ${hf(s.p.pfH)} a ${s.p.pfT} °C`,items:it});
+      farina-=pf.f;llet-=pf.ll;aigua-=pf.ai;ou-=pf.ou;}
+    if(tz){out.push({t:"Tangzhong",quan:"Cou-ho remenant fins a 65 °C (espesseix) i deixa-ho refredar tapat",items:[["Farina de força",fq(tz[0])],["Llet",fq(tz[1])]]});farina-=tz[0];llet-=tz[1];}
+    const m=[];
+    if(pf)m.push([`${pfNom(s)} (tot el de la fase 1)`,"✓"]);
+    if(tz)m.push([`Tangzhong (tot el de la fase ${pf?2:1})`,"✓"]);
+    m.push(["Farina de força",fq(Math.max(0,farina))]);
+    if(llet>.5)m.push(["Llet",fq(llet)]);if(aigua>.5)m.push(["Aigua",fq(aigua)]);if(ou>.5)m.push(["Ou batut",fq(ou)+ous(ou)]);
+    for(const id of ["rovell","nata","sucre","mel","lletpols","sal","llimona","taronja","azahar","vainilla","anis","canyella","cardamom"])if(P0(id,s)>0)m.push([NOM[id],fq(g(id))]);
+    if(!pf||!pf.esp)m.push([`Llevat ${yt[1]}`,fq(yAll)]);
+    out.push({t:"Massa",quan:"Pasta-ho tot menys la mantega, 8–10 min, fins que faci vel",items:m});
+    out.push({t:"Mantega",quan:"Al final, a daus i en 3 tandes",items:[["Mantega freda però mal·leable",fq(g("mantega"))]]});
+    const cb=COB.filter(id=>P0(id,s)>0).map(id=>[NOM[id],fq(g(id))]);
+    if(cb.length)out.push({t:"Coberta",quan:"Just abans d'enfornar",items:cb});
+    return out;
+  },
   loadNote:(s,C)=>`hidratació efectiva ${nf(hyd(s),0)} % · ${nf(C.dough,0)} g`,
   pdfTaste:["Crosta","Molla","Flonjor","Gust"],
   how:["Tots els ingredients freds de la nevera excepte la mantega, que ha de ser freda però que es doblegui sense trencar-se.","Pasta primer sense la mantega fins que la massa faci vel; després incorpora-la a poc a poc. Amb amassadora, velocitat mitjana.","Si la massa es greixa o s'escalfa per sobre de 26 °C, posa-la 15 min a la nevera i continua.","Per estirar-la, unta't les mans amb oli; fes els forats típics amb els dits abans de posar-hi la coberta.","Forn a 185 °C, a mitja alçada. És cuita quan és ben daurada per sota i fa 92 °C a dins."],
