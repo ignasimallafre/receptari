@@ -222,6 +222,13 @@ const RT=[[0,.02],[4,.06],[8,.12],[12,.22],[16,.37],[20,.6],[22,.74],[24,.9],[25
 function rate(T){if(T<=RT[0][0])return RT[0][1];for(let i=1;i<RT.length;i++)if(T<=RT[i][0]){const [a,ra]=RT[i-1],[b,rb]=RT[i];return ra+(rb-ra)*(T-a)/(b-a);}return RT[RT.length-1][1];}
 const YT={fresc:[1,"fresc"],instant:[3,"sec instantani"],actiu:[2,"sec actiu"]};
 const TRAY={a:[30,20],b:[35,25],c:[40,30],d:[45,35]};
+// prefermentats: líquid (llet) per kg de farina del prefermentat, factor de llevat, defectes
+const PF={none:"Sense prefermentat",esponja:"Esponja (1 h, amb llet)",poolish:"Poolish de llet (una nit)",biga:"Biga (una nit, més ferma)"};
+const PFL={esponja:.7,poolish:1,biga:.55};
+const PFY={esponja:1,poolish:1,biga:2};
+const PFDEF={esponja:{pfPct:25,pfH:1,pfT:26},poolish:{pfPct:25,pfH:12,pfT:18},biga:{pfPct:30,pfH:16,pfT:18}};
+const pfNom=s=>PF[s.p.pf].split(" (")[0];
+const pfArt={esponja:"l'esponja",poolish:"el poolish",biga:"la biga"};
 
 const ING=[
  ["farina","fa","Farina de força","","Triticum aestivum","W 300–350: sosté el greix i el sucre","g",100,100,1,100,"S",{}],
@@ -261,13 +268,16 @@ const COB=["sucrecob","perlat","pinyons","ametlla","crema","cabell","fruita","pi
 const doughSum=s=>{let t=0;for(const id in s.doses){if(COB.includes(id)||id==="llevat")continue;t+=s.doses[id];}return t+P0("llevat",s)/YT[s.p.yt][0];};
 
 function model(s){
-  const y=P0("llevat",s);
+  const pf=s.p.pf||"none";
+  const y=P0("llevat",s)+(pf==="poolish"?s.p.pfPct/100*1.5:pf==="biga"?s.p.pfPct/100*1.2:0);
   const E=1+Math.max(0,P0("sucre",s)+P0("mel",s)-5)*.04+P0("mantega",s)*.01+(P0("ou",s)+P0("rovell",s))*.003+P0("canyella",s)*.3;
   const FULL=3*Math.pow(y/2,-.6)*E;const share=.42;const ra=rate(s.p.Ta);const o={y,E,FULL,share,ra};
   if(!s.p.cold){o.bulk=share*FULL/ra;o.proof=(1-share)*FULL/rate(s.p.Tp);o.total=o.bulk+o.proof;}
   else{const H=s.p.fH,cool=Math.min(4,H),Tf=s.p.Tf;const p1=s.p.pre*ra/FULL;const p2=(cool*rate((s.p.Ta+Tf)/2)+Math.max(0,H-cool)*rate(Tf))/FULL;
     o.pre=s.p.pre;o.p=p1+p2;o.over=o.p>share+.15;o.under=o.p<share-.1;o.after=o.p<share?(share-o.p)*FULL/ra:0;
     o.proof=(1-share)*FULL/rate(s.p.Tp)+.75;o.total=o.pre+H+o.after+o.proof;}
+  if(pf==="esponja"){const k=Math.max(.6,1-.12*s.p.pfH*rate(s.p.pfT));if(o.bulk!=null){o.total-=o.bulk*(1-k);o.bulk*=k;}else if(o.after){o.total-=o.after*(1-k);o.after*=k;}}
+  else if(pf!=="none"){const yp=1.5*Math.pow(s.p.pfH*rate(s.p.pfT)/2.04,-1/.6)*PFY[pf];o.pfYraw=yp;o.pfY=Math.min(2,Math.max(.02,yp));}
   return o;
 }
 function solve(s){
@@ -296,6 +306,11 @@ const R={
     {id:"tray",label:"Safata",type:"select",def:"b",opts:[["a","30 × 20 cm"],["b","35 × 25 cm"],["c","40 × 30 cm (de forn)"],["d","45 × 35 cm"]],noCustom:true,onSet:fitFlour,hint:"La safata, el gruix i el nombre de coques fixen la farina: es recalcula tota la recepta."},
     {id:"thick",label:"Gruix de la coca",type:"select",def:"m",opts:[["f","Fina (cruixent)"],["m","Mitjana"],["g","Gruixuda (molt flonja)"]],onSet:fitFlour},
     {id:"tz",label:"Tangzhong amb llet (més flonja i dura més tendra)",type:"check",def:true,sec:"Flonjor"},
+    {id:"pf",label:"Prefermentat",type:"select",def:"none",sec:"Prefermentat",opts:Object.entries(PF),onSet:(s,v)=>{if(PFDEF[v])Object.assign(s.p,PFDEF[v]);},
+      hint:"L'esponja és ràpida i fa la massa més forta; el poolish i la biga es fan la nit abans i donen més gust i una molla que dura més tendra."},
+    {id:"pfPct",label:"Farina al prefermentat",type:"range",min:10,max:40,step:5,def:25,fmt:v=>v+" %",show:s=>s.p.pf!=="none"},
+    {id:"pfH",label:"Hores de prefermentat",type:"range",min:.5,max:24,step:.5,def:12,fmt:hf,show:s=>s.p.pf!=="none"},
+    {id:"pfT",label:"Temperatura del prefermentat",type:"range",min:4,max:30,step:1,def:18,fmt:v=>v+" °C",show:s=>s.p.pf!=="none",hint:"Per sota de 8 °C és a la nevera: calen 2–3 vegades més hores."},
     {id:"tzPct",label:"Farina al tangzhong",type:"range",min:3,max:8,step:.5,def:5,fmt:v=>nf(v,1)+" %",show:s=>s.p.tz,hint:"Es cou amb 5 vegades el seu pes de llet fins a 65 °C."},
     {id:"yt",label:"Tipus de llevat",type:"select",def:"fresc",opts:[["fresc","Fresc (pastilla)"],["instant","Sec instantani (÷3)"],["actiu","Sec actiu (÷2)"]],noCustom:true},
     {id:"Ta",label:"Temperatura de la cuina",type:"range",min:16,max:30,step:1,def:22,fmt:v=>v+" °C",group:"tl"},
@@ -324,6 +339,18 @@ const R={
     rows.push(["Ideal per a aquesta safata",nf(ideal,0)+" g"]);
     rows.push(["Gruix aproximat en cru",nf(per/area/.9*10,0)+" mm"]);
     if(s.p.tz){const tf=F*s.p.tzPct/100;C.tz=[tf,tf*5];rows.push(["§","Tangzhong"]);rows.push(["Farina",nf(tf,0)+" g"]);rows.push(["Llet (de la fórmula)",nf(tf*5,0)+" g",true]);}
+    C.pfYg=0;
+    if(s.p.pf&&s.p.pf!=="none"){const pff=F*s.p.pfPct/100,liq=pff*PFL[s.p.pf];
+      const lletT=F*P0("llet",s)/100-(C.tz?C.tz[1]:0),aiguaT=F*P0("aigua",s)/100;
+      const ouT=F*P0("ou",s)/100;
+      const ll=Math.min(liq,Math.max(0,lletT)),ai=Math.min(liq-ll,aiguaT),ou=Math.min(liq-ll-ai,ouT),falta=liq-ll-ai-ou;
+      const esp=s.p.pf==="esponja",yg=esp?0:pff*o.pfY/100/YT[s.p.yt][0];C.pfYg=yg;C.pf={f:pff,ll,ai,ou,falta,y:yg,esp,yAll:P0("llevat",s)*F/100/YT[s.p.yt][0]};
+      rows.push(["§",pfNom(s)]);rows.push(["Farina",nf(pff,0)+" g"]);
+      if(ll>0)rows.push(["Llet (de la fórmula)",nf(ll,0)+" g"]);if(ai>0)rows.push(["Aigua (de la fórmula)",nf(ai,0)+" g"]);if(ou>0)rows.push(["Ou batut (de la fórmula)",nf(ou,0)+" g"]);
+      if(esp)rows.push([`Tot el llevat ${YT[s.p.yt][1]} de la fórmula`,nf(C.pf.yAll,1)+" g",true]);
+      else rows.push([`Llevat ${YT[s.p.yt][1]} (a més del de la massa)`,(yg<.3?nf(yg,2):nf(yg,1))+" g",true]);
+      rows.push(["Maduració",`${hf(s.p.pfH)} a ${s.p.pfT} °C`]);
+      rows.push(["Farina restant per a la massa",nf(F-pff-(C.tz?C.tz[0]:0),0)+" g"]);}
     rows.push(["§","Temps (estimació)"]);
     if(!s.p.cold){rows.push(["Bloc a "+s.p.Ta+" °C",hf(o.bulk),true]);rows.push(["Aprest a "+s.p.Tp+" °C",hf(o.proof),true]);rows.push(["Total de pastar a forn",hf(o.total)]);}
     else{rows.push(["Bloc abans de la nevera",hf(o.pre)]);rows.push(["Nevera",`${s.p.fH} h a ${s.p.Tf} °C`]);rows.push(["Bloc fet en sortir",nf(Math.min(o.p/o.share,9)*100,0)+" %",o.over||o.under]);
@@ -333,12 +360,18 @@ const R={
     rows.push(["Forn",C.oven.t]);
     C.rows=rows;
     C.note=`Model: llevat fresc ${nf(o.y,1)} %; el sucre i la mantega l'alenteixen ×${nf(o.E,2)}. L'aprest acaba quan la massa ha doblat i, en tocar-la, l'empremta torna a pujar a poc a poc.`;
-    C.summary=`${nf(dough,0)} g de massa · ${s.p.pcs} × ${nf(per,0)} g en safata ${w}×${l} · mantega ${nf(P0("mantega",s),0)}% · ${s.p.cold?"bloc en fred "+s.p.fH+" h":"fermentació "+hf(o.total)} · ${C.oven.t}`;
+    C.summary=`${nf(dough,0)} g de massa · ${s.p.pcs} × ${nf(per,0)} g en safata ${w}×${l} · mantega ${nf(P0("mantega",s),0)}% · ${s.p.pf&&s.p.pf!=="none"?pfNom(s).toLowerCase()+" "+s.p.pfPct+"% · ":""}${s.p.cold?"bloc en fred "+s.p.fH+" h":"fermentació "+hf(o.total)} · ${C.oven.t}`;
     return C;
   },
   rec:s=>({title:"Farina recomanada",main:"Farina de força W 300–350 (Manitoba o «gran fuerza»)",sub:"12,5–14% de proteïna",why:"Amb un 30–45% de mantega i molt sucre, només un gluten fort fa la xarxa que reté el gas i dona la molla filosa i flonja."}),
   warn:(s,C)=>{
     const w=[];const o=C.m;const h=hyd(s),rh=54+(s.p.tz?s.p.tzPct*1.2:0);
+    if(C.pf){if(C.pf.ou>0)w.push(["info",`${pfNom(s)} amb ou: no hi ha prou llet, i per això hi van ${nf(C.pf.ou,0)} g de l'ou batut. Funciona bé en un brioix.`]);if(C.pf.falta>1)w.push(["bad",`${pfNom(s)}: necessita ${nf(C.pf.falta,0)} g més de líquid del que hi ha a la fórmula${s.p.tz?" (el tangzhong ja se'n queda una part)":""}. Puja la llet, baixa el % de prefermentat o treu el tangzhong.`]);
+      if(o.pfYraw!=null&&o.pfYraw<.02)w.push(["warn",`${pfNom(s)} massa llarg per a ${s.p.pfT} °C: necessitaria menys llevat del que es pot pesar. Fes-lo a la nevera o escurça les hores.`]);
+      if(o.pfYraw!=null&&o.pfYraw>2)w.push(["warn",`${pfNom(s)} massa curt per a ${s.p.pfT} °C: no madurarà. Allarga'l o fes-lo més calent.`]);
+      if(s.p.pf==="esponja"&&s.p.pfH>3)w.push(["info","Una esponja de més de 3 h ja és un poolish: tria «Poolish de llet» i el càlcul del llevat serà més precís."]);
+      if(s.p.pf!=="esponja"&&s.p.pfT>22&&s.p.pfH>10)w.push(["warn","Una nit a més de 22 °C: la llet es pot agrir. Fes-lo més fresc o a la nevera."]);
+      if(s.p.pf!=="esponja"&&s.p.cold)w.push(["info","Prefermentat i nit a la nevera alhora: és molta maduració. Funciona, però la coca serà més àcida; amb un dels dos n'hi ha prou."]);}
     if(h>rh+8)w.push(["warn",`Hidratació efectiva ${nf(h,0)}%: massa molt tova i enganxosa. Per a brioix va bé ${nf(rh-4,0)}–${nf(rh+5,0)}%.`]);
     if(h<rh-6)w.push(["warn",`Hidratació efectiva ${nf(h,0)}%: queda dur i sec. Puja una mica la llet o l'ou.`]);
     if(P0("mantega",s)>50)w.push(["warn","Més del 50% de mantega: cal molt de domini i la massa es greixa. Per a una coca flonja, 30–40% és el punt."]);
@@ -367,8 +400,10 @@ const R={
   tl:{mode:"h",startLabel:"Comences (dia i hora)",defTime:"18:00"},
   timeline:(s,C)=>{
     const o=C.m;const ev=[];let t=0;
-    if(s.p.tz&&C.tz){ev.push([0,`Tangzhong: cou ${nf(C.tz[0],0)} g de farina amb ${nf(C.tz[1],0)} g de llet fins que espesseixi (65 °C). Refreda'l tapat.`]);t=.75;}
-    ev.push([t,`Pasta-ho tot menys la mantega (llet a ${C.rows.find(r=>r[0]==="Llet a")[1]}), 8–10 min fins que faci vel.`]);
+    if(C.pf){const p=C.pf;const liq=[p.ll>0?nf(p.ll,0)+" g de llet":"",p.ai>0?nf(p.ai,0)+" g d'aigua":"",p.ou>0?nf(p.ou,0)+" g d'ou batut":""].filter(Boolean).join(", ");
+      ev.push([0,`${pfNom(s)}: barreja ${nf(p.f,0)} g de farina, ${liq} i ${p.esp?"tot el llevat ("+nf(p.yAll,1)+" g)":nf(C.pfYg,C.pfYg<.3?2:1)+" g de llevat"}. Tapa-ho a ${s.p.pfT} °C${p.esp?" fins que faci bombolles i dobli":""}.`]);t=s.p.pfH;}
+    if(s.p.tz&&C.tz){ev.push([Math.max(0,t-.75),`Tangzhong: cou ${nf(C.tz[0],0)} g de farina amb ${nf(C.tz[1],0)} g de llet fins que espesseixi (65 °C). Refreda'l tapat.`]);t=Math.max(t,.75);}
+    ev.push([t,`${C.pf?"Pasta "+pfArt[s.p.pf]+" amb la resta, ":"Pasta-ho tot "}menys la mantega (llet a ${C.rows.find(r=>r[0]==="Llet a")[1]}), 8–10 min fins que faci vel.`]);
     ev.push([t+.25,"Afegeix la mantega a daus en 3 tandes; pasta fins que la massa sigui llisa, brillant i desenganxi del bol."]);
     const t0=t+.5;
     if(!s.p.cold){const tb=t0+o.bulk;ev.push([tb,"Desgasifica, divideix i estira cada coca a la safata amb paper. Si s'encongeix, deixa-la reposar 10 min i torna-hi."]);
@@ -378,6 +413,7 @@ const R={
       const te=tout+o.after+o.proof;ev.push([Math.max(tout+.25,te-.5),"Encén el forn a 185 °C. Pinta amb ou i posa-hi la coberta."]);ev.push([te,`Al forn: ${C.oven.t}.`]);ev.push([te+C.oven.min/60,"Treu-la i deixa-la refredar 10 min a la safata."]);}
     return {ev,tail:[["Conservació","2–3 dies tapada amb film. Es congela a trossos; descongelada, 3 min al forn."]]};
   },
+  shopExtra:(s,C)=>C.pf&&C.pfYg>0?[{h:"Súper",items:[[`Llevat per al prefermentat (${YT[s.p.yt][1]})`,(C.pfYg<.3?nf(C.pfYg,2):nf(C.pfYg,1))+" g"]]}]:[],
   loadNote:(s,C)=>`hidratació efectiva ${nf(hyd(s),0)} % · ${nf(C.dough,0)} g`,
   pdfTaste:["Crosta","Molla","Flonjor","Gust"],
   how:["Tots els ingredients freds de la nevera excepte la mantega, que ha de ser freda però que es doblegui sense trencar-se.","Pasta primer sense la mantega fins que la massa faci vel; després incorpora-la a poc a poc. Amb amassadora, velocitat mitjana.","Si la massa es greixa o s'escalfa per sobre de 26 °C, posa-la 15 min a la nevera i continua.","Per estirar-la, unta't les mans amb oli; fes els forats típics amb els dits abans de posar-hi la coberta.","Forn a 185 °C, a mitja alçada. És cuita quan és ben daurada per sota i fa 92 °C a dins."],
@@ -387,6 +423,7 @@ const R={
     nuvol:{name:"Núvol (extra flonja)",desc:"Tangzhong 6%, nata i llet en pols",d:{farina:100,llet:30,nata:10,ou:25,rovell:8,mantega:30,sucre:15,lletpols:4,sal:1.8,llevat:3.2,vainilla:.6,perlat:6,pintar:5},p:{tz:true,tzPct:6,cold:true,fH:12}},
     crema:{name:"De crema",desc:"Línies de crema pastissera i ametlla",d:{farina:100,llet:30,ou:30,mantega:30,sucre:14,sal:1.8,llevat:3.2,llimona:.6,crema:35,ametlla:6,pintar:5},p:{cold:true,fH:12}},
     santjoan:{name:"Sant Joan",desc:"Anís, fruita confitada i pinyons",d:{farina:100,llet:25,ou:35,mantega:35,sucre:18,sal:1.8,llevat:3.5,llimona:.6,anis:3,crema:20,fruita:15,pinyons:6,sucrecob:6,pintar:5},p:{cold:true,fH:12}},
+    poolish:{name:"De poolish (nit abans)",desc:"Poolish de llet 25%, sense nevera: més gust i dura més tendra",d:{farina:100,llet:32,ou:30,rovell:6,mantega:35,sucre:16,sal:1.8,llevat:1.8,llimona:.6,sucrecob:8,pinyons:6,pintar:5},p:{pf:"poolish",pfPct:25,pfH:12,pfT:18,cold:false,tz:false,tgt:4}},
     rapida:{name:"Del mateix dia",desc:"Sense nevera, en ≈4 h",d:{farina:100,llet:30,ou:30,mantega:32,sucre:15,sal:1.8,llevat:4.5,llimona:.6,sucrecob:8,pinyons:6,pintar:5},p:{cold:false,tz:true,tzPct:5,tgt:4}}
   }
 };

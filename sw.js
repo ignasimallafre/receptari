@@ -2,7 +2,7 @@
    - Desa totes les pàgines en instal·lar-se, per poder cuinar sense connexió.
    - Pàgines del receptari: respon amb la còpia desada i l'actualitza en segon pla.
    - Fonts i jsPDF: es desen el primer cop que es baixen. */
-const VERSIO = "receptari-0955640d55";
+const VERSIO = "receptari-eeebd5c6e2";
 const FITXERS = ["./", "index.html", "receptari.css", "receptari.js", "manifest.webmanifest", "icones/icona.svg", "icones/icona-180.png", "icones/icona-192.png", "icones/icona-512.png", "arrossos-secs.html", "manitoba.html", "obrador-de-pa.html", "coca-brioix.html", "coca-iogurt-magdalenes.html", "ensaimades.html", "vermut-blanc.html", "embotits-curats.html"];
 const EXTERNS = ["https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap", "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"];
 
