@@ -54,6 +54,8 @@ const VAR={
   donzella:["Verd donzella o capçada",35,45,0,"La de l'Empordà: ferma, aguanta coccions llargues."]
 };
 const CASS=[24,28,30,32,36,40];
+const capOf=s=>CAL[s.p.cal][3]*(s.p.buidat==="gen"?1.5:1);
+const polpaOf=s=>CAL[s.p.cal][1]/190*(s.p.buidat==="gen"?28:14); // g de poma que surt en buidar-la
 
 function derive(s){ // ous: 1 per cada ≈350 g de carn (pasta) + 1 per cada 9 pomes (per sucar)
   if("ou" in s.doses)s.doses.ou=Math.round((carnPP(s)/350+1/9)*100)/100;
@@ -90,7 +92,9 @@ const R={
     {id:"pp",label:"Pomes per persona",type:"select",def:2,opts:[[1,"1 (de postres o tast)"],[2,"2 (plat de festa)"],[3,"3 (molt bona gana)"]],noCustom:true},
     {id:"cal",label:"Calibre de la poma",type:"select",def:"m",opts:Object.entries(CAL).map(([k,v])=>[k,v[0]]),noCustom:true},
     {id:"var",label:"Varietat",type:"select",def:"gala",opts:Object.entries(VAR).map(([k,v])=>[k,v[0]]),noCustom:true,hint:"La recepta demana pomes «vermelletes i de carn forta»."},
-    {id:"carn",label:"Carn del farcit",type:"select",def:"rostida",sec:"Tècnica",opts:[["rostida","Rostida el dia abans i trinxada (Teià)"],["crua","Crua i picada, amb part de la picada (Arenys)"]]},
+    {id:"buidat",label:"Buidat de la poma",type:"select",def:"normal",sec:"Tècnica",opts:[["normal","Normal: un ull profund"],["gen","Generós (truc del taller): hi cap més farcit"]]},
+    {id:"polpa",label:"Pica la poma que treus i posa-la dins el farcit (truc del taller)",type:"check",def:false},
+    {id:"carn",label:"Carn del farcit",type:"select",def:"rostida",opts:[["rostida","Rostida el dia abans i trinxada (Teià)"],["crua","Crua i picada, amb part de la picada (Arenys)"]]},
     {id:"caramel",label:"Caramel al fons de la cassola (Empordà)",type:"check",def:false},
     {id:"res",label:"Picada que guardes per a l'última represa",type:"range",min:0,max:40,step:5,def:25,fmt:v=>v+" %",hint:"Si el suc no queda prou espès, «s'hi pot afegir una altra picada». Guardar-ne una part ho fa fàcil."},
     {id:"ses",label:"Coccions en total (dies)",type:"range",min:2,max:5,step:1,def:4,fmt:v=>v+" dies",group:"tl",hint:"«Es torna a cuinar l'endemà, l'altre, fins a tres o quatre vegades.» Cada represa fa el suc més perfumat i la poma més melosa."},
@@ -110,7 +114,8 @@ const R={
     rows.push(["§","Farcit"]);
     rows.push(["Carn per poma",nf(cp,0)+" g",true]);
     rows.push(["Carn en total",nf(cp*n,0)+" g"]);
-    rows.push(["Capacitat del forat (calibre)",`≈ ${Cl[3]} g`]);
+    rows.push(["Capacitat del forat",`≈ ${nf(capOf(s),0)} g`]);
+    if(s.p.polpa)rows.push(["Poma buidada dins el farcit",`≈ ${nf(polpaOf(s)*n,0)} g (${nf(polpaOf(s),0)} g per poma)`]);
     rows.push(["Ous per a la pasta",nf(Math.max(1,Math.round(ouP)),0)]);
     rows.push(["Ous per sucar els taps",nf(Math.max(1,Math.round(ouS)),0)]);
     rows.push(["§","Picada i suc"]);
@@ -133,16 +138,16 @@ const R={
   },
   rec:s=>{const V=VAR[s.p.var];return {title:"La poma",main:V[0]+" · "+CAL[s.p.cal][0].toLowerCase(),sub:"Compra'n un 20 % més i tria-les bessones",why:V[4]+" Fes abans una prova amb una poma: ha de quedar tendra fins al cor però sencera."};},
   warn:(s,C)=>{
-    const w=[];const cp=C.cp,cap=CAL[s.p.cal][3],V=VAR[s.p.var];
+    const w=[];const cp=C.cp,cap=capOf(s),V=VAR[s.p.var];
     if(cp>cap*1.35)w.push(["warn",`${nf(cp,0)} g de carn per poma i el forat d'una poma ${CAL[s.p.cal][0].toLowerCase().replace(/ \(.*/,"")} n'agafa ≈${cap} g: el tap sobresortirà molt i pot caure. Buida més o fes servir pomes més grosses.`]);
-    if(cp<cap*.45)w.push(["info",`Tap petit (${nf(cp,0)} g per poma): és l'estil d'Arenys. A Teià el tap és més generós (22–35 g).`]);
+    if(cp<cap*.4)w.push(["info",`Tap petit (${nf(cp,0)} g per poma): és l'estil d'Arenys. A Teià el tap és més generós (22–35 g).`]);
     if(cp<8)w.push(["bad","Gairebé no hi ha carn: sense carn no és relleno."]);
     if(V[3]===2)w.push(["warn",`${V[0]}: es desfà fàcilment. Amb ${s.p.ses} coccions corres el risc de perdre-les; baixa a 2–3 coccions curtes o canvia de poma.`]);
     if(V[3]===1&&s.p.ses>=4)w.push(["info",`Amb ${V[0].split(" (")[0]} i ${s.p.ses} coccions, fes represes curtes (${C.T.re} min) i no les remenis mai amb cullera: mou la cassola fent girs.`]);
     const su=P0("sucre",s)+P0("torro",s)*.6;
-    if(su>9)w.push(["warn",`Molt dolç (≈${nf(su,1)} g de sucre per poma comptant el torró). En un concurs «tradicional», l'equilibri dolç-salat pesa més que la dolçor.`]);
+    if(su>11)w.push(["warn",`Molt dolç (≈${nf(su,1)} g de sucre per poma comptant el torró). En un concurs «tradicional», l'equilibri dolç-salat pesa més que la dolçor.`]);
     if(su<4)w.push(["info","Poc dolç: si les pomes són verdes o àcides, rectifica el sucre a cada represa."]);
-    if(P0("xocolata",s)>3)w.push(["warn","Molta xocolata: el suc quedarà amarg i taparà la poma. 1–2 g per poma ja el fan fosc i brillant."]);
+    if(P0("xocolata",s)>4.5)w.push(["warn","Molta xocolata: el suc quedarà amarg i taparà la poma. Entre 1,5 i 3,5 g per poma el fan fosc, espès i brillant."]);
     if(P0("canyella",s)>.1)w.push(["warn","La canyella domina de seguida: un polset per a tota la cassola."]);
     if(P0("conyac",s)+P0("anis",s)+P0("moscatell",s)>4)w.push(["warn","Massa licor: més d'un raig per poma tapa el gust de la carn i de la poma."]);
     if(P0("anis",s)&&P0("canyella",s)>.05)w.push(["info","Anís i canyella competeixen: tria'n un de protagonista."]);
@@ -152,6 +157,8 @@ const R={
     if(s.p.res===0)w.push(["info","Guarda un 20–30 % de la picada per a l'última represa: és la manera fàcil d'ajustar l'espessor."]);
     if(!C.cas.one)w.push(["info",`Per a ${C.n} pomes en una sola capa necessites ${C.cas.n30} cassoles de 30 cm (${C.cas.per30} cadascuna).`]);
     else if(C.cas.one>36)w.push(["info",`Cassola de Ø ${C.cas.one} cm: si no en tens, reparteix-les en ${C.cas.n30} cassoles de 30 cm. Mai en dues capes.`]);
+    if(s.p.polpa)w.push(["info","La poma picada dins el farcit li dona sucositat i lliga el gust del tap amb la poma; si la pasta queda tova, espesseix-la amb un melindro esmicolat."]);
+    if(s.p.buidat==="gen")w.push(["info","Buidat generós: deixa almenys 1 cm de paret i el fons sencer, o la poma s'obrirà a la cassola."]);
     if(s.p.carn==="crua")w.push(["warn","Carn crua al tap: el fregit i la primera cocció l'han de coure del tot. Fes la primera cocció completa (≥45 min) i comprova que el centre del tap passi de 70 °C."]);
     if(s.p.caramel)w.push(["info","Caramel al fons: fes-lo rossenc, no fosc, i atura'l amb el brou calent abans de posar-hi les pomes. Baixa una mica el sucre de la picada."]);
     w.push(["warn",`Seguretat: entre coccions, la cassola tapada a la nevera; refreda-la en menys de 2 hores (mai més de 2 h a temperatura ambient). Cada dia, reescalfa fins que bulli suau, almenys 70 °C al cor del tap.`]);
@@ -172,7 +179,7 @@ const R={
     const t0=d*24;
     ev.push([t0,crua?`Pica la carn crua i barreja-la amb el suc de llimona, ${nf(Math.max(1,Math.round(C.ouP)),0)} ou${C.ouP>1.5?"s":""} batut${C.ouP>1.5?"s":""}${P0("conyac",s)?", el conyac":""} i una mica de la picada fins que sigui una pasta espessa i modelable.`
       :`Trinxa la carn finament amb el suc de llimona i pasta-la amb ${nf(Math.max(1,Math.round(C.ouP)),0)} ou${C.ouP>1.5?"s":""} batut${C.ouP>1.5?"s":""}. Si queda massa sucosa, espesseix-la amb un melindro esmicolat.`]);
-    ev.push([t0+.5,`Renta i asseca les ${n} pomes. Treu-los el cor i les llavors per la part oposada al pèndol, com un ull profund, sense foradar-les del tot, i farceix-les fins a ras.`]);
+    ev.push([t0+.5,`Renta i asseca les ${n} pomes. Treu-los el cor i les llavors per la part oposada al pèndol, ${s.p.buidat==="gen"?"buidant-les generosament (parets d'1 cm, el fons sencer)":"com un ull profund, sense foradar-les del tot"}.${s.p.polpa?` Pica la poma que treus (sense cor ni llavors, ≈${nf(polpaOf(s)*n,0)} g) i barreja-la amb la pasta de carn.`:""} Farceix-les fins a ras.`]);
     ev.push([t0+1,`Paella amb oli. Suca el tap en ou batut, fregeix-lo cap per avall per afermar-lo i dona un tomb a tota la poma. 2–3 pomes a la vegada (≈${hf(T.fry)} en total).`]);
     const tc=t0+1+T.fry/60;
     ev.push([tc,`Cassola de terra plana i ampla amb el suc del rostit${s.p.caramel?" (i el caramel rossenc al fons)":""}. Pomes en una sola capa, el tap amunt; oli o llard si cal, 3–4 escarrotxes de llimona, un polset de sal, una escampada de sucre i ${nf(P0("brou",s)*n,0)} ml de brou. Foc lentíssim.`]);
@@ -201,6 +208,7 @@ const R={
       out.push({t:"Rostit (el dia abans)",quan:"Les carns juntes, ≈1 h 30",items:it});}
     const fa=[];if(crua)fa.push(...carn);else fa.push(["Carn rostida i trinxada",fq(C.cp*n)]);
     fa.push(["Suc de llimona",`${lli===1?"½":"1"} llimona`]);fa.push(["Ou batut",`${Math.max(1,Math.round(C.ouP))}`]);
+    if(s.p.polpa)fa.push(["Poma buidada, picada",fq(polpaOf(s)*n)]);
     if(g("conyac"))fa.push(["Conyac",ml(g("conyac"))]);if(crua)fa.push(["Picada (una cullerada)","una mica"]);
     out.push({t:"Pasta del farcit",quan:`Per a ${n} pomes`,items:fa});
     out.push({t:"Segellar i fregir",quan:"2–3 pomes a la vegada",items:[[`Pomes farcides`,`${n}`],["Ous per sucar",`${Math.max(1,Math.round(C.ouS))}`],["Oli per fregir",ml(g("oli"))]]});
@@ -221,7 +229,7 @@ const R={
   profiles:{
     teia:{name:"Teià (la teva recepta)",desc:"La de l'Ajuntament de Teià, per a 18 pomes",d:{poma:1,vedella:11.1,porc:11.1,ou:.17,llimona:.056,llard:2,ceba:6.7,pastanaga:4.4,all:.17,brou:27.8,oli:14,sal:.35,melindro:5.56,ametlla:2.78,xocolata:1.4,sucre:5.56},p:{carn:"rostida",res:0}},
     pollastre:{name:"Teià amb pollastre",desc:"Amb el pit de pollastre «si es vol»: tap més generós",d:{poma:1,vedella:11.1,porc:11.1,pollastre:13.9,ou:.2,llimona:.056,llard:2,ceba:6.7,pastanaga:4.4,all:.17,brou:27.8,oli:14,sal:.35,melindro:5.56,ametlla:2.78,xocolata:1.4,sucre:5.56},p:{carn:"rostida",res:0}},
-    concurs:{name:"Per al concurs",desc:"Teià amb tots els «si es vol»: pollastre, torró i canyella; picada reservada",d:{poma:1,vedella:11.1,porc:11.1,pollastre:13.9,ou:.2,llimona:.056,llard:2,ceba:6.7,pastanaga:4.4,all:.17,brou:27.8,oli:14,sal:.35,melindro:6.5,ametlla:3.5,xocolata:1.6,sucre:6,torro:2,canyella:.05},p:{carn:"rostida",res:25}},
+    concurs:{name:"Per al concurs",desc:"Teià amb els trucs del taller: buidat generós, poma dins el farcit, bé de sucre i xocolata",d:{poma:1,vedella:13,porc:13,pollastre:13.9,ou:.2,llimona:.056,llard:2,ceba:6.7,pastanaga:4.4,all:.17,brou:30,oli:14,sal:.35,melindro:7,ametlla:3.5,xocolata:3,sucre:8,torro:2,canyella:.05},p:{carn:"rostida",res:25,buidat:"gen",polpa:true}},
     arenys:{name:"Arenys de Munt",desc:"Tap petit de carn crua i picada generosa, amb galetes i carquinyolis",d:{poma:1,porc:12.5,ou:.15,llimona:.05,brou:30,oli:14,sal:.35,melindro:4.5,galeta:3.4,carquinyoli:3.4,ametlla:9,xocolata:3.4,sucre:4.5,conyac:.8},p:{carn:"crua",res:20,var:"ciri"}},
     emporda:{name:"Empordanès",desc:"Tap gros de vedella i porc, caramel a la cassola",d:{poma:1,vedella:18.75,porc:18.75,ou:.2,llimona:.05,llard:2,ceba:6.7,pastanaga:4.4,all:.17,brou:28,oli:14,sal:.35,melindro:4,ametlla:3.1,sucre:7.5},p:{carn:"rostida",caramel:true,res:0,var:"donzella",cal:"g"}}
   }
