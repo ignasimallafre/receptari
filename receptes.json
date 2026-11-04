@@ -88,5 +88,17 @@
   "afegit": "2026-10-20",
   "motor": "embotits",
   "entradeta": "Cansalada, capocollo i llom curats per equilibri: sal, sal nitrada i espècies per quilo de carn, dies de salaó, pes objectiu i temps d'assecat."
+ },
+ {
+  "id": "relleno-sant-marti",
+  "titol": "Relleno de Sant Martí",
+  "fitxer": "relleno-sant-marti.html",
+  "categoria": "Cuina",
+  "mesura": "Pomes",
+  "descripcio": "Pomes farcides de carn de Sant Martí (Teià, Arenys, Empordà): farcit, picada, cassola, 4 dies de coccions i presentació per al concurs.",
+  "afegit": "2026-11-04",
+  "motor": "relleno",
+  "entradeta": "Les pomes farcides de carn de Sant Martí, a partir de la recepta de Teià. Tria quantes pomes, la varietat i l'escola, i la calculadora et dona el farcit, la picada, la cassola i el calendari de les quatre coccions fins al lliurament.",
+  "artefacte": "https://claude.ai/artifact/ML4aJpjodWdjY5SJ51sAMv"
  }
 ]

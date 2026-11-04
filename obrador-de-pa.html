@@ -924,7 +924,7 @@ $("saved").addEventListener("click",e=>{
 const pad=n=>String(n).padStart(2,"0");
 const now=new Date();const local=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
 for(const k of P.tabOrd){S.tabs[k]=freshState(k);const s=S.tabs[k];const pr=P.recipes[k].profiles[s.profile];s.doses={...pr.d};Object.assign(s.p,pr.p||{});if(pr.n!=null)s.n=pr.n;
-  s.start=P.recipes[k].tl.mode==="d"?local:`${local}T${P.recipes[k].tl.defTime||"09:00"}`;}
+  const tl=P.recipes[k].tl;s.start=tl.defStart&&new Date(tl.defStart)>now?tl.defStart:tl.mode==="d"?local:`${local}T${tl.defTime||"09:00"}`;}
 let t0=null;try{t0=localStorage.getItem(P.key+"-tab");}catch(_){}
 if(t0&&P.recipes[t0])S.tab=t0;
 const hs=(location.hash||"").slice(1);if(P.recipes[hs])S.tab=hs;
@@ -938,7 +938,7 @@ window.RECEPTARI={
     for(const f of r.famOrd){const it=I.filter(x=>x.fam===f&&x.id in s.doses).map(x=>({nom:x.ca,q:strip(totStr(x,s.doses[x.id]))}));if(it.length)out.push({grup:r.fam[f],items:it});}
     return out;},
   passos(){const C=lastC||computeAll(),T=events(C),ev=T.ev,h=mode()!=="d";
-    const out=ev.map(([o,t],i)=>{let min=null;if(h&&i<ev.length-1){min=Math.round((ev[i+1][0]-o)*60);if(!(min>0))min=null;}return {quan:`${evDate(o)} · ${offLbl(o)}`,t:strip(t),min};});
+    const mx=R().timerMax;const out=ev.map(([o,t],i)=>{let min=null;if(h&&i<ev.length-1){min=Math.round((ev[i+1][0]-o)*60);if(!(min>0)||(mx&&min>mx*60))min=null;}return {quan:`${evDate(o)} · ${offLbl(o)}`,t:strip(t),min};});
     for(const [a,b] of (T.tail||[]))out.push({quan:strip(a),t:strip(b),min:null});
     return out;},
   compra(){const C=lastC||computeAll(),r=R(),s=st(),out=[];
