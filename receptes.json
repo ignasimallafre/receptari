@@ -100,5 +100,17 @@
   "motor": "relleno",
   "entradeta": "Les pomes farcides de carn de Sant Martí, a partir de la recepta de Teià. Tria quantes pomes, la varietat i l'escola, i la calculadora et dona el farcit, la picada, la cassola i el calendari de les quatre coccions fins al lliurament.",
   "artefacte": "https://claude.ai/artifact/ML4aJpjodWdjY5SJ51sAMv"
+ },
+ {
+  "id": "coca-croissant",
+  "titol": "Coca de croissant",
+  "fitxer": "coca-croissant.html",
+  "categoria": "Forn i pastisseria",
+  "mesura": "Grams de farina",
+  "descripcio": "Rectangle de massa de croissant fullada amb sucre per sobre: farina, mantega de tourage, voltes, aprest i calendari fins al forn.",
+  "afegit": "2026-11-12",
+  "motor": "croissant",
+  "entradeta": "Una coca de massa de croissant en safata: prima, molt fullada i amb sucre per sobre. Tria la safata, el gruix i les voltes, i la calculadora et dona la massa, el bloc de mantega i el calendari des que comences fins que l'enfornes.",
+  "artefacte": "https://claude.ai/artifact/29w2HvSuQ1rTeuYN2XQBuj"
  }
 ]

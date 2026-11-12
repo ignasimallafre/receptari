@@ -191,7 +191,7 @@ function renderTimeline(C){
     (T.tail||[]).map(([a,b])=>`<li><span class="d" style="color:var(--muted)">${a}</span><span class="t">${b}</span></li>`).join("");
 }
 function phasesOf(C){const r=R();return r.phases?r.phases(st(),C)||[]:[];}
-function renderPhases(C){const F=phasesOf(C);$("fasesPanel").hidden=F.length<2;if(F.length<2)return;
+function renderPhases(C){const F=phasesOf(C);$("fasesPanel").hidden=F.length<2;if(F.length<2)return;if(R().phasesNote&&$("fasesNote"))$("fasesNote").textContent=R().phasesNote;
   $("fases").innerHTML=F.map((f,i)=>`<section class="fase"><h3><span class="fn">${i+1}</span>${f.t}</h3>${f.quan?`<p class="note">${f.quan}</p>`:""}<ul>${f.items.map(([n,q])=>`<li><span>${n}</span><b class="num">${q}</b></li>`).join("")}</ul></section>`).join("");}
 function renderHow(){const r=R();const h=typeof r.how==="function"?r.how(st()):r.how;$("howPanel").hidden=!h;if(h)$("how").innerHTML=h.map(t=>`<li>${t}</li>`).join("");}
 
