@@ -971,6 +971,7 @@ window.RECEPTARI={
     if(SW.mel>=.5)out.push({botiga:WHERE.S,nom:`Mel ${HONEY[st.profile]}`,n:SW.mel,u:"g",uw:["g","g"],q:Math.round(SW.mel)+" g"});
     for(const id in st.doses){const x=BY[id],v=st.doses[id]*scale();out.push({botiga:WHERE[x.where],nom:x.ca,n:v,u:x.unit,uw:UNITS[x.unit]||[x.unit,x.unit],q:fmtDose(x,v,true)});}
     return out;},
+  passos(){return [...$("timeline").querySelectorAll("li")].map(li=>{const d=li.querySelector(".d"),sp=d.querySelector("span");return {quan:sp?d.firstChild.textContent+" · "+sp.textContent:d.textContent,t:li.querySelector(".t").textContent};});},
   estat(){return JSON.parse(JSON.stringify(st));},
   carrega(o){if(!o||!o.doses)return false;Object.assign(st,{sw:{car:0,mel:0}},JSON.parse(JSON.stringify(o)));syncInputs();if(st.start)$("startDate").value=st.start;render();return true;},
   resum(){const L=lastL||liquids();return [["Ampolles",`${st.bottles} × ${nf(st.bsize/1000,2)} L`],["Graduació",L.ok?nf(L.abv,1)+" %":"—"],["Sucre",Math.round(L.gL)+" g/L"]];}

@@ -313,16 +313,16 @@ const R={
     const rows=[];
     rows.push(["§","Massa"]);
     rows.push(["Massa total",nf(dough,0)+" g",true]);
-    rows.push(["Détrempe (sense la mantega de tourage)",nf(detr,0)+" g"]);
+    rows.push(["Détrempe",nf(detr,0)+" g"]);
     rows.push(["Mantega de tourage",nf(tour,0)+" g",true]);
-    rows.push(["Hidratació de la détrempe",nf(hyd(s),0)+" %"]);
+    rows.push(["Hidratació",nf(hyd(s),0)+" %"]);
     rows.push(["Greix sobre el total",nf(fatPct(s)/sum*100,0)+" %"]);
     rows.push(["Llevat "+YT[s.p.yt][1],nf(P0("llevat",s)*F/100/YT[s.p.yt][0],1)+" g"]);
     rows.push(["§","Laminació"]);
     rows.push(["Bloc de mantega"+(s.p.pcs>1?" (per coca)":""),`${nf(side,0)} × ${nf(side,0)} cm, ≈9 mm`,true]);
     rows.push(["Détrempe oberta",`${nf(side+1,0)} × ${nf(side*2+2,0)} cm`]);
     rows.push(["Capes de massa",nf(Math.pow(3,C.n),0)]);
-    rows.push(["Mantega sobre el pes de la massa",nf(tour/dough*100,0)+" %"]);
+    rows.push(["Mantega sobre la massa",nf(tour/dough*100,0)+" %"]);
     rows.push(["§","Safata"]);
     rows.push(["Massa per coca",nf(per,0)+" g",true]);
     rows.push(["Ideal per a aquesta safata",nf(ideal,0)+" g"]);
@@ -418,8 +418,8 @@ const R={
     classica:{name:"Coca de pastisseria",desc:"Rectangle fullat amb sucre per sobre; formada al matí",d:{farina:100,llet:37,aigua:17,sal:2,llevat:3,sucre:12,mantega:8,mantegatour:55,sucrecob:14,pintar:7},p:{mode:"mati",fH:11,turns:"3",Tp:25,thick:"m",tray:"b",pcs:1}},
     nit:{name:"Formada la nit abans",desc:"Dones forma al vespre i l'aprest es fa a la nevera; menys llevat",d:{farina:100,llet:37,aigua:17,sal:2,llevat:2.4,sucre:12,mantega:8,mantegatour:55,sucrecob:14,pintar:7},p:{mode:"nit",fH:4,fH2:7,turns:"3",Tp:25,thick:"m",tray:"b",pcs:1}},
     xocolata:{name:"Amb xocolata",desc:"Pepites de xocolata negra i sucre per sobre",d:{farina:100,llet:37,aigua:17,sal:2,llevat:3,sucre:12,mantega:8,mantegatour:55,sucrecob:8,xocolata:15,pintar:7},p:{mode:"mati",fH:11,turns:"3",Tp:25,thick:"m",tray:"b",pcs:1}},
-    ametlla:{name:"Amb ametlla i canyella",desc:"Ametlla laminada i sucre amb canyella",d:{farina:100,llet:37,aigua:17,sal:2,llevat:3,sucre:12,mantega:8,mantegatour:55,sucrecob:12,ametlla:10,pintar:7},p:{mode:"mati",fH:11,turns:"3",Tp:25,thick:"m",tray:"b",pcs:1}},
-    fina:{name:"Fina i molt cruixent",desc:"4 mm i 4 voltes: capes finíssimes, sense gairebé aprest",d:{farina:100,llet:37,aigua:17,sal:2,llevat:2.5,sucre:12,mantega:8,mantegatour:58,sucrecob:16,pintar:7},p:{mode:"mati",fH:11,turns:"4",Tp:25,thick:"f",tray:"b",pcs:1}}
+    ametlla:{name:"Amb ametlla",desc:"Ametlla laminada torrada i sucre per sobre",d:{farina:100,llet:37,aigua:17,sal:2,llevat:3,sucre:12,mantega:8,mantegatour:55,sucrecob:12,ametlla:10,pintar:7},p:{mode:"mati",fH:11,turns:"3",Tp:25,thick:"m",tray:"b",pcs:1}},
+    fina:{name:"Fina i molt cruixent",desc:"4 mm i 4 voltes: capes finíssimes i menys molla",d:{farina:100,llet:37,aigua:17,sal:2,llevat:2.5,sucre:12,mantega:8,mantegatour:58,sucrecob:16,pintar:7},p:{mode:"mati",fH:11,turns:"4",Tp:25,thick:"f",tray:"b",pcs:1}}
   }
 };
 // text de les mides de la coca estesa, calculat un cop al motor
